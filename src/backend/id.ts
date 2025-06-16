@@ -1,4 +1,4 @@
-import { IMAGE_ROOT_DIR, IMAGE_EXTENSION } from '../shared/constants'
+import { IMAGE_ROOT_DIR, IMAGE_EXTENSION } from '../constants'
 import { imageRecordExists } from './database'
 
 /**

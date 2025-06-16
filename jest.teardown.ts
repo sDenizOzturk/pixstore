@@ -7,7 +7,7 @@
 
 import fs from 'fs'
 import path from 'path'
-import { DATABASE_PATH, IS_TEST } from './src/shared/constants'
+import { DATABASE_PATH, IS_TEST } from './src/constants'
 
 module.exports = async () => {
   if (!IS_TEST) {
