@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Local env/database/test files
+.env
+*.sqlite
+*.sqlite-journal
+pixstore-images/
+pixstore-images-test/
+*.log
+
+# Mac ve OS öntanımlı dosyalar
+.DS_Store
+Thumbs.db
