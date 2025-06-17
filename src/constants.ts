@@ -13,4 +13,6 @@ export const IMAGE_FORMAT: ImageFormat = 'webp'
 
 export const IMAGE_EXTENSION = `.${IMAGE_FORMAT}`
 
-export const IMAGE_ROOT_DIR = 'pixstore-images'
+export const IMAGE_ROOT_DIR = IS_TEST
+  ? 'pixstore-test-images'
+  : 'pixstore-images'

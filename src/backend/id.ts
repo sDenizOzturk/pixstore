@@ -5,7 +5,7 @@ import { imageRecordExists } from './database'
  * Generates a unique image ID with optional directory prefix.
  * Example: students:kth1m9c4n8l2a7vz
  */
-export const createUniqueId = async (dir?: string): Promise<string> => {
+export const createUniqueId = (dir?: string): string => {
   let id: string
   let exists: boolean
 
@@ -20,7 +20,7 @@ export const createUniqueId = async (dir?: string): Promise<string> => {
         .replace(/[^a-z0-9_-]/g, '')
       id = `${dirClean}:${id}`
     }
-    exists = await imageRecordExists(id)
+    exists = imageRecordExists(id)
   } while (exists)
 
   return id
@@ -32,7 +32,6 @@ export const createUniqueId = async (dir?: string): Promise<string> => {
  */
 export const toFilePath = (id: string): string => {
   const [prefix, key] = id.split(':')
-  if (!prefix || !key)
-    return `${IMAGE_ROOT_DIR}/unknown/${id}${IMAGE_EXTENSION}`
+  if (!prefix || !key) return `${IMAGE_ROOT_DIR}/${id}${IMAGE_EXTENSION}`
   return `${IMAGE_ROOT_DIR}/${prefix}/${key}${IMAGE_EXTENSION}`
 }

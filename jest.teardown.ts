@@ -7,7 +7,7 @@
 
 import fs from 'fs'
 import path from 'path'
-import { DATABASE_PATH, IS_TEST } from './src/constants'
+import { DATABASE_PATH, IMAGE_ROOT_DIR, IS_TEST } from './src/constants'
 
 module.exports = async () => {
   if (!IS_TEST) {
@@ -16,7 +16,7 @@ module.exports = async () => {
   }
   removeTestDatabase()
 
-  //FUTURE WORK REMOVE TEST IMAGES FOLDER
+  removeTestImageFolder()
 }
 
 /**
@@ -30,5 +30,19 @@ const removeTestDatabase = () => {
     console.log('✅ Test DB deleted')
   } else {
     console.log('⚠️ Test DB not found (already removed?)')
+  }
+}
+
+/**
+ * Removes the test image folder and its contents.
+ */
+const removeTestImageFolder = () => {
+  const imageDir = path.resolve(__dirname, IMAGE_ROOT_DIR)
+  console.log('globalTeardown running, deleting image folder:', imageDir)
+  if (fs.existsSync(imageDir)) {
+    fs.rmSync(imageDir, { recursive: true, force: true })
+    console.log('✅ Test image folder deleted')
+  } else {
+    console.log('⚠️ Test image folder not found (already removed?)')
   }
 }
