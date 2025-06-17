@@ -13,12 +13,13 @@ import {
 } from './database'
 import { createUniqueId } from './id'
 import type { ImageRecord } from '../shared/models/image-record'
+import { EncodedImagePayload } from '../shared/models/encoded-image-payload'
 
 /**
  * Reads the image buffer from disk and returns it along with the DB token.
  * Throws if the image or database record is not found.
  */
-export const getImage = (id: string): { buffer: Buffer; token: number } => {
+export const getImage = (id: string): EncodedImagePayload => {
   const record = readImageRecord(id)
   if (!record) throw new Error(`Image record not found: ${id}`)
 
