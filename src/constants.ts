@@ -16,3 +16,9 @@ export const IMAGE_EXTENSION = `.${IMAGE_FORMAT}`
 export const IMAGE_ROOT_DIR = IS_TEST
   ? 'pixstore-test-images'
   : 'pixstore-images'
+
+export const DEFAULT_ENDPOINT_HOST = IS_TEST ? '127.0.0.1' : '0.0.0.0'
+
+export const DEFAULT_ENDPOINT_PORT = 3001
+
+export const DEFAULT_ENDPOINT_ROUTE = '/pixstore-image'
