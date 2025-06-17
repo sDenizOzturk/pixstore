@@ -54,3 +54,11 @@ export const diskToBuffer = (filepath: string): Buffer => {
   }
   return buffer
 }
+
+/**
+ * Checks if the image file exists on disk for the given ID.
+ */
+export const imageFileExists = (id: string): boolean => {
+  const filepath = toFilePath(id)
+  return fs.existsSync(filepath)
+}

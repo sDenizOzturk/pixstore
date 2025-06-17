@@ -1,7 +1,30 @@
-import { saveImageFile, deleteImageFile, diskToBuffer } from './file-storage'
-import { imageRecordExists, writeImageRecord } from './database'
+import {
+  saveImageFile,
+  deleteImageFile,
+  diskToBuffer,
+  readImageFile,
+  imageFileExists,
+} from './file-storage'
+import {
+  deleteImageRecord,
+  imageRecordExists,
+  readImageRecord,
+  writeImageRecord,
+} from './database'
 import { createUniqueId } from './id'
 import type { ImageRecord } from '../shared/models/image-record'
+
+/**
+ * Reads the image buffer from disk and returns it along with the DB token.
+ * Throws if the image or database record is not found.
+ */
+export const getImage = (id: string): { buffer: Buffer; token: number } => {
+  const record = readImageRecord(id)
+  if (!record) throw new Error(`Image record not found: ${id}`)
+
+  const buffer = readImageFile(id)
+  return { buffer, token: record.token }
+}
 
 /**
  * Writes an image buffer to disk and updates or creates its database record.
@@ -71,4 +94,39 @@ export const updateImageFromFile = async (
 ): Promise<ImageRecord> => {
   const buffer = diskToBuffer(filePath)
   return updateImage(id, buffer, dir)
+}
+
+/**
+ * Deletes the image file and corresponding database record for the given ID.
+ * Returns true if at least one of them was deleted.
+ */
+export const deleteImage = (id: string): boolean => {
+  let deleted = false
+
+  if (imageFileExists(id)) {
+    deleteImageFile(id)
+    deleted = true
+  }
+
+  if (imageRecordExists(id)) {
+    deleteImageRecord(id)
+    deleted = true
+  }
+
+  return deleted
+}
+
+/**
+ * Returns the image record (id + token) from the database.
+ * Returns null if not found.
+ */
+export const getImageRecord = (id: string): ImageRecord | null => {
+  return readImageRecord(id)
+}
+
+/**
+ * Checks whether the image exists either on disk or in the database.
+ */
+export const imageExists = (id: string): boolean => {
+  return imageFileExists(id) || imageRecordExists(id)
 }
