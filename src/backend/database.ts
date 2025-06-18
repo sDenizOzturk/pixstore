@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3'
 
-import { ImageRecord } from '../shared/models/image-record'
+import { BackendImageRecord } from '../shared/models/backend-image-record'
 
 const dbPath =
   process.env.NODE_ENV === 'test'
@@ -22,7 +22,7 @@ db.exec(
  * Inserts or updates an image record with the given ID.
  * If the ID already exists, the token is updated.
  */
-export const writeImageRecord = (id: string): ImageRecord => {
+export const writeImageRecord = (id: string): BackendImageRecord => {
   const token = Date.now()
   const stmt = db.prepare(
     `INSERT INTO image_records (id, token)
@@ -37,11 +37,11 @@ export const writeImageRecord = (id: string): ImageRecord => {
  * Retrieves the image record with the given ID.
  * Returns null if the record does not exist.
  */
-export const readImageRecord = (id: string): ImageRecord | null => {
+export const readImageRecord = (id: string): BackendImageRecord | null => {
   const row = db
     .prepare(`SELECT id, token FROM image_records WHERE id = ?`)
     .get(id)
-  return row ? (row as ImageRecord) : null
+  return row ? (row as BackendImageRecord) : null
 }
 
 /**

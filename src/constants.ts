@@ -22,3 +22,11 @@ export const DEFAULT_ENDPOINT_HOST = IS_TEST ? '127.0.0.1' : '0.0.0.0'
 export const DEFAULT_ENDPOINT_PORT = 3001
 
 export const DEFAULT_ENDPOINT_ROUTE = '/pixstore-image'
+
+export const FRONTEND_DB_NAME = IS_TEST ? 'pixstore-test' : 'pixstore'
+
+export const FRONTEND_DB_VERSION = 1
+
+export const IMAGE_STORE_NAME = 'images'
+
+export const TEMP_IMAGE_STORE_NAME = 'images_temp'
