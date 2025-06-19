@@ -1,5 +1,3 @@
-import { ImageFormat } from './shared/models/image-format'
-
 export const IS_TEST = process.env.NODE_ENV === 'test'
 
 export const DATABASE_PATH =
@@ -9,9 +7,7 @@ export const DATABASE_PATH =
 
 export const IMAGE_FORMATS = ['png', 'webp', 'jpg', 'jpeg'] as const
 
-export const IMAGE_FORMAT: ImageFormat = 'webp'
-
-export const IMAGE_EXTENSION = `.${IMAGE_FORMAT}`
+export const IMAGE_EXTENSION = '.pixstore-image'
 
 export const IMAGE_ROOT_DIR = IS_TEST
   ? 'pixstore-test-images'

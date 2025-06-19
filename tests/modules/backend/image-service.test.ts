@@ -7,11 +7,11 @@ import {
   getImage,
   saveImageFromFile,
   updateImageFromFile,
-} from '../../src/backend/image-service'
-import { readImageRecord } from '../../src/backend/database'
-import { toFilePath } from '../../src/backend/id'
+} from '../../../src/backend/image-service'
+import { readImageRecord } from '../../../src/backend/database'
+import { toFilePath } from '../../../src/backend/id'
 
-const assetsDir = path.resolve(__dirname, '../assets')
+const assetsDir = path.resolve(__dirname, '../../assets')
 
 describe('saveImageFromFile', () => {
   const testDir = 'saveImageFromFile'
@@ -103,7 +103,7 @@ describe('readImage', () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
     const record = await saveImageFromFile(filePath, testDir)
 
-    const { buffer, token } = getImage(record.id)
+    const { buffer, token } = await getImage(record.id)
     const fileOnDisk = toFilePath(record.id)
 
     expect(Buffer.isBuffer(buffer)).toBe(true)
@@ -113,9 +113,9 @@ describe('readImage', () => {
   })
 
   it('throws if image record is missing', () => {
-    expect(() => {
-      getImage(`${testDir}:missing-id`)
-    }).toThrow('Image record not found')
+    expect(async () => {
+      await getImage(`${testDir}:missing-id`)
+    }).rejects.toThrow('Image record not found')
   })
 })
 describe('deleteImage', () => {
@@ -124,7 +124,7 @@ describe('deleteImage', () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
     const record = await saveImageFromFile(filePath, testDir)
 
-    const result = deleteImage(record.id)
+    const result = await deleteImage(record.id)
 
     expect(result).toBe(true)
     expect(fs.existsSync(toFilePath(record.id))).toBe(false)
@@ -138,14 +138,14 @@ describe('deleteImage', () => {
     // delete file manually
     fs.unlinkSync(toFilePath(record.id))
 
-    const result = deleteImage(record.id)
+    const result = await deleteImage(record.id)
 
     expect(result).toBe(true)
     expect(readImageRecord(record.id)).toBeNull()
   })
 
-  it('returns false if image does not exist at all', () => {
-    const result = deleteImage(`${testDir}:nonexistent`)
+  it('returns false if image does not exist at all', async () => {
+    const result = await deleteImage(`${testDir}:nonexistent`)
     expect(result).toBe(false)
   })
 })
@@ -156,7 +156,7 @@ describe('imageExists', () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
     const record = await saveImageFromFile(filePath, testDir)
 
-    const result = imageExists(record.id)
+    const result = await imageExists(record.id)
     expect(result).toBe(true)
   })
 
@@ -166,12 +166,12 @@ describe('imageExists', () => {
 
     fs.unlinkSync(toFilePath(record.id)) // delete file
 
-    const result = imageExists(record.id)
+    const result = await imageExists(record.id)
     expect(result).toBe(true)
   })
 
-  it('returns false if image does not exist anywhere', () => {
-    const result = imageExists(`${testDir}:ghost`)
+  it('returns false if image does not exist anywhere', async () => {
+    const result = await imageExists(`${testDir}:ghost`)
     expect(result).toBe(false)
   })
 })

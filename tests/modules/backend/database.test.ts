@@ -3,7 +3,7 @@ import {
   readImageRecord,
   deleteImageRecord,
   imageRecordExists,
-} from '../../src/backend/database'
+} from '../../../src/backend/database'
 
 import fs from 'fs'
 

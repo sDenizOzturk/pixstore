@@ -30,6 +30,7 @@ export const writeImageRecord = (id: string): BackendImageRecord => {
     ON CONFLICT(id) DO UPDATE SET token=excluded.token`,
   )
   stmt.run(id, token)
+
   return { id, token }
 }
 

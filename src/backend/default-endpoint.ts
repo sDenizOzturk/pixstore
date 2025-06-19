@@ -24,14 +24,16 @@ let server: http.Server
  * - Matches GET requests to `${DEFAULT_ENDPOINT_ROUTE}/:id`
  * - Encodes and returns image payload or returns 404 on errors.
  */
-function requestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
+const requestHandler = (
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+) => {
   // Only allow GET requests
   if (!req.url || req.method !== 'GET') {
     res.writeHead(404).end('Not found')
     return
   }
 
-  // Check for route match `/pixstore-image/<id>`
   const match = req.url.match(`^${DEFAULT_ENDPOINT_ROUTE}/(.+)$`)
   if (
     req.url === DEFAULT_ENDPOINT_ROUTE ||
@@ -42,29 +44,26 @@ function requestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
   }
   if (match) {
     const id = decodeURIComponent(match[1])
-    try {
-      // Retrieve image buffer and token from service
-      const { token, buffer } = getImage(id)
-      // Encode payload into binary format
-      const payload = encodeImagePayload({ token, buffer })
+    ;(async () => {
+      try {
+        const { token, buffer } = await getImage(id)
+        const payload = encodeImagePayload({ token, buffer })
 
-      // Send binary response with appropriate headers
-      res.writeHead(200, {
-        'Content-Type': 'application/octet-stream',
-        'Content-Length': String(payload.length),
-        'X-Token': String(token),
-      })
-      res.end(payload)
-    } catch {
-      // Record or file not found
-      res
-        .writeHead(404, { 'Content-Type': 'text/plain' })
-        .end('Image not found')
-    }
+        res.writeHead(200, {
+          'Content-Type': 'application/octet-stream',
+          'Content-Length': String(payload.length),
+          'X-Token': String(token),
+        })
+        res.end(payload)
+      } catch (err) {
+        res
+          .writeHead(404, { 'Content-Type': 'text/plain' })
+          .end('Image not found')
+      }
+    })()
     return
   }
 
-  // Fallback for all other routes
   res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found')
 }
 
@@ -74,7 +73,7 @@ function requestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
  * - Suppresses console output in test mode.
  * - Uses `unref()` so Jest or other processes can exit cleanly.
  */
-export function startDefaultEndpoint(): void {
+export const startDefaultEndpoint = (): void => {
   if (server) return
 
   server = http
@@ -96,7 +95,7 @@ export function startDefaultEndpoint(): void {
  * - Returns a Promise that resolves when the server has closed.
  * - Safe to call multiple times.
  */
-export function stopDefaultEndpoint(): Promise<void> {
+export const stopDefaultEndpoint = (): Promise<void> => {
   return new Promise((resolve, reject) => {
     if (!server) return resolve()
     server.close((err) => (err ? reject(err) : resolve()))

@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",
-    "image-type": "^4.1.0",
-    "sharp": "^0.34.2"
+    "image-type": "^4.1.0"
   }
 }
