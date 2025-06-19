@@ -1,6 +1,6 @@
-import { createUniqueId, toFilePath } from '../../src/backend/id'
+import { createUniqueId, toFilePath } from '../../../src/backend/id'
 
-import { IMAGE_ROOT_DIR } from '../../src/constants'
+import { IMAGE_ROOT_DIR, IMAGE_EXTENSION } from '../../../src/constants'
 
 describe('createUniqueId', () => {
   it('generates a unique ID as a string', () => {
@@ -29,23 +29,27 @@ describe('createUniqueId', () => {
 describe('toFilePath', () => {
   it('converts a valid image ID to a canonical file path', () => {
     expect(toFilePath('students:123123')).toBe(
-      `${IMAGE_ROOT_DIR}/students/123123.webp`,
+      `${IMAGE_ROOT_DIR}/students/123123${IMAGE_EXTENSION}`,
     )
     expect(toFilePath('photos:abcDEF')).toBe(
-      `${IMAGE_ROOT_DIR}/photos/abcDEF.webp`,
+      `${IMAGE_ROOT_DIR}/photos/abcDEF${IMAGE_EXTENSION}`,
     )
   })
 
   it('handles IDs with missing prefix', () => {
-    expect(toFilePath(':123')).toBe(`${IMAGE_ROOT_DIR}/:123.webp`)
+    expect(toFilePath(':123')).toBe(`${IMAGE_ROOT_DIR}/:123${IMAGE_EXTENSION}`)
   })
 
   it('handles IDs with missing key', () => {
-    expect(toFilePath('students:')).toBe(`${IMAGE_ROOT_DIR}/students:.webp`)
+    expect(toFilePath('students:')).toBe(
+      `${IMAGE_ROOT_DIR}/students:${IMAGE_EXTENSION}`,
+    )
   })
 
   it('handles completely invalid IDs', () => {
-    expect(toFilePath('nonsense')).toBe(`${IMAGE_ROOT_DIR}/nonsense.webp`)
-    expect(toFilePath('')).toBe(`${IMAGE_ROOT_DIR}/.webp`)
+    expect(toFilePath('nonsense')).toBe(
+      `${IMAGE_ROOT_DIR}/nonsense${IMAGE_EXTENSION}`,
+    )
+    expect(toFilePath('')).toBe(`${IMAGE_ROOT_DIR}/${IMAGE_EXTENSION}`)
   })
 })

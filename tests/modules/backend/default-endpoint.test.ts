@@ -1,27 +1,26 @@
 import fs from 'fs'
 import path from 'path'
-import '../../src/backend/default-endpoint' // start server
 import {
   saveImage,
   updateImage,
   deleteImage,
-} from '../../src/backend/image-service'
+} from '../../../src/backend/image-service'
 import {
   DEFAULT_ENDPOINT_HOST,
   DEFAULT_ENDPOINT_PORT,
   DEFAULT_ENDPOINT_ROUTE,
-} from '../../src/constants'
-import { decodeImagePayload } from '../../src/shared/image-encoder'
+} from '../../../src/constants'
+import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import {
   startDefaultEndpoint,
   stopDefaultEndpoint,
-} from '../../src/backend/default-endpoint'
+} from '../../../src/backend/default-endpoint'
 
 beforeAll(() => startDefaultEndpoint())
 afterAll(() => stopDefaultEndpoint())
 
 const BASE_URL = `http://${DEFAULT_ENDPOINT_HOST}:${DEFAULT_ENDPOINT_PORT}`
-const assetDir = path.resolve(__dirname, '..', 'assets')
+const assetDir = path.resolve(__dirname, '../..', 'assets')
 
 describe('Pixstore default endpoint – single file update flow', () => {
   const originalFile = '1-pixel.webp'
@@ -65,7 +64,7 @@ describe('Pixstore default endpoint – single file update flow', () => {
     expect(Number(res.headers.get('x-token'))).toBe(record2.token)
 
     // Delete and ensure 404
-    expect(deleteImage(imageId)).toBe(true)
+    expect(await deleteImage(imageId)).toBe(true)
     res = await fetch(
       `${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}/${encodeURIComponent(imageId)}`,
     )

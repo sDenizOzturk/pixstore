@@ -1,7 +1,7 @@
-import fs from 'fs'
+import * as fs from 'fs/promises'
 import path from 'path'
 import { toFilePath } from './id'
-import { convertImage, isValidFormat, isValidImage } from './image-validation'
+import { isValidImage } from './image-validation'
 
 /**
  * Saves the image buffer to disk at the canonical file path for the given id.
@@ -13,22 +13,24 @@ export const saveImageFile = async (
   if (!isValidImage(data)) {
     throw new Error('Invalid image format')
   }
-  const convertedImage = await convertImage(data)
+
   const filepath = toFilePath(id)
   const dir = path.dirname(filepath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-  fs.writeFileSync(filepath, convertedImage)
+
+  // Ensure directory exists (fs.mkdir from fs/promises supports recursive)
+  await fs.mkdir(dir, { recursive: true })
+
+  // Write file asynchronously
+  await fs.writeFile(filepath, data)
 }
 
 /**
  * Reads the image file for the given id and returns it as a buffer.
  */
-export const readImageFile = (id: string): Buffer => {
+export const readImageFile = async (id: string): Promise<Buffer> => {
   const filepath = toFilePath(id)
-  const buffer = fs.readFileSync(filepath)
-  if (!isValidFormat(buffer)) {
+  const buffer = await fs.readFile(filepath)
+  if (!isValidImage(buffer)) {
     throw new Error('Invalid image file')
   }
   return buffer
@@ -37,18 +39,23 @@ export const readImageFile = (id: string): Buffer => {
 /**
  * Deletes the image file for the given id.
  */
-export const deleteImageFile = (id: string): void => {
+export const deleteImageFile = async (id: string): Promise<void> => {
   const filepath = toFilePath(id)
-  if (fs.existsSync(filepath)) {
-    fs.rmSync(filepath)
+  try {
+    await fs.rm(filepath)
+  } catch (err: any) {
+    if (err.code !== 'ENOENT') {
+      throw err
+    }
+    // If file doesn't exist, ignore
   }
 }
 
 /**
  * Reads the file at the given path and returns its contents as a Buffer.
  */
-export const diskToBuffer = (filepath: string): Buffer => {
-  const buffer = fs.readFileSync(filepath)
+export const diskToBuffer = async (filepath: string): Promise<Buffer> => {
+  const buffer = await fs.readFile(filepath)
   if (!isValidImage(buffer)) {
     throw new Error('Invalid image file')
   }
@@ -58,7 +65,12 @@ export const diskToBuffer = (filepath: string): Buffer => {
 /**
  * Checks if the image file exists on disk for the given ID.
  */
-export const imageFileExists = (id: string): boolean => {
+export const imageFileExists = async (id: string): Promise<boolean> => {
   const filepath = toFilePath(id)
-  return fs.existsSync(filepath)
+  try {
+    await fs.access(filepath)
+    return true
+  } catch {
+    return false
+  }
 }

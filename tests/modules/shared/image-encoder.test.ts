@@ -3,11 +3,11 @@ import path from 'path'
 import {
   encodeImagePayload,
   decodeImagePayload,
-} from '../../src/shared/image-encoder'
-import { EncodedImagePayload } from '../../src/shared/models/encoded-image-payload'
+} from '../../../src/shared/image-encoder'
+import { EncodedImagePayload } from '../../../src/shared/models/encoded-image-payload'
 
 describe('Image Encoder/Decoder – Round-Trip Integrity', () => {
-  const assetDir = path.resolve(__dirname, '..', 'assets')
+  const assetDir = path.resolve(__dirname, '..', '../assets')
 
   const cases: { name: string; token: number; buffer: Uint8Array }[] = [
     { name: 'empty buffer', token: 0, buffer: new Uint8Array([]) },

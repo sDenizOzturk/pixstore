@@ -19,11 +19,11 @@ import { EncodedImagePayload } from '../shared/models/encoded-image-payload'
  * Reads the image buffer from disk and returns it along with the DB token.
  * Throws if the image or database record is not found.
  */
-export const getImage = (id: string): EncodedImagePayload => {
+export const getImage = async (id: string): Promise<EncodedImagePayload> => {
   const record = readImageRecord(id)
   if (!record) throw new Error(`Image record not found: ${id}`)
 
-  const buffer = readImageFile(id)
+  const buffer = await readImageFile(id)
   return { buffer, token: record.token }
 }
 
@@ -65,8 +65,8 @@ export const saveImageFromFile = async (
   filePath: string,
   dir?: string,
 ): Promise<BackendImageRecord> => {
-  const buffer = diskToBuffer(filePath)
-  return saveImage(buffer, dir)
+  const buffer = await diskToBuffer(filePath)
+  return await saveImage(buffer, dir)
 }
 
 /**
@@ -93,19 +93,19 @@ export const updateImageFromFile = async (
   filePath: string,
   dir?: string,
 ): Promise<BackendImageRecord> => {
-  const buffer = diskToBuffer(filePath)
-  return updateImage(id, buffer, dir)
+  const buffer = await diskToBuffer(filePath)
+  return await updateImage(id, buffer, dir)
 }
 
 /**
  * Deletes the image file and corresponding database record for the given ID.
  * Returns true if at least one of them was deleted.
  */
-export const deleteImage = (id: string): boolean => {
+export const deleteImage = async (id: string): Promise<boolean> => {
   let deleted = false
 
-  if (imageFileExists(id)) {
-    deleteImageFile(id)
+  if (await imageFileExists(id)) {
+    await deleteImageFile(id)
     deleted = true
   }
 
@@ -128,6 +128,6 @@ export const getImageRecord = (id: string): BackendImageRecord | null => {
 /**
  * Checks whether the image exists either on disk or in the database.
  */
-export const imageExists = (id: string): boolean => {
-  return imageFileExists(id) || imageRecordExists(id)
+export const imageExists = async (id: string): Promise<boolean> => {
+  return (await imageFileExists(id)) || imageRecordExists(id)
 }

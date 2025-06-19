@@ -1,14 +1,15 @@
 import fs from 'fs'
+import fsAsync from 'fs/promises'
 import path from 'path'
 import {
-  saveImageFile,
-  readImageFile,
   deleteImageFile,
   diskToBuffer,
-} from '../../src/backend/file-storage'
-import { toFilePath } from '../../src/backend/id'
+  readImageFile,
+  saveImageFile,
+} from '../../../src/backend/file-storage'
+import { toFilePath } from '../../../src/backend/id'
 
-const assetsDir = path.resolve(__dirname, '../assets')
+const assetsDir = path.resolve(__dirname, '../../assets')
 const pngBuffer = fs.readFileSync(path.join(assetsDir, '1-pixel.png'))
 const webpBuffer = fs.readFileSync(path.join(assetsDir, '1-pixel.webp'))
 const txtBuffer = fs.readFileSync(path.join(assetsDir, 'no-text.txt'))
@@ -17,9 +18,9 @@ const txtBuffer = fs.readFileSync(path.join(assetsDir, 'no-text.txt'))
 const makeTestId = (suffix: string) => `testfile:${Date.now()}_${suffix}`
 
 describe('file-storage', () => {
-  afterEach(() => {
+  afterEach(async () => {
     // Clean up any test images saved during the test
-    fs.rmSync('pixstore-images', { recursive: true, force: true })
+    await fsAsync.rm('pixstore-images', { recursive: true, force: true })
   })
 
   it('should save and read a valid PNG file (as webp)', async () => {
@@ -27,8 +28,6 @@ describe('file-storage', () => {
     await saveImageFile(id, pngBuffer)
     const readBuffer = await readImageFile(id)
     expect(Buffer.isBuffer(readBuffer)).toBe(true)
-    // The file on disk must be in the target format (e.g. webp)
-    // readImageFile already validates format!
   })
 
   it('should save and read a valid webp file', async () => {
@@ -38,36 +37,36 @@ describe('file-storage', () => {
     expect(Buffer.isBuffer(readBuffer)).toBe(true)
   })
 
-  it('should throw when saving a non-image file', () => {
+  it('should throw when saving a non-image file', async () => {
     const id = makeTestId('txt')
-    expect(saveImageFile(id, txtBuffer)).rejects.toThrow('Invalid image format')
+    await expect(saveImageFile(id, txtBuffer)).rejects.toThrow(
+      'Invalid image format',
+    )
   })
 
-  it('should throw when reading a missing file', () => {
+  it('should throw when reading a missing file', async () => {
     const id = makeTestId('missing')
-    expect(() => readImageFile(id)).toThrow()
+    await expect(readImageFile(id)).rejects.toThrow()
   })
+
   it('should delete a file and fail to read after deletion', async () => {
     const id = makeTestId('delete')
     await saveImageFile(id, pngBuffer)
-    deleteImageFile(id)
-    expect(() => readImageFile(id)).toThrow()
+    await deleteImageFile(id)
+    await expect(readImageFile(id)).rejects.toThrow()
   })
-
   it('diskToBuffer should read and validate a valid image file', async () => {
-    // First, save a test image
     const id = makeTestId('diskbuf')
     await saveImageFile(id, pngBuffer)
     const filepath = toFilePath(id)
-    const buffer = diskToBuffer(filepath)
+    const buffer = await diskToBuffer(filepath) // <-- await ekle
     expect(Buffer.isBuffer(buffer)).toBe(true)
   })
 
-  it('diskToBuffer should throw for a non-image file', () => {
-    // Write a .txt to disk manually
+  it('diskToBuffer should throw for a non-image file', async () => {
     const fakePath = path.join('pixstore-images', 'fake.txt')
-    fs.mkdirSync(path.dirname(fakePath), { recursive: true })
-    fs.writeFileSync(fakePath, txtBuffer)
-    expect(() => diskToBuffer(fakePath)).toThrow('Invalid image file')
+    await fsAsync.mkdir(path.dirname(fakePath), { recursive: true })
+    await fsAsync.writeFile(fakePath, txtBuffer)
+    await expect(diskToBuffer(fakePath)).rejects.toThrow('Invalid image file') // <-- async test
   })
 })
