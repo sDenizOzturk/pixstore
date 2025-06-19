@@ -46,13 +46,13 @@ const requestHandler = (
     const id = decodeURIComponent(match[1])
     ;(async () => {
       try {
-        const { token, buffer } = await getImage(id)
-        const payload = encodeImagePayload({ token, buffer })
+        const image = await getImage(id)
+        const payload = encodeImagePayload(image)
 
         res.writeHead(200, {
           'Content-Type': 'application/octet-stream',
           'Content-Length': String(payload.length),
-          'X-Token': String(token),
+          'X-Token': String(image.token),
         })
         res.end(payload)
       } catch (err) {
