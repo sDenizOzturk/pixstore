@@ -1,4 +1,7 @@
+import { ImageFormat } from './image-format'
+
 export interface EncodedImagePayload {
-  buffer: Buffer | Uint8Array
+  buffer: Uint8Array
   token: number
+  imageFormat: ImageFormat
 }

@@ -14,6 +14,7 @@ import {
 import { createUniqueId } from './id'
 import type { BackendImageRecord } from '../shared/models/backend-image-record'
 import { EncodedImagePayload } from '../shared/models/encoded-image-payload'
+import { getImageFormat, imageFormatToByte } from './image-format'
 
 /**
  * Reads the image buffer from disk and returns it along with the DB token.
@@ -24,7 +25,10 @@ export const getImage = async (id: string): Promise<EncodedImagePayload> => {
   if (!record) throw new Error(`Image record not found: ${id}`)
 
   const buffer = await readImageFile(id)
-  return { buffer, token: record.token }
+  const imageFormat = getImageFormat(buffer)
+  const token = record.token
+
+  return { buffer, imageFormat, token }
 }
 
 /**

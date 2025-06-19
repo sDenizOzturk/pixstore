@@ -1,3 +1,5 @@
+import { ImageFormat } from './shared/models/image-format'
+
 export const IS_TEST = process.env.NODE_ENV === 'test'
 
 export const DATABASE_PATH =
@@ -6,6 +8,10 @@ export const DATABASE_PATH =
     : './.pixstore.sqlite'
 
 export const IMAGE_FORMATS = ['png', 'webp', 'jpg', 'jpeg'] as const
+
+export const IMAGE_FORMAT_TO_BYTE = new Map<ImageFormat, number>()
+
+export const BYTE_TO_IMAGE_FORMAT = new Map<number, ImageFormat>()
 
 export const IMAGE_EXTENSION = '.pixstore-image'
 
