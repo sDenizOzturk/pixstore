@@ -4,7 +4,7 @@ import {
   encodeImagePayload,
   decodeImagePayload,
 } from '../../../src/shared/image-encoder'
-import { EncodedImagePayload } from '../../../src/shared/models/encoded-image-payload'
+import { ImagePayload } from '../../../src/shared/models/image-payload'
 import { ImageFormat } from '../../../src/shared/models/image-format'
 import { IMAGE_FORMATS } from '../../../src/constants'
 
@@ -58,7 +58,7 @@ describe('Image Encoder/Decoder – Round-Trip Integrity', () => {
 
   cases.forEach(({ name, imageFormat, token, buffer }) => {
     it(`should correctly encode & decode for ${name}`, () => {
-      const payload: EncodedImagePayload = { imageFormat, token, buffer }
+      const payload: ImagePayload = { imageFormat, token, buffer }
       const encoded = encodeImagePayload(payload)
       const decoded = decodeImagePayload(encoded)
 

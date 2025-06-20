@@ -21,6 +21,8 @@ export const IMAGE_ROOT_DIR = IS_TEST
 
 export const DEFAULT_ENDPOINT_HOST = IS_TEST ? '127.0.0.1' : '0.0.0.0'
 
+export const SERVER_HOST = IS_TEST ? '127.0.0.1' : 'unknown'
+
 export const DEFAULT_ENDPOINT_PORT = 3001
 
 export const DEFAULT_ENDPOINT_ROUTE = '/pixstore-image'
