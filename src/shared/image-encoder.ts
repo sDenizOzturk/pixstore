@@ -1,14 +1,11 @@
 import { byteToImageFormat, imageFormatToByte } from '../backend/image-format'
-
-import { EncodedImagePayload } from './models/encoded-image-payload'
+import { ImagePayload } from './models/image-payload'
 
 /**
- * Encodes an EncodedImagePayload into a binary Uint8Array.
+ * Encodes an ImagePayload into a binary Uint8Array.
  * Layout: [format (1 byte)] [token (8 bytes, LE)] [buffer]
  */
-export const encodeImagePayload = (
-  payload: EncodedImagePayload,
-): Uint8Array => {
+export const encodeImagePayload = (payload: ImagePayload): Uint8Array => {
   const { imageFormat, token, buffer } = payload
 
   // Encode image format as 1 byte
@@ -27,10 +24,10 @@ export const encodeImagePayload = (
 }
 
 /**
- * Decodes a Uint8Array into an EncodedImagePayload.
+ * Decodes a Uint8Array into an ImagePayload.
  * Expects: [format (1 byte)] [token (8 bytes, LE)] [buffer]
  */
-export const decodeImagePayload = (data: Uint8Array): EncodedImagePayload => {
+export const decodeImagePayload = (data: Uint8Array): ImagePayload => {
   const formatByte = data[0]
   const imageFormat = byteToImageFormat(formatByte)
   const token = Number(
