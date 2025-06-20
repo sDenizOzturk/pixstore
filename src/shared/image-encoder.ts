@@ -1,4 +1,4 @@
-import { byteToImageFormat, imageFormatToByte } from '../backend/image-format'
+import { byteToImageFormat, imageFormatToByte } from '../backend/format-image'
 import { ImagePayload } from './models/image-payload'
 
 /**

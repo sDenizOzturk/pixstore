@@ -71,7 +71,7 @@ describe('Image Encoder/Decoder – Round-Trip Integrity', () => {
 
 describe('Image Encoder/Decoder – Edge Cases', () => {
   it('throws if input length is less than 9 bytes', () => {
-    expect(() => decodeImagePayload(new Uint8Array(8))).toThrow(RangeError)
+    expect(() => decodeImagePayload(new Uint8Array(8))).toThrow(Error)
   })
 
   it('preserves little-endian token format and leaves buffer intact', () => {

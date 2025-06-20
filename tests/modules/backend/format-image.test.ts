@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { IMAGE_FORMATS } from '../../../src/constants'
-import { isValidImage } from '../../../src/backend/image-format'
+import { isValidImage } from '../../../src/backend/format-image'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 const pngBuffer = fs.readFileSync(path.join(assetsDir, '1-pixel.png'))
