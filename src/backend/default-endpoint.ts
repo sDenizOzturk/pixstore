@@ -73,12 +73,12 @@ const requestHandler = (
  * - Suppresses console output in test mode.
  * - Uses `unref()` so Jest or other processes can exit cleanly.
  */
-export const startDefaultEndpoint = (): void => {
+export const startDefaultEndpoint = (port = DEFAULT_ENDPOINT_PORT): void => {
   if (server) return
 
   server = http
     .createServer(requestHandler)
-    .listen(DEFAULT_ENDPOINT_PORT, DEFAULT_ENDPOINT_HOST, () => {
+    .listen(port, DEFAULT_ENDPOINT_HOST, () => {
       if (!IS_TEST) {
         console.log(
           `Pixstore endpoint listening on ${DEFAULT_ENDPOINT_HOST}:${DEFAULT_ENDPOINT_PORT}`,

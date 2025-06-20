@@ -15,10 +15,9 @@ const TEST_IMAGE_PATH = path.join(assetsDir, 'antalya.jpg')
 describe('fetchEncodedImage (integration)', () => {
   let record: BackendImageRecord
   beforeAll(async () => {
-    startDefaultEndpoint()
     record = await saveImageFromFile(TEST_IMAGE_PATH)
   })
-
+  startDefaultEndpoint()
   afterAll(async () => {
     await stopDefaultEndpoint()
   })

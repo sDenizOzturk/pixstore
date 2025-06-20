@@ -6,19 +6,16 @@ import {
 import imageType from 'image-type'
 import { ImageFormat } from '../shared/models/image-format'
 
-// Build mapping tables once on module load.
-IMAGE_FORMATS.forEach((imageFormat: ImageFormat, imageID: number) => {
-  // 0 is reserved for unknown/invalid, so use (imageID + 1)
-  IMAGE_FORMAT_TO_BYTE.set(imageFormat, imageID + 1)
-  BYTE_TO_IMAGE_FORMAT.set(imageID + 1, imageFormat)
-})
-
 /**
  * Converts an ImageFormat string (e.g., 'jpeg', 'png') to its protocol byte value.
  * Returns 0 for unknown/unsupported formats.
  */
 export const imageFormatToByte = (format: ImageFormat): number => {
-  return IMAGE_FORMAT_TO_BYTE.get(format) ?? 0
+  const byte = IMAGE_FORMAT_TO_BYTE.get(format)
+  if (byte === undefined) {
+    throw new Error(`Unsupported image format: ${format}`)
+  }
+  return byte
 }
 
 /**
@@ -26,9 +23,12 @@ export const imageFormatToByte = (format: ImageFormat): number => {
  * Returns the first entry of IMAGE_FORMATS as fallback if the byte is invalid.
  */
 export const byteToImageFormat = (byte: number): ImageFormat => {
-  return BYTE_TO_IMAGE_FORMAT.get(byte) ?? IMAGE_FORMATS[0]
+  const format = BYTE_TO_IMAGE_FORMAT.get(byte)
+  if (format === undefined) {
+    throw new Error(`Unknown image format byte: ${byte}`)
+  }
+  return format
 }
-
 /**
  * Checks if the given buffer is a valid image of supported type.
  */

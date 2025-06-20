@@ -14,7 +14,7 @@ import {
 import { createUniqueId } from './id'
 import type { BackendImageRecord } from '../shared/models/backend-image-record'
 import { ImagePayload } from '../shared/models/image-payload'
-import { getImageFormat } from './image-format'
+import { getImageFormat } from './format-image'
 
 /**
  * Reads the image buffer from disk and returns it along with the DB token.

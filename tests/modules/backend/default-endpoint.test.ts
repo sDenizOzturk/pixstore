@@ -7,8 +7,8 @@ import {
 } from '../../../src/backend/image-service'
 import {
   DEFAULT_ENDPOINT_HOST,
-  DEFAULT_ENDPOINT_PORT,
   DEFAULT_ENDPOINT_ROUTE,
+  DEFAULT_ENDPOINT_PORT,
 } from '../../../src/constants'
 import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import {
@@ -17,7 +17,7 @@ import {
 } from '../../../src/backend/default-endpoint'
 
 beforeAll(() => startDefaultEndpoint())
-afterAll(() => stopDefaultEndpoint())
+afterAll(async () => await stopDefaultEndpoint())
 
 const BASE_URL = `http://${DEFAULT_ENDPOINT_HOST}:${DEFAULT_ENDPOINT_PORT}`
 const assetDir = path.resolve(__dirname, '../..', 'assets')
