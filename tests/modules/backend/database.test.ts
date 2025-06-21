@@ -6,6 +6,7 @@ import {
 } from '../../../src/backend/database'
 
 import fs from 'fs'
+import { sleep } from '../../utils'
 
 const dbPath =
   process.env.NODE_ENV === 'test'
@@ -43,7 +44,7 @@ describe('writeImageRecord - update behavior', () => {
 
   it('overwrites record and generates new token', async () => {
     const initialWrite = writeImageRecord(testId)
-    await new Promise((res) => setTimeout(res, 10)) // ensure timestamp gap
+    await sleep(10) // ensure timestamp gap
     const overwrittenWrite = writeImageRecord(testId)
 
     expect(overwrittenWrite.token).toBeGreaterThan(initialWrite.token)

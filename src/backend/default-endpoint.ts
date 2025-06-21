@@ -101,3 +101,9 @@ export const stopDefaultEndpoint = (): Promise<void> => {
     server.close((err) => (err ? reject(err) : resolve()))
   })
 }
+
+/**
+ * Returns true if the default endpoint server is currently started.
+ * Useful to prevent accidental double-start or for debugging/status checks.
+ */
+export const isServerStarted = (): boolean => !!server
