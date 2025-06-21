@@ -43,3 +43,7 @@ export const FRONTEND_DB_VERSION = 1
 export const IMAGE_STORE_NAME = 'images'
 
 export const TEMP_IMAGE_STORE_NAME = 'images_temp'
+
+export const FRONTEND_IMAGE_CACHE_LIMIT = IS_TEST ? 50 : 1000
+
+export const FRONTEND_CLEANUP_BATCH = IS_TEST ? 5 : 50

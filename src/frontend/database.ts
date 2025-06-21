@@ -5,6 +5,7 @@ import {
   TEMP_IMAGE_STORE_NAME,
 } from '../constants'
 import { FrontendImageRecord } from '../shared/models/frontend-image-record'
+import { cleanupImageCache } from './cleanup'
 
 let database: IDBDatabase | null = null
 
@@ -80,6 +81,8 @@ export const writeImageRecord = async (
     request.onsuccess = () => resolve()
     request.onerror = () => reject(request.error)
   })
+
+  cleanupImageCache()
 }
 
 /**
@@ -115,5 +118,54 @@ export const imageRecordExists = async (id: string): Promise<boolean> => {
     const request = store.get(id)
     request.onsuccess = () => resolve(request.result !== undefined)
     request.onerror = () => reject(request.error)
+  })
+}
+
+/**
+ * Returns the total number of image records in the main IndexedDB store.
+ * Uses the IndexedDB count() operation.
+ */
+export const getImageRecordCount = async (): Promise<number> => {
+  const database = await openDatabase()
+  const transaction = database.transaction(IMAGE_STORE_NAME, 'readonly')
+  const store = transaction.objectStore(IMAGE_STORE_NAME)
+  return await new Promise<number>((resolve, reject) => {
+    const request = store.count()
+    request.onsuccess = () => resolve(request.result)
+    request.onerror = () => reject(request.error)
+  })
+}
+
+/**
+ * Returns all image records from IndexedDB as an array.
+ * Reads the entire contents of the image store.
+ */
+export const getAllImageRecords = async (): Promise<FrontendImageRecord[]> => {
+  const database = await openDatabase()
+  const transaction = database.transaction(IMAGE_STORE_NAME, 'readonly')
+  const store = transaction.objectStore(IMAGE_STORE_NAME)
+  return await new Promise<FrontendImageRecord[]>((resolve, reject) => {
+    const request = store.getAll()
+    request.onsuccess = () => resolve(request.result)
+    request.onerror = () => reject(request.error)
+  })
+}
+
+/**
+ * Deletes multiple image records by their ids in a single transaction.
+ * If any deletion fails, the transaction is rolled back.
+ */
+export const deleteImageRecords = async (ids: string[]): Promise<void> => {
+  const database = await openDatabase()
+  const transaction = database.transaction(IMAGE_STORE_NAME, 'readwrite')
+  const store = transaction.objectStore(IMAGE_STORE_NAME)
+
+  await new Promise<void>((resolve, reject) => {
+    for (const id of ids) {
+      store.delete(id)
+    }
+
+    transaction.oncomplete = () => resolve()
+    transaction.onerror = () => reject(transaction.error)
   })
 }
