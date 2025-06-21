@@ -11,7 +11,7 @@ import {
   readImageRecord,
   writeImageRecord,
 } from './database'
-import { createUniqueId } from './id'
+import { createUniqueId } from './unique-id'
 import type { BackendImageRecord } from '../shared/models/backend-image-record'
 import { ImagePayload } from '../shared/models/image-payload'
 import { getImageFormat } from './format-image'

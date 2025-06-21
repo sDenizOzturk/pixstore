@@ -7,7 +7,7 @@ import { ImageFormat } from '../shared/models/image-format'
  * Converts an image format (e.g. 'png') to the corresponding MIME type.
  * Throws if the format is not supported.
  */
-function imageFormatToMime(format: ImageFormat): string {
+const imageFormatToMime = (format: ImageFormat): string => {
   if (!IMAGE_FORMATS.includes(format))
     throw new Error(`Unsupported image format: ${format}`)
   return `image/${format}`

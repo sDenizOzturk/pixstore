@@ -9,7 +9,7 @@ import {
   updateImageFromFile,
 } from '../../../src/backend/image-service'
 import { readImageRecord } from '../../../src/backend/database'
-import { toFilePath } from '../../../src/backend/id'
+import { toFilePath } from '../../../src/backend/unique-id'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 

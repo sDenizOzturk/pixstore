@@ -11,7 +11,7 @@ import { BackendImageRecord } from '../shared/models/backend-image-record'
  * Retrieves image data using token-based cache validation.
  * Returns the cached Blob if token matches; otherwise fetches, updates, and returns new Blob.
  */
-export async function getImage(record: BackendImageRecord): Promise<Blob> {
+export const getImage = async (record: BackendImageRecord): Promise<Blob> => {
   // Attempt to read the cached image from IndexedDB by ID
   const cached = await readImageRecord(record.id)
 
@@ -37,7 +37,7 @@ export async function getImage(record: BackendImageRecord): Promise<Blob> {
  * Retrieves a Blob from cache if available.
  * Returns null if not found.
  */
-export async function getCachedImage(id: string): Promise<Blob | null> {
+export const getCachedImage = async (id: string): Promise<Blob | null> => {
   const cached = await readImageRecord(id)
   return cached?.data ?? null
 }
@@ -45,6 +45,6 @@ export async function getCachedImage(id: string): Promise<Blob | null> {
 /**
  * Removes a cached image from IndexedDB.
  */
-export async function deleteCachedImage(id: string): Promise<void> {
+export const deleteCachedImage = async (id: string): Promise<void> => {
   await deleteImageRecord(id)
 }

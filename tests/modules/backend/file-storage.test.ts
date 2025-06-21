@@ -7,7 +7,7 @@ import {
   readImageFile,
   saveImageFile,
 } from '../../../src/backend/file-storage'
-import { toFilePath } from '../../../src/backend/id'
+import { toFilePath } from '../../../src/backend/unique-id'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 const pngBuffer = fs.readFileSync(path.join(assetsDir, '1-pixel.png'))

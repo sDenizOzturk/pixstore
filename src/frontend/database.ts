@@ -14,7 +14,7 @@ let database: IDBDatabase | null = null
  * - Creates the temporary image store (`images_temp`) for atomic cleanup/migration.
  * Returns a promise that resolves to the IDBDatabase connection.
  */
-export function openDatabase(): Promise<IDBDatabase> {
+export const openDatabase = (): Promise<IDBDatabase> => {
   if (database) return Promise.resolve(database)
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(FRONTEND_DB_NAME, FRONTEND_DB_VERSION)

@@ -1,4 +1,4 @@
-import { createUniqueId, toFilePath } from '../../../src/backend/id'
+import { createUniqueId, toFilePath } from '../../../src/backend/unique-id'
 
 import { IMAGE_ROOT_DIR, IMAGE_EXTENSION } from '../../../src/constants'
 
