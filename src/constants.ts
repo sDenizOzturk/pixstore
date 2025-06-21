@@ -2,11 +2,6 @@ import { ImageFormat } from './shared/models/image-format'
 
 export const IS_TEST = process.env.NODE_ENV === 'test'
 
-export const DATABASE_PATH =
-  process.env.NODE_ENV === 'test'
-    ? './.pixstore-test.sqlite'
-    : './.pixstore.sqlite'
-
 export const IMAGE_FORMATS = ['png', 'webp', 'jpg', 'jpeg'] as const
 
 export const IMAGE_FORMAT_TO_BYTE = new Map<ImageFormat, number>()
@@ -35,6 +30,11 @@ export const DEFAULT_ENDPOINT_PORT = IS_TEST
   : 3001
 
 export const DEFAULT_ENDPOINT_ROUTE = '/pixstore-image'
+
+export const DATABASE_PATH =
+  process.env.NODE_ENV === 'test'
+    ? './.pixstore-test.sqlite'
+    : './.pixstore.sqlite'
 
 export const FRONTEND_DB_NAME = IS_TEST ? 'pixstore-test' : 'pixstore'
 
