@@ -3,7 +3,7 @@ import {
   writeImageRecord,
   deleteImageRecord,
 } from './database'
-import { fetchEncodedImage } from './default-fetcher'
+import { fetchEncodedImage } from './image-fetcher'
 import { formatEncodedImage } from './format-image'
 import { BackendImageRecord } from '../shared/models/backend-image-record'
 

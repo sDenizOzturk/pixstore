@@ -3,7 +3,7 @@ import {
   stopDefaultEndpoint,
 } from '../../../src/backend/default-endpoint'
 import { saveImageFromFile } from '../../../src/backend/image-service'
-import { fetchEncodedImage } from '../../../src/frontend/default-fetcher'
+import { fetchEncodedImage } from '../../../src/frontend/image-fetcher'
 import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import fs from 'fs/promises'
 import path from 'path'

@@ -28,6 +28,11 @@ export const encodeImagePayload = (payload: ImagePayload): Uint8Array => {
  * Expects: [format (1 byte)] [token (8 bytes, LE)] [buffer]
  */
 export const decodeImagePayload = (data: Uint8Array): ImagePayload => {
+  // Sanity check: payload must include format(1) + token(8)
+  if (data.length < 9) {
+    throw new Error('Invalid payload: too short')
+  }
+
   const formatByte = data[0]
   const imageFormat = byteToImageFormat(formatByte)
   const token = Number(
