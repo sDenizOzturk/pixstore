@@ -4,17 +4,17 @@ import {
   diskToBuffer,
   readImageFile,
   imageFileExists,
-} from './file-storage'
+} from './file-storage.js'
 import {
   deleteImageRecord,
   imageRecordExists,
   readImageRecord,
   writeImageRecord,
-} from './database'
-import { createUniqueId } from './unique-id'
-import type { ImageRecord } from '../models/image-record'
-import { ImagePayload } from '../models/image-payload'
-import { getImageFormat } from './format-image'
+} from './database.js'
+import { createUniqueId } from './unique-id.js'
+import type { ImageRecord } from '../models/image-record.js'
+import type { ImagePayload } from '../models/image-payload.js'
+import { getImageFormat } from './format-image.js'
 
 /**
  * Reads the image buffer from disk and returns it along with the DB token.

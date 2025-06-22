@@ -8,9 +8,9 @@
  */
 
 import http from 'http'
-import { getImage } from './image-service'
-import { encodeImagePayload } from '../shared/image-encoder'
-import { pixstoreConfig, IS_TEST } from '../shared/pixstore-config'
+import { getImage } from './image-service.js'
+import { encodeImagePayload } from '../shared/image-encoder.js'
+import { pixstoreConfig, IS_TEST } from '../shared/pixstore-config.js'
 
 const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
 const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort

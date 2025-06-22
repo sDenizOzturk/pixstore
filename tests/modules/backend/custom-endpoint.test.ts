@@ -1,12 +1,12 @@
-import { customEndpointHelper } from '../../../src/backend/custom-endpoint'
+import { customEndpointHelper } from '../../../src/backend/custom-endpoint.js'
 import {
   startDefaultEndpoint,
   stopDefaultEndpoint,
-} from '../../../src/backend/default-endpoint'
-import { saveImage } from '../../../src/backend/image-service'
+} from '../../../src/backend/default-endpoint.js'
+import { saveImage } from '../../../src/backend/image-service.js'
 import fs from 'fs/promises'
 import path from 'path'
-import { sleep } from '../../utils'
+import { sleep } from '../../utils.js'
 
 const assetDir = path.resolve(__dirname, '../../assets')
 const ANTALYA_PATH = path.join(assetDir, 'antalya.jpg')

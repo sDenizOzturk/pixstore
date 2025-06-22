@@ -1,6 +1,6 @@
-import { pixstoreConfig } from '../shared/pixstore-config'
+import { pixstoreConfig } from '../shared/pixstore-config.js'
 import imageType from 'image-type'
-import { ImageFormat } from '../models/image-format'
+import type { ImageFormat } from '../models/image-format.js'
 
 const BYTE_TO_IMAGE_FORMAT = pixstoreConfig.byteToImageFormat
 const IMAGE_FORMATS = pixstoreConfig.imageFormats

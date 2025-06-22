@@ -1,4 +1,4 @@
-import { ImageFormat } from './image-format'
+import type { ImageFormat } from './image-format.js'
 
 export interface ImagePayload {
   buffer: Uint8Array

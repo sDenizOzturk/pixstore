@@ -2,8 +2,8 @@ import {
   getImageRecordCount,
   getAllImageRecords,
   deleteImageRecords,
-} from './database'
-import { pixstoreConfig } from '../shared/pixstore-config'
+} from './database.js'
+import { pixstoreConfig } from '../shared/pixstore-config.js'
 
 const FRONTEND_IMAGE_CACHE_LIMIT = pixstoreConfig.frontendImageCacheLimit
 const FRONTEND_CLEANUP_BATCH = pixstoreConfig.frontendCleanupBatch

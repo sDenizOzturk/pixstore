@@ -1,6 +1,6 @@
-import { PixstoreBackendConfig } from '../models/pixstore-config'
-import { initPixstore, pixstoreConfig } from '../shared/pixstore-config'
-import { startDefaultEndpoint } from './default-endpoint'
+import type { PixstoreBackendConfig } from '../models/pixstore-config.js'
+import { initPixstore, pixstoreConfig } from '../shared/pixstore-config.js'
+import { startDefaultEndpoint } from './default-endpoint.js'
 
 /**
  * Initializes the Pixstore backend module with the given configuration.
@@ -25,10 +25,10 @@ export {
   deleteImage,
   imageExists,
   getImage,
-} from './image-service'
+} from './image-service.js'
 
 // Export backend image record type
-export type { ImageRecord } from '../models/image-record'
+export type { ImageRecord } from '../models/image-record.js'
 
 // Export helper for creating custom endpoints
-export { customEndpointHelper } from './custom-endpoint'
+export { customEndpointHelper } from './custom-endpoint.js'

@@ -1,6 +1,6 @@
-import { getImage } from './image-service'
-import { encodeImagePayload } from '../shared/image-encoder'
-import { isServerStarted } from './default-endpoint'
+import { getImage } from './image-service.js'
+import { encodeImagePayload } from '../shared/image-encoder.js'
+import { isServerStarted } from './default-endpoint.js'
 
 /**
  * Returns a Pixstore wire format encoded image payload (Uint8Array) for the given image id.

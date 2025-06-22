@@ -3,10 +3,10 @@ import {
   readImageRecord,
   deleteImageRecord,
   imageRecordExists,
-} from '../../../src/backend/database'
+} from '../../../src/backend/database.js'
 
 import fs from 'fs'
-import { sleep } from '../../utils'
+import { sleep } from '../../utils.js'
 
 const dbPath =
   process.env.NODE_ENV === 'test'

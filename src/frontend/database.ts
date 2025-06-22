@@ -1,7 +1,7 @@
-import { FrontendImageRecord } from '../models/frontend-image-record'
-import { cleanupImageCache } from './cleanup'
+import type { FrontendImageRecord } from '../models/frontend-image-record.js'
+import { cleanupImageCache } from './cleanup.js'
 
-import { pixstoreConfig } from '../shared/pixstore-config'
+import { pixstoreConfig } from '../shared/pixstore-config.js'
 
 const FRONTEND_DB_NAME = pixstoreConfig.frontendDbName
 const FRONTEND_DB_VERSION = pixstoreConfig.frontendDbVersion

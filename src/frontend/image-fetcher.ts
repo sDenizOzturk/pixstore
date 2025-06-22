@@ -1,5 +1,5 @@
-import { getCustomImageFetcher } from './custom-image-fetcher'
-import { getDefaultImageFetcher } from './default-image-fetcher'
+import { getCustomImageFetcher } from './custom-image-fetcher.js'
+import { getDefaultImageFetcher } from './default-image-fetcher.js'
 
 /**
  * Fetches a raw encoded image payload using either a custom fetcher
