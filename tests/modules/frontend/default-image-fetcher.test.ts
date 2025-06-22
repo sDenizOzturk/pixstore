@@ -7,7 +7,7 @@ import { fetchEncodedImage } from '../../../src/frontend/image-fetcher'
 import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import fs from 'fs/promises'
 import path from 'path'
-import { ImageRecord } from '../../../src/shared/models/image-record'
+import { ImageRecord } from '../../../src/models/image-record'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 const TEST_IMAGE_PATH = path.join(assetsDir, 'antalya.jpg')

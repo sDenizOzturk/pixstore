@@ -1,5 +1,5 @@
 import { byteToImageFormat, imageFormatToByte } from '../backend/format-image'
-import { ImagePayload } from './models/image-payload'
+import { ImagePayload } from '../models/image-payload'
 
 /**
  * Encodes an ImagePayload into a binary Uint8Array.

@@ -1,4 +1,4 @@
-import { FrontendImageRecord } from '../shared/models/frontend-image-record'
+import { FrontendImageRecord } from '../models/frontend-image-record'
 import { cleanupImageCache } from './cleanup'
 
 import { pixstoreConfig } from '../shared/pixstore-config'

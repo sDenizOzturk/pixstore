@@ -5,7 +5,7 @@ import {
 } from './database'
 import { fetchEncodedImage } from './image-fetcher'
 import { formatEncodedImage } from './format-image'
-import { ImageRecord } from '../shared/models/image-record'
+import { ImageRecord } from '../models/image-record'
 
 /**
  * Retrieves image data using token-based cache validation.
