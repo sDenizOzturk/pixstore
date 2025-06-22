@@ -2,10 +2,10 @@ import {
   readImageRecord,
   writeImageRecord,
   deleteImageRecord,
-} from './database'
-import { fetchEncodedImage } from './image-fetcher'
-import { formatEncodedImage } from './format-image'
-import { ImageRecord } from '../models/image-record'
+} from './database.js'
+import { fetchEncodedImage } from './image-fetcher.js'
+import { formatEncodedImage } from './format-image.js'
+import type { ImageRecord } from '../models/image-record.js'
 
 /**
  * Retrieves image data using token-based cache validation.

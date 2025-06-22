@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises'
 import path from 'path'
-import { toFilePath } from './unique-id'
-import { isValidImage } from './format-image'
+import { toFilePath } from './unique-id.js'
+import { isValidImage } from './format-image.js'
 
 /**
  * Saves the image buffer to disk at the canonical file path for the given id.

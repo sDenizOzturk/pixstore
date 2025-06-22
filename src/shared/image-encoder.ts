@@ -1,5 +1,8 @@
-import { byteToImageFormat, imageFormatToByte } from '../backend/format-image'
-import { ImagePayload } from '../models/image-payload'
+import {
+  byteToImageFormat,
+  imageFormatToByte,
+} from '../backend/format-image.js'
+import type { ImagePayload } from '../models/image-payload.js'
 
 /**
  * Encodes an ImagePayload into a binary Uint8Array.

@@ -1,4 +1,4 @@
-import { pixstoreConfig } from '../shared/pixstore-config'
+import { pixstoreConfig } from '../shared/pixstore-config.js'
 
 const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
 const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute

@@ -1,6 +1,6 @@
-import { PixstoreFrontendConfig } from '../models/pixstore-config'
-import { initPixstore } from '../shared/pixstore-config'
-import { registerCustomImageFetcher } from './custom-image-fetcher'
+import type { PixstoreFrontendConfig } from '../models/pixstore-config.js'
+import { initPixstore } from '../shared/pixstore-config.js'
+import { registerCustomImageFetcher } from './custom-image-fetcher.js'
 
 /**
  * Initializes the Pixstore frontend module with the given configuration.
@@ -16,4 +16,4 @@ export const initPixstoreFrontend = (
   }
 }
 // Export main image service functions for external use
-export { getImage, getCachedImage, deleteCachedImage } from './image-service'
+export { getImage, getCachedImage, deleteCachedImage } from './image-service.js'
