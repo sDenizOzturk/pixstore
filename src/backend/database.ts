@@ -20,12 +20,12 @@ database.exec(
  */
 export const writeImageRecord = (id: string): BackendImageRecord => {
   const token = Date.now()
-  const stmt = database.prepare(
+  const statement = database.prepare(
     `INSERT INTO image_records (id, token)
     VALUES (?, ?)
     ON CONFLICT(id) DO UPDATE SET token=excluded.token`,
   )
-  stmt.run(id, token)
+  statement.run(id, token)
 
   return { id, token }
 }
@@ -46,14 +46,14 @@ export const readImageRecord = (id: string): BackendImageRecord | null => {
  * Does nothing if the ID does not exist.
  */
 export const deleteImageRecord = (id: string) => {
-  const stmt = database.prepare(`DELETE FROM image_records WHERE id = ?`)
-  stmt.run(id)
+  const statement = database.prepare(`DELETE FROM image_records WHERE id = ?`)
+  statement.run(id)
 }
 
 /**
  * Checks whether an image record with the given ID exists.
  */
 export const imageRecordExists = (id: string): boolean => {
-  const stmt = database.prepare(`SELECT 1 FROM image_records WHERE id = ?`)
-  return !!stmt.get(id)
+  const statement = database.prepare(`SELECT 1 FROM image_records WHERE id = ?`)
+  return !!statement.get(id)
 }
