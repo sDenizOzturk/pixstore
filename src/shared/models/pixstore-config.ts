@@ -1,19 +1,29 @@
 import { ImageFormat } from './image-format'
 
-export interface PixstoreConfig {
+export interface PixstoreBackendConfig {
   imageFormats: readonly ImageFormat[]
-  imageFormatToByte: Map<ImageFormat, number>
-  byteToImageFormat: Map<number, ImageFormat>
-  imageExtension: string
   imageRootDir: string
+  databasePath: string
   defaultEndpointHost: string
-  serverHost: string
+  defaultEndpointEnabled: boolean
   defaultEndpointPort: number
   defaultEndpointRoute: string
-  databasePath: string
+}
+
+export interface PixstoreFrontendConfig {
+  imageFormats: readonly ImageFormat[]
   frontendDbName: string
+  serverHost: string
   frontendDbVersion: number
   imageStoreName: string
   frontendImageCacheLimit: number
   frontendCleanupBatch: number
+}
+
+export interface PixstoreConfig
+  extends PixstoreBackendConfig,
+    PixstoreFrontendConfig {
+  imageFormatToByte: Map<ImageFormat, number>
+  byteToImageFormat: Map<number, ImageFormat>
+  imageExtension: string
 }

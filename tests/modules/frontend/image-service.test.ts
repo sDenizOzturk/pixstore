@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto'
 import path from 'path'
 import fs from 'fs/promises'
-import { BackendImageRecord } from '../../../src/shared/models/backend-image-record'
+import { ImageRecord } from '../../../src/shared/models/image-record'
 import {
   getImage,
   getCachedImage,
@@ -26,7 +26,7 @@ const expectBlobsToBeEqual = async (a: Blob, b: Blob) => {
 }
 
 describe('frontend image-service – full flow', () => {
-  let record: BackendImageRecord
+  let record: ImageRecord
 
   beforeAll(async () => {
     startDefaultEndpoint()
