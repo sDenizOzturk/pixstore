@@ -1,5 +1,5 @@
-import { ImageFormat } from './models/image-format'
-import { PixstoreConfig } from './models/pixstore-config'
+import { ImageFormat } from '../models/image-format'
+import { PixstoreConfig } from '../models/pixstore-config'
 
 /**
  * Indicates test environment based on NODE_ENV.

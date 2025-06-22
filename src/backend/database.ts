@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3'
 
-import { ImageRecord } from '../shared/models/image-record'
+import { ImageRecord } from '../models/image-record'
 import { pixstoreConfig } from '../shared/pixstore-config'
 
 const DATABASE_PATH = pixstoreConfig.databasePath

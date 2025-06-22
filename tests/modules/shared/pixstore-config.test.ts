@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto'
 
-import { PixstoreConfig } from '../../../src/shared/models/pixstore-config'
-import { ImageFormat } from '../../../src/shared/models/image-format'
+import { PixstoreConfig } from '../../../src/models/pixstore-config'
+import { ImageFormat } from '../../../src/models/image-format'
 import {
   pixstoreConfig,
   initPixstore,
