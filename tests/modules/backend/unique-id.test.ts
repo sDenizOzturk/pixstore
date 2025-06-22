@@ -1,6 +1,8 @@
 import { createUniqueId, toFilePath } from '../../../src/backend/unique-id'
 
-import { IMAGE_ROOT_DIR, IMAGE_EXTENSION } from '../../../src/constants'
+import { pixstoreConfig } from '../../../src/shared/pixstore-config'
+const IMAGE_ROOT_DIR = pixstoreConfig.imageRootDir
+const IMAGE_EXTENSION = pixstoreConfig.imageExtension
 
 describe('createUniqueId', () => {
   it('generates a unique ID as a string', () => {

@@ -1,5 +1,8 @@
-import { IMAGE_ROOT_DIR, IMAGE_EXTENSION } from '../constants'
+import { pixstoreConfig } from '../shared/pixstore-config'
 import { imageRecordExists } from './database'
+
+const IMAGE_ROOT_DIR = pixstoreConfig.imageRootDir
+const IMAGE_EXTENSION = pixstoreConfig.imageExtension
 
 /**
  * Generates a unique image ID with optional directory prefix.

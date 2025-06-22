@@ -1,10 +1,10 @@
-import {
-  BYTE_TO_IMAGE_FORMAT,
-  IMAGE_FORMATS,
-  IMAGE_FORMAT_TO_BYTE,
-} from '../constants'
+import { pixstoreConfig } from '../shared/pixstore-config'
 import imageType from 'image-type'
 import { ImageFormat } from '../shared/models/image-format'
+
+const BYTE_TO_IMAGE_FORMAT = pixstoreConfig.byteToImageFormat
+const IMAGE_FORMATS = pixstoreConfig.imageFormats
+const IMAGE_FORMAT_TO_BYTE = pixstoreConfig.imageFormatToByte
 
 /**
  * Converts an ImageFormat string (e.g., 'jpeg', 'png') to its protocol byte value.

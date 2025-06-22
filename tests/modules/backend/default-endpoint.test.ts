@@ -5,16 +5,17 @@ import {
   updateImage,
   deleteImage,
 } from '../../../src/backend/image-service'
-import {
-  DEFAULT_ENDPOINT_HOST,
-  DEFAULT_ENDPOINT_ROUTE,
-  DEFAULT_ENDPOINT_PORT,
-} from '../../../src/constants'
+
 import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import {
   startDefaultEndpoint,
   stopDefaultEndpoint,
 } from '../../../src/backend/default-endpoint'
+
+import { pixstoreConfig } from '../../../src/shared/pixstore-config'
+const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
+const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
+const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
 
 beforeAll(() => startDefaultEndpoint())
 afterAll(async () => await stopDefaultEndpoint())

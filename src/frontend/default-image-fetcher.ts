@@ -1,8 +1,8 @@
-import {
-  DEFAULT_ENDPOINT_PORT,
-  DEFAULT_ENDPOINT_ROUTE,
-  SERVER_HOST,
-} from '../constants'
+import { pixstoreConfig } from '../shared/pixstore-config'
+
+const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
+const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
+const SERVER_HOST = pixstoreConfig.defaultEndpointHost
 
 /**
  * Fetches a raw encoded image payload from the Pixstore backend.

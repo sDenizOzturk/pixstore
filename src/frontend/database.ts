@@ -1,11 +1,11 @@
-import {
-  FRONTEND_DB_NAME,
-  FRONTEND_DB_VERSION,
-  IMAGE_STORE_NAME,
-  TEMP_IMAGE_STORE_NAME,
-} from '../constants'
 import { FrontendImageRecord } from '../shared/models/frontend-image-record'
 import { cleanupImageCache } from './cleanup'
+
+import { pixstoreConfig } from '../shared/pixstore-config'
+
+const FRONTEND_DB_NAME = pixstoreConfig.frontendDbName
+const FRONTEND_DB_VERSION = pixstoreConfig.frontendDbVersion
+const IMAGE_STORE_NAME = pixstoreConfig.imageStoreName
 
 let database: IDBDatabase | null = null
 
@@ -25,10 +25,6 @@ export const openDatabase = (): Promise<IDBDatabase> => {
       // Ensure the main image store exists
       if (!database.objectStoreNames.contains(IMAGE_STORE_NAME)) {
         database.createObjectStore(IMAGE_STORE_NAME, { keyPath: 'id' })
-      }
-      // Ensure the temp store exists (used for migration/cleanup)
-      if (!database.objectStoreNames.contains(TEMP_IMAGE_STORE_NAME)) {
-        database.createObjectStore(TEMP_IMAGE_STORE_NAME, { keyPath: 'id' })
       }
     }
     request.onsuccess = () => {

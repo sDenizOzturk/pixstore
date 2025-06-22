@@ -1,8 +1,9 @@
-import { IMAGE_FORMATS } from '../constants'
 import { decodeImagePayload } from '../shared/image-encoder'
 import { FrontendImageRecord } from '../shared/models/frontend-image-record'
 import { ImageFormat } from '../shared/models/image-format'
+import { pixstoreConfig } from '../shared/pixstore-config'
 
+const IMAGE_FORMATS = pixstoreConfig.imageFormats
 /**
  * Converts an image format (e.g. 'png') to the corresponding MIME type.
  * Throws if the format is not supported.

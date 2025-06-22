@@ -7,7 +7,9 @@
 
 import fs from 'fs'
 import path from 'path'
-import { DATABASE_PATH, IMAGE_ROOT_DIR, IS_TEST } from './src/constants'
+import { pixstoreConfig, IS_TEST } from './src/shared/pixstore-config'
+const DATABASE_PATH = pixstoreConfig.databasePath
+const IMAGE_ROOT_DIR = pixstoreConfig.imageRootDir
 
 module.exports = async () => {
   if (!IS_TEST) {

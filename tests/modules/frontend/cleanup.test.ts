@@ -6,11 +6,11 @@ import {
   deleteImageRecords,
 } from '../../../src/frontend/database'
 import { cleanupImageCache } from '../../../src/frontend/cleanup'
-import {
-  FRONTEND_IMAGE_CACHE_LIMIT,
-  FRONTEND_CLEANUP_BATCH,
-} from '../../../src/constants'
+
 import { sleep } from '../../utils'
+import { pixstoreConfig } from '../../../src/shared/pixstore-config'
+const FRONTEND_IMAGE_CACHE_LIMIT = pixstoreConfig.frontendImageCacheLimit
+const FRONTEND_CLEANUP_BATCH = pixstoreConfig.frontendCleanupBatch
 
 const makeRecord = (id: string, offsetMs: number) => ({
   id,
