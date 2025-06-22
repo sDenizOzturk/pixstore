@@ -73,13 +73,16 @@ export const defaultConfig: PixstoreConfig = {
   ...buildFormatMaps(DEFAULT_IMAGE_FORMATS),
   imageExtension: '.pixstore-image',
   imageRootDir: IS_TEST ? 'pixstore-test-images' : 'pixstore-images',
+
+  databasePath: IS_TEST ? './.pixstore-test.sqlite' : './.pixstore.sqlite',
   defaultEndpointHost: IS_TEST ? '127.0.0.1' : '0.0.0.0',
-  serverHost: IS_TEST ? '127.0.0.1' : 'unknown',
+  defaultEndpointEnabled: true,
   defaultEndpointPort: IS_TEST
     ? 10000 + Math.floor(Math.random() * 50000)
     : 3001,
   defaultEndpointRoute: '/pixstore-image',
-  databasePath: IS_TEST ? './.pixstore-test.sqlite' : './.pixstore.sqlite',
+
+  serverHost: IS_TEST ? '127.0.0.1' : 'unknown',
   frontendDbName: IS_TEST ? 'pixstore-test' : 'pixstore',
   frontendDbVersion: 1,
   imageStoreName: 'images',
@@ -98,7 +101,7 @@ export const pixstoreConfig: PixstoreConfig = { ...defaultConfig }
  * Safe to call multiple times; always merges on top of previous config.
  * If imageFormats is changed, encoding maps are automatically updated.
  */
-export function initPixstore(config: Partial<PixstoreConfig> = {}) {
+export const initPixstore = (config: Partial<PixstoreConfig> = {}) => {
   validateConfig(config)
   let maps = {}
   if (config.imageFormats) {

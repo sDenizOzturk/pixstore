@@ -12,7 +12,7 @@ import {
   writeImageRecord,
 } from './database'
 import { createUniqueId } from './unique-id'
-import type { BackendImageRecord } from '../shared/models/backend-image-record'
+import type { ImageRecord } from '../shared/models/image-record'
 import { ImagePayload } from '../shared/models/image-payload'
 import { getImageFormat } from './format-image'
 
@@ -39,7 +39,7 @@ const writeImage = async (
   id: string,
   buffer: Buffer,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   await saveImageFile(id, buffer)
   try {
     return writeImageRecord(id)
@@ -56,7 +56,7 @@ const writeImage = async (
 export const saveImage = async (
   buffer: Buffer,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   const id = createUniqueId(dir)
   return await writeImage(id, buffer, dir)
 }
@@ -68,7 +68,7 @@ export const saveImage = async (
 export const saveImageFromFile = async (
   filePath: string,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   const buffer = await diskToBuffer(filePath)
   return await saveImage(buffer, dir)
 }
@@ -81,7 +81,7 @@ export const updateImage = async (
   id: string,
   buffer: Buffer,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   if (!imageRecordExists(id)) {
     throw new Error(`Image not found: ${id}`)
   }
@@ -96,7 +96,7 @@ export const updateImageFromFile = async (
   id: string,
   filePath: string,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   const buffer = await diskToBuffer(filePath)
   return await updateImage(id, buffer, dir)
 }
@@ -125,7 +125,7 @@ export const deleteImage = async (id: string): Promise<boolean> => {
  * Returns the image record (id + token) from the database.
  * Returns null if not found.
  */
-export const getImageRecord = (id: string): BackendImageRecord | null => {
+export const getImageRecord = (id: string): ImageRecord | null => {
   return readImageRecord(id)
 }
 

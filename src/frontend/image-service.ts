@@ -5,13 +5,13 @@ import {
 } from './database'
 import { fetchEncodedImage } from './image-fetcher'
 import { formatEncodedImage } from './format-image'
-import { BackendImageRecord } from '../shared/models/backend-image-record'
+import { ImageRecord } from '../shared/models/image-record'
 
 /**
  * Retrieves image data using token-based cache validation.
  * Returns the cached Blob if token matches; otherwise fetches, updates, and returns new Blob.
  */
-export const getImage = async (record: BackendImageRecord): Promise<Blob> => {
+export const getImage = async (record: ImageRecord): Promise<Blob> => {
   // Attempt to read the cached image from IndexedDB by ID
   const cached = await readImageRecord(record.id)
 

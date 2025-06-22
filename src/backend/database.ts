@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3'
 
-import { BackendImageRecord } from '../shared/models/backend-image-record'
+import { ImageRecord } from '../shared/models/image-record'
 import { pixstoreConfig } from '../shared/pixstore-config'
 
 const DATABASE_PATH = pixstoreConfig.databasePath
@@ -20,7 +20,7 @@ database.exec(
  * Inserts or updates an image record with the given ID.
  * If the ID already exists, the token is updated.
  */
-export const writeImageRecord = (id: string): BackendImageRecord => {
+export const writeImageRecord = (id: string): ImageRecord => {
   const token = Date.now()
   const statement = database.prepare(
     `INSERT INTO image_records (id, token)
@@ -36,11 +36,11 @@ export const writeImageRecord = (id: string): BackendImageRecord => {
  * Retrieves the image record with the given ID.
  * Returns null if the record does not exist.
  */
-export const readImageRecord = (id: string): BackendImageRecord | null => {
+export const readImageRecord = (id: string): ImageRecord | null => {
   const row = database
     .prepare(`SELECT id, token FROM image_records WHERE id = ?`)
     .get(id)
-  return row ? (row as BackendImageRecord) : null
+  return row ? (row as ImageRecord) : null
 }
 
 /**

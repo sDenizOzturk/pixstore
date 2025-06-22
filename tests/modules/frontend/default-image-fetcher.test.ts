@@ -7,13 +7,13 @@ import { fetchEncodedImage } from '../../../src/frontend/image-fetcher'
 import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import fs from 'fs/promises'
 import path from 'path'
-import { BackendImageRecord } from '../../../src/shared/models/backend-image-record'
+import { ImageRecord } from '../../../src/shared/models/image-record'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 const TEST_IMAGE_PATH = path.join(assetsDir, 'antalya.jpg')
 
 describe('fetchEncodedImage (integration)', () => {
-  let record: BackendImageRecord
+  let record: ImageRecord
   beforeAll(async () => {
     record = await saveImageFromFile(TEST_IMAGE_PATH)
   })
