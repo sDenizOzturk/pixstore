@@ -10,12 +10,11 @@
 import http from 'http'
 import { getImage } from './image-service'
 import { encodeImagePayload } from '../shared/image-encoder'
-import {
-  IS_TEST,
-  DEFAULT_ENDPOINT_HOST,
-  DEFAULT_ENDPOINT_PORT,
-  DEFAULT_ENDPOINT_ROUTE,
-} from '../constants'
+import { pixstoreConfig, IS_TEST } from '../shared/pixstore-config'
+
+const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
+const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
+const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
 
 let server: http.Server
 

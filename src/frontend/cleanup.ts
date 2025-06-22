@@ -3,11 +3,10 @@ import {
   getAllImageRecords,
   deleteImageRecords,
 } from './database'
-import {
-  FRONTEND_IMAGE_CACHE_LIMIT,
-  FRONTEND_CLEANUP_BATCH,
-} from '../constants'
+import { pixstoreConfig } from '../shared/pixstore-config'
 
+const FRONTEND_IMAGE_CACHE_LIMIT = pixstoreConfig.frontendImageCacheLimit
+const FRONTEND_CLEANUP_BATCH = pixstoreConfig.frontendCleanupBatch
 /**
  * Removes the oldest cached images if the cache limit is exceeded.
  * Uses an LRU (least recently used) policy based on the 'lastUsed' field.

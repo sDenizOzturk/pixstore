@@ -1,7 +1,9 @@
 import Database from 'better-sqlite3'
 
 import { BackendImageRecord } from '../shared/models/backend-image-record'
-import { DATABASE_PATH } from '../constants'
+import { pixstoreConfig } from '../shared/pixstore-config'
+
+const DATABASE_PATH = pixstoreConfig.databasePath
 
 // Ensure file exists; better-sqlite3 creates it if missing
 const database = new Database(DATABASE_PATH)

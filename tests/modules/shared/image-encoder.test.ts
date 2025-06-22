@@ -6,7 +6,9 @@ import {
 } from '../../../src/shared/image-encoder'
 import { ImagePayload } from '../../../src/shared/models/image-payload'
 import { ImageFormat } from '../../../src/shared/models/image-format'
-import { IMAGE_FORMATS } from '../../../src/constants'
+import { pixstoreConfig } from '../../../src/shared/pixstore-config'
+
+const IMAGE_FORMATS = pixstoreConfig.imageFormats
 
 describe('Image Encoder/Decoder – Round-Trip Integrity', () => {
   const assetDir = path.resolve(__dirname, '..', '../assets')
