@@ -8,9 +8,14 @@ import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import fs from 'fs/promises'
 import path from 'path'
 import { ImageRecord } from '../../../src/models/image-record'
+import { initializeDatabase } from '../../../src/backend/database'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 const TEST_IMAGE_PATH = path.join(assetsDir, 'antalya.jpg')
+
+beforeAll(() => {
+  initializeDatabase()
+})
 
 describe('fetchEncodedImage (integration)', () => {
   let record: ImageRecord

@@ -13,11 +13,15 @@ import {
 } from '../../../src/backend/default-endpoint'
 
 import { pixstoreConfig } from '../../../src/shared/pixstore-config'
+import { initializeDatabase } from '../../../src/backend/database'
 const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
 const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
 const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
 
-beforeAll(() => startDefaultEndpoint())
+beforeAll(() => {
+  initializeDatabase()
+  startDefaultEndpoint()
+})
 afterAll(async () => await stopDefaultEndpoint())
 
 const BASE_URL = `http://${DEFAULT_ENDPOINT_HOST}:${DEFAULT_ENDPOINT_PORT}`

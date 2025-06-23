@@ -1,9 +1,6 @@
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 import { imageRecordExists } from './database.js'
 
-const IMAGE_ROOT_DIR = pixstoreConfig.imageRootDir
-const IMAGE_EXTENSION = pixstoreConfig.imageExtension
-
 /**
  * Generates a unique image ID with optional directory prefix.
  * Example: students:kth1m9c4n8l2a7vz
@@ -34,6 +31,9 @@ export const createUniqueId = (dir?: string): string => {
  * Example: students:kth1m9c4n8l2a7vz → images/students/kth1m9c4n8l2a7vz.webp
  */
 export const toFilePath = (id: string): string => {
+  const IMAGE_ROOT_DIR = pixstoreConfig.imageRootDir
+  const IMAGE_EXTENSION = pixstoreConfig.imageExtension
+
   const [prefix, key] = id.split(':')
   if (!prefix || !key) return `${IMAGE_ROOT_DIR}/${id}${IMAGE_EXTENSION}`
   return `${IMAGE_ROOT_DIR}/${prefix}/${key}${IMAGE_EXTENSION}`

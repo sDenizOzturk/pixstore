@@ -6,11 +6,16 @@ import {
   updateImage,
 } from '../../src/backend/image-service'
 import fs from 'fs'
+import { initializeDatabase } from '../../src/backend/database'
 
 const assetsDir = path.resolve(__dirname, '../assets')
 const imageFile = path.join(assetsDir, 'antalya.jpg')
 const imageFile2 = path.join(assetsDir, 'vilnius.jpg')
 const N = 100
+
+beforeAll(() => {
+  initializeDatabase()
+})
 
 describe('Pixstore backend highload scenario', () => {
   const prefix = 'stress'
