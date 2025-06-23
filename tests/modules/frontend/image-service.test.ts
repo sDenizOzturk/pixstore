@@ -13,6 +13,7 @@ import {
   stopDefaultEndpoint,
 } from '../../../src/backend/default-endpoint'
 import { saveImage, updateImage } from '../../../src/backend/image-service'
+import { initializeDatabase } from '../../../src/backend/database'
 
 const assetDir = path.resolve(__dirname, '../../assets')
 const ANTALYA_PATH = path.join(assetDir, 'antalya.jpg')
@@ -24,6 +25,9 @@ const expectBlobsToBeEqual = async (a: Blob, b: Blob) => {
   const bufB = Buffer.from(await b.arrayBuffer())
   expect(Buffer.compare(bufA, bufB)).toBe(0)
 }
+beforeAll(() => {
+  initializeDatabase()
+})
 
 describe('frontend image-service – full flow', () => {
   let record: ImageRecord

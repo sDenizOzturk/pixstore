@@ -8,10 +8,17 @@ import {
   saveImageFromFile,
   updateImageFromFile,
 } from '../../../src/backend/image-service'
-import { readImageRecord } from '../../../src/backend/database'
+import {
+  initializeDatabase,
+  readImageRecord,
+} from '../../../src/backend/database'
 import { toFilePath } from '../../../src/backend/unique-id'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
+
+beforeAll(() => {
+  initializeDatabase()
+})
 
 describe('saveImageFromFile', () => {
   const testDir = 'saveImageFromFile'

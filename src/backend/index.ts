@@ -1,5 +1,6 @@
 import type { PixstoreBackendConfig } from '../models/pixstore-config.js'
 import { initPixstore, pixstoreConfig } from '../shared/pixstore-config.js'
+import { initializeDatabase } from './database.js'
 import { startDefaultEndpoint } from './default-endpoint.js'
 
 /**
@@ -10,6 +11,7 @@ export const initPixstoreBackend = (
   config: Partial<PixstoreBackendConfig> = {},
 ) => {
   initPixstore(config)
+  initializeDatabase()
   if (pixstoreConfig.defaultEndpointEnabled) {
     startDefaultEndpoint()
   }

@@ -3,12 +3,12 @@ import type { FrontendImageRecord } from '../models/frontend-image-record.js'
 import type { ImageFormat } from '../models/image-format.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 
-const IMAGE_FORMATS = pixstoreConfig.imageFormats
 /**
  * Converts an image format (e.g. 'png') to the corresponding MIME type.
  * Throws if the format is not supported.
  */
 const imageFormatToMime = (format: ImageFormat): string => {
+  const IMAGE_FORMATS = pixstoreConfig.imageFormats
   if (!IMAGE_FORMATS.includes(format))
     throw new Error(`Unsupported image format: ${format}`)
   return `image/${format}`

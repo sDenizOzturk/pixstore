@@ -1,8 +1,13 @@
+import { initializeDatabase } from '../../../src/backend/database'
 import { createUniqueId, toFilePath } from '../../../src/backend/unique-id'
 
 import { pixstoreConfig } from '../../../src/shared/pixstore-config'
 const IMAGE_ROOT_DIR = pixstoreConfig.imageRootDir
 const IMAGE_EXTENSION = pixstoreConfig.imageExtension
+
+beforeAll(() => {
+  initializeDatabase()
+})
 
 describe('createUniqueId', () => {
   it('generates a unique ID as a string', () => {

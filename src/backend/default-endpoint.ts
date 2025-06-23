@@ -12,10 +12,6 @@ import { getImage } from './image-service.js'
 import { encodeImagePayload } from '../shared/image-encoder.js'
 import { pixstoreConfig, IS_TEST } from '../shared/pixstore-config.js'
 
-const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
-const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
-const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
-
 let server: http.Server
 
 /**
@@ -27,6 +23,8 @@ const requestHandler = (
   req: http.IncomingMessage,
   res: http.ServerResponse,
 ) => {
+  const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
+
   // Only allow GET requests
   if (!req.url || req.method !== 'GET') {
     res.writeHead(404).end('Not found')
@@ -72,12 +70,15 @@ const requestHandler = (
  * - Suppresses console output in test mode.
  * - Uses `unref()` so Jest or other processes can exit cleanly.
  */
-export const startDefaultEndpoint = (port = DEFAULT_ENDPOINT_PORT): void => {
+export const startDefaultEndpoint = (): void => {
+  const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
+  const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
+
   if (server) return
 
   server = http
     .createServer(requestHandler)
-    .listen(port, DEFAULT_ENDPOINT_HOST, () => {
+    .listen(DEFAULT_ENDPOINT_PORT, DEFAULT_ENDPOINT_HOST, () => {
       if (!IS_TEST) {
         console.log(
           `Pixstore endpoint listening on ${DEFAULT_ENDPOINT_HOST}:${DEFAULT_ENDPOINT_PORT}`,

@@ -1,20 +1,31 @@
-import Database from 'better-sqlite3'
+import BetterSqlite3 from 'better-sqlite3'
+import type DatabaseType from 'better-sqlite3'
 
 import type { ImageRecord } from '../models/image-record.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 
-const DATABASE_PATH = pixstoreConfig.databasePath
+let database: InstanceType<typeof BetterSqlite3> | null = null
 
-// Ensure file exists; better-sqlite3 creates it if missing
-const database = new Database(DATABASE_PATH)
+/**
+ * Initializes the SQLite database connection and ensures the required table exists.
+ * Assigns the database instance to the global `database` variable for reuse.
+ * The database file is created automatically if it doesn't exist.
+ * This function should be called once during application startup.
+ */
+export const initializeDatabase = () => {
+  const DATABASE_PATH = pixstoreConfig.databasePath
 
-// Initialize table (once)
-database.exec(
-  `CREATE TABLE IF NOT EXISTS image_records (
+  // Ensure file exists; better-sqlite3 creates it if missing
+  database = new BetterSqlite3(DATABASE_PATH)
+
+  // Initialize table (once)
+  database.exec(
+    `CREATE TABLE IF NOT EXISTS image_records (
     id TEXT PRIMARY KEY,
     token INTEGER NOT NULL
   )`,
-)
+  )
+}
 
 /**
  * Inserts or updates an image record with the given ID.
@@ -22,7 +33,7 @@ database.exec(
  */
 export const writeImageRecord = (id: string): ImageRecord => {
   const token = Date.now()
-  const statement = database.prepare(
+  const statement = database!.prepare(
     `INSERT INTO image_records (id, token)
     VALUES (?, ?)
     ON CONFLICT(id) DO UPDATE SET token=excluded.token`,
@@ -37,7 +48,7 @@ export const writeImageRecord = (id: string): ImageRecord => {
  * Returns null if the record does not exist.
  */
 export const readImageRecord = (id: string): ImageRecord | null => {
-  const row = database
+  const row = database!
     .prepare(`SELECT id, token FROM image_records WHERE id = ?`)
     .get(id)
   return row ? (row as ImageRecord) : null
@@ -48,7 +59,7 @@ export const readImageRecord = (id: string): ImageRecord | null => {
  * Does nothing if the ID does not exist.
  */
 export const deleteImageRecord = (id: string) => {
-  const statement = database.prepare(`DELETE FROM image_records WHERE id = ?`)
+  const statement = database!.prepare(`DELETE FROM image_records WHERE id = ?`)
   statement.run(id)
 }
 
@@ -56,6 +67,8 @@ export const deleteImageRecord = (id: string) => {
  * Checks whether an image record with the given ID exists.
  */
 export const imageRecordExists = (id: string): boolean => {
-  const statement = database.prepare(`SELECT 1 FROM image_records WHERE id = ?`)
+  const statement = database!.prepare(
+    `SELECT 1 FROM image_records WHERE id = ?`,
+  )
   return !!statement.get(id)
 }

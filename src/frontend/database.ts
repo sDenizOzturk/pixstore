@@ -3,10 +3,6 @@ import { cleanupImageCache } from './cleanup.js'
 
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 
-const FRONTEND_DB_NAME = pixstoreConfig.frontendDbName
-const FRONTEND_DB_VERSION = pixstoreConfig.frontendDbVersion
-const IMAGE_STORE_NAME = pixstoreConfig.imageStoreName
-
 let database: IDBDatabase | null = null
 
 /**
@@ -16,6 +12,9 @@ let database: IDBDatabase | null = null
  * Returns a promise that resolves to the IDBDatabase connection.
  */
 export const openDatabase = (): Promise<IDBDatabase> => {
+  const FRONTEND_DB_NAME = pixstoreConfig.frontendDbName
+  const FRONTEND_DB_VERSION = pixstoreConfig.frontendDbVersion
+  const IMAGE_STORE_NAME = pixstoreConfig.imageStoreName
   if (database) return Promise.resolve(database)
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(FRONTEND_DB_NAME, FRONTEND_DB_VERSION)
@@ -42,6 +41,7 @@ export const openDatabase = (): Promise<IDBDatabase> => {
 export const getImageStore = async (
   mode: IDBTransactionMode = 'readonly',
 ): Promise<{ transaction: IDBTransaction; store: IDBObjectStore }> => {
+  const IMAGE_STORE_NAME = pixstoreConfig.imageStoreName
   const database = await openDatabase()
   const transaction = database.transaction(IMAGE_STORE_NAME, mode)
   const store = transaction.objectStore(IMAGE_STORE_NAME)

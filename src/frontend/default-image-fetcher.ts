@@ -1,9 +1,5 @@
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 
-const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
-const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
-const SERVER_HOST = pixstoreConfig.defaultEndpointHost
-
 /**
  * Fetches a raw encoded image payload from the Pixstore backend.
  *
@@ -11,6 +7,9 @@ const SERVER_HOST = pixstoreConfig.defaultEndpointHost
  * the wire format protocol: [1 byte format][8 byte token][N bytes buffer].
  */
 const defaultImageFetcher = async (id: string): Promise<Uint8Array> => {
+  const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
+  const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
+  const SERVER_HOST = pixstoreConfig.defaultEndpointHost
   // Construct the full URL using constants
   const url = `http://${SERVER_HOST}:${DEFAULT_ENDPOINT_PORT}${DEFAULT_ENDPOINT_ROUTE}/${encodeURIComponent(id)}`
 

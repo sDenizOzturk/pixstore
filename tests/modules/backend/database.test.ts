@@ -3,6 +3,7 @@ import {
   readImageRecord,
   deleteImageRecord,
   imageRecordExists,
+  initializeDatabase,
 } from '../../../src/backend/database.js'
 
 import fs from 'fs'
@@ -15,6 +16,7 @@ const dbPath =
 
 describe('firstWrite', () => {
   it('creates storage directory on first write', () => {
+    initializeDatabase()
     writeImageRecord('first-write')
     expect(fs.existsSync(dbPath)).toBe(true)
   })
@@ -24,6 +26,7 @@ describe('readImageRecord', () => {
   const testId = 'read-test'
 
   beforeAll(() => {
+    initializeDatabase()
     writeImageRecord(testId)
   })
 
