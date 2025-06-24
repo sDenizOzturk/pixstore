@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/sDenizOzturk/pixstore/compare/v1.0.0...v1.0.1) (2025-06-24)
+
+
+### Bug Fixes
+
+* restrict npm package contents and add README ([ed2ee1f](https://github.com/sDenizOzturk/pixstore/commit/ed2ee1fe93513aeee6183ff8001e686601002977))
+
 # 1.0.0 (2025-06-24)
 
 
