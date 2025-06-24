@@ -5,7 +5,7 @@ import {
 } from './database.js'
 import { fetchEncodedImage } from './image-fetcher.js'
 import { formatEncodedImage } from './format-image.js'
-import type { ImageRecord } from '../models/image-record.js'
+import type { ImageRecord } from '../types/image-record.js'
 
 /**
  * Retrieves image data using token-based cache validation.

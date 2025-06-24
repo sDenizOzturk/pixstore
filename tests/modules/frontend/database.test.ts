@@ -8,7 +8,7 @@ import {
   deleteImageRecords,
   getImageRecordCount,
 } from '../../../src/frontend/database'
-import { FrontendImageRecord } from '../../../src/models/frontend-image-record'
+import { FrontendImageRecord } from '../../../src/types/frontend-image-record'
 
 const fakeBlob = new Blob(['test'], { type: 'image/png' })
 

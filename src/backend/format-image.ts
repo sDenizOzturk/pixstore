@@ -1,6 +1,6 @@
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 import imageType from 'image-type'
-import type { ImageFormat } from '../models/image-format.js'
+import type { ImageFormat } from '../types/image-format.js'
 
 /**
  * Converts an ImageFormat string (e.g., 'jpeg', 'png') to its protocol byte value.

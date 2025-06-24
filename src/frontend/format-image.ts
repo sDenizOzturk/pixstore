@@ -1,6 +1,6 @@
 import { decodeImagePayload } from '../shared/image-encoder.js'
-import type { FrontendImageRecord } from '../models/frontend-image-record.js'
-import type { ImageFormat } from '../models/image-format.js'
+import type { FrontendImageRecord } from '../types/frontend-image-record.js'
+import type { ImageFormat } from '../types/image-format.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 
 /**

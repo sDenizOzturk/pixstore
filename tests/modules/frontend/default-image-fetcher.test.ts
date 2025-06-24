@@ -7,7 +7,7 @@ import { fetchEncodedImage } from '../../../src/frontend/image-fetcher'
 import { decodeImagePayload } from '../../../src/shared/image-encoder'
 import fs from 'fs/promises'
 import path from 'path'
-import { ImageRecord } from '../../../src/models/image-record'
+import { ImageRecord } from '../../../src/types/image-record'
 import { initializeDatabase } from '../../../src/backend/database'
 
 const assetsDir = path.resolve(__dirname, '../../assets')

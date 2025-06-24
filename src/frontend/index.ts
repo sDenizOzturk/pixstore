@@ -1,4 +1,4 @@
-import type { PixstoreFrontendConfig } from '../models/pixstore-config.js'
+import type { PixstoreFrontendConfig } from '../types/pixstore-config.js'
 import { initPixstore } from '../shared/pixstore-config.js'
 import { registerCustomImageFetcher } from './custom-image-fetcher.js'
 

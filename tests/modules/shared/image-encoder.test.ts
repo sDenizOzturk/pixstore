@@ -4,8 +4,8 @@ import {
   encodeImagePayload,
   decodeImagePayload,
 } from '../../../src/shared/image-encoder'
-import { ImagePayload } from '../../../src/models/image-payload'
-import { ImageFormat } from '../../../src/models/image-format'
+import { ImagePayload } from '../../../src/types/image-payload'
+import { ImageFormat } from '../../../src/types/image-format'
 import { pixstoreConfig } from '../../../src/shared/pixstore-config'
 
 const IMAGE_FORMATS = pixstoreConfig.imageFormats

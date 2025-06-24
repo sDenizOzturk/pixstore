@@ -1,7 +1,6 @@
 import BetterSqlite3 from 'better-sqlite3'
-import type DatabaseType from 'better-sqlite3'
 
-import type { ImageRecord } from '../models/image-record.js'
+import type { ImageRecord } from '../types/image-record.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 
 let database: InstanceType<typeof BetterSqlite3> | null = null

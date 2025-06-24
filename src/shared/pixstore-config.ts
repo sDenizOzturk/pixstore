@@ -1,5 +1,5 @@
-import type { ImageFormat } from '../models/image-format.js'
-import type { PixstoreConfig } from '../models/pixstore-config.js'
+import type { ImageFormat } from '../types/image-format.js'
+import type { PixstoreConfig } from '../types/pixstore-config.js'
 
 /**
  * Indicates test environment based on NODE_ENV.
@@ -82,12 +82,13 @@ export const defaultConfig: PixstoreConfig = {
     : 3001,
   defaultEndpointRoute: '/pixstore-image',
 
-  serverHost: IS_TEST ? '127.0.0.1' : 'unknown',
+  backendApiHost: IS_TEST ? '127.0.0.1' : 'unknown',
   frontendDbName: IS_TEST ? 'pixstore-test' : 'pixstore',
   frontendDbVersion: 1,
   imageStoreName: 'images',
   frontendImageCacheLimit: IS_TEST ? 50 : 1000,
   frontendCleanupBatch: IS_TEST ? 5 : 50,
+  accessControlAllowOrigin: '*',
 }
 
 /**

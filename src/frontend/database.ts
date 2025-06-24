@@ -1,4 +1,4 @@
-import type { FrontendImageRecord } from '../models/frontend-image-record.js'
+import type { FrontendImageRecord } from '../types/frontend-image-record.js'
 import { cleanupImageCache } from './cleanup.js'
 
 import { pixstoreConfig } from '../shared/pixstore-config.js'
