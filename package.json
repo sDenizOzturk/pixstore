@@ -28,6 +28,10 @@
     "README.md",
     "LICENSE"
   ],
+  "exports": {
+    "./backend": "./dist/backend/index.js",
+    "./frontend": "./dist/frontend/index.js"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && npm run test:build",
