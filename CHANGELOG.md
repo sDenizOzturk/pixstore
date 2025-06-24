@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/sDenizOzturk/pixstore/compare/v1.0.1...v1.0.2) (2025-06-24)
+
+
+### Bug Fixes
+
+* enable direct import via 'pixstore/backend' and 'pixstore/frontend' ([a5e14e1](https://github.com/sDenizOzturk/pixstore/commit/a5e14e129d4d2511c3b4bc7ba4090fceab284e65))
+
 ## [1.0.1](https://github.com/sDenizOzturk/pixstore/compare/v1.0.0...v1.0.1) (2025-06-24)
 
 
