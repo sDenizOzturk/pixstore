@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto'
 import path from 'path'
 import fs from 'fs/promises'
-import { ImageRecord } from '../../../src/models/image-record'
+import { ImageRecord } from '../../../src/types/image-record'
 import {
   getImage,
   getCachedImage,

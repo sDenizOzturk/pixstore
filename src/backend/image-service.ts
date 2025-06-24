@@ -12,8 +12,8 @@ import {
   writeImageRecord,
 } from './database.js'
 import { createUniqueId } from './unique-id.js'
-import type { ImageRecord } from '../models/image-record.js'
-import type { ImagePayload } from '../models/image-payload.js'
+import type { ImageRecord } from '../types/image-record.js'
+import type { ImagePayload } from '../types/image-payload.js'
 import { getImageFormat } from './format-image.js'
 
 /**

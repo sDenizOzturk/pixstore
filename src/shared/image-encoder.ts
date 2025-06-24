@@ -2,7 +2,7 @@ import {
   byteToImageFormat,
   imageFormatToByte,
 } from '../backend/format-image.js'
-import type { ImagePayload } from '../models/image-payload.js'
+import type { ImagePayload } from '../types/image-payload.js'
 
 /**
  * Encodes an ImagePayload into a binary Uint8Array.

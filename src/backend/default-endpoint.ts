@@ -23,6 +23,17 @@ const requestHandler = (
   req: http.IncomingMessage,
   res: http.ServerResponse,
 ) => {
+  const ACCESS_CONTROL_ALLOW_ORIGIN = pixstoreConfig.accessControlAllowOrigin
+
+  res.setHeader('Access-Control-Allow-Origin', ACCESS_CONTROL_ALLOW_ORIGIN)
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  // handle preflight
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204)
+    return res.end()
+  }
+
   const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
 
   // Only allow GET requests
