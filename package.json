@@ -23,6 +23,11 @@
     "indexeddb",
     "sqlite"
   ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && npm run test:build",
