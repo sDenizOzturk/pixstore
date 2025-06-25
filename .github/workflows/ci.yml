@@ -16,8 +16,8 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm run build
       - run: npm test
+      - run: npm run prepare
 
       - name: Release (semantic-release)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

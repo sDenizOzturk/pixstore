@@ -39,7 +39,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:build": "node tests/post-build/index.mjs",
-    "prepare": "npm run build"
+    "prepare": "npm run build && cp README.md LICENSE package.json dist/"
   },
   "main": "index.js",
   "type": "module",
