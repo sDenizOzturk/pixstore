@@ -2,7 +2,7 @@
   "name": "pixstore",
   "version": "1.0.2",
   "description": "Minimalist Node.js & browser image storage/cache library. Fast, reliable, and pluggable.",
-  "author": "Deniz Öztürk <deniz@sdenizozturk.com.tr>",
+  "author": "Deniz Öztürk <serhatdenizozturk@hotmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -24,14 +24,13 @@
     "sqlite"
   ],
   "files": [
-    "dist",
+    "backend",
+    "frontend",
+    "shared",
+    "types",
     "README.md",
     "LICENSE"
   ],
-  "exports": {
-    "./backend": "./dist/backend/index.js",
-    "./frontend": "./dist/frontend/index.js"
-  },
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
@@ -41,7 +40,6 @@
     "test:build": "node tests/post-build/index.mjs",
     "prepare-publish": "cp README.md LICENSE package.json dist/"
   },
-  "main": "index.js",
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.29.0",
