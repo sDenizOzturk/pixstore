@@ -5,6 +5,13 @@
 
 * switch to dist-based publishing with semantic-release ([a67fddc](https://github.com/sDenizOzturk/pixstore/commit/a67fddc74ff46c20f2b74d889eca1481bd6cad39))
 
+# [1.1.0](https://github.com/sDenizOzturk/pixstore/compare/v1.0.2...v1.1.0) (2025-06-25)
+
+
+### Features
+
+* switch to dist-based publishing with semantic-release ([a67fddc](https://github.com/sDenizOzturk/pixstore/commit/a67fddc74ff46c20f2b74d889eca1481bd6cad39))
+
 ## [1.0.2](https://github.com/sDenizOzturk/pixstore/compare/v1.0.1...v1.0.2) (2025-06-24)
 
 
