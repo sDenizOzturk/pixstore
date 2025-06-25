@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/sDenizOzturk/pixstore/compare/v1.1.0...v1.1.1) (2025-06-25)
+
+
+### Bug Fixes
+
+* include all folders in published package ([32e32a8](https://github.com/sDenizOzturk/pixstore/commit/32e32a8a93dbc24530bbe44f4e8acf3057254f15))
+
 # [1.1.0](https://github.com/sDenizOzturk/pixstore/compare/v1.0.2...v1.1.0) (2025-06-25)
 
 
