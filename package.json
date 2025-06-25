@@ -34,12 +34,12 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc && npm run test:build",
+    "build": "npm run clean && tsc",
     "build:watch": "npm run clean && tsc -w",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:build": "node tests/post-build/index.mjs",
-    "prepare": "npm run build && cp README.md LICENSE package.json dist/"
+    "prepare-publish": "cp README.md LICENSE package.json dist/"
   },
   "main": "index.js",
   "type": "module",
