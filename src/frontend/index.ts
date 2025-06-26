@@ -1,6 +1,7 @@
 import type { PixstoreFrontendConfig } from '../types/pixstore-config.js'
 import { initPixstore } from '../shared/pixstore-config.js'
 import { registerCustomImageFetcher } from './custom-image-fetcher.js'
+import type { CustomImageFetcher } from '../types/custom-image-fetcher.js'
 
 /**
  * Initializes the Pixstore frontend module with the given configuration.
@@ -8,12 +9,10 @@ import { registerCustomImageFetcher } from './custom-image-fetcher.js'
  */
 export const initPixstoreFrontend = (
   config: Partial<PixstoreFrontendConfig> = {},
-  customImageFetcher?: (id: string) => Promise<Uint8Array>,
+  customImageFetcher?: CustomImageFetcher,
 ) => {
   initPixstore(config)
-  if (customImageFetcher) {
-    registerCustomImageFetcher(customImageFetcher)
-  }
+  registerCustomImageFetcher(customImageFetcher)
 }
 // Export main image service functions for external use
 export { getImage, getCachedImage, deleteCachedImage } from './image-service.js'
