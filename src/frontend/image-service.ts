@@ -11,7 +11,10 @@ import type { ImageRecord } from '../types/image-record.js'
  * Retrieves image data using token-based cache validation.
  * Returns the cached Blob if token matches; otherwise fetches, updates, and returns new Blob.
  */
-export const getImage = async (record: ImageRecord): Promise<Blob> => {
+export const getImage = async (
+  record: ImageRecord,
+  context?: any,
+): Promise<Blob> => {
   // Attempt to read the cached image from IndexedDB by ID
   const cached = await readImageRecord(record.id)
 
@@ -20,8 +23,10 @@ export const getImage = async (record: ImageRecord): Promise<Blob> => {
     return cached.data
   }
 
+  console.log('FROM-API-context: ', context)
+
   // Otherwise, fetch the latest encoded image from the backend
-  const encoded = await fetchEncodedImage(record.id)
+  const encoded = await fetchEncodedImage(record.id, context)
 
   // Decode and convert the encoded payload into a usable image record
   const formatted = formatEncodedImage(record.id, encoded)

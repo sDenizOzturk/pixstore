@@ -1,14 +1,16 @@
+import type { CustomImageFetcher } from '../types/custom-image-fetcher.js'
+
 /**
  * Stores the current custom fetcher function if registered by the user.
  */
-let customImageFetcher: ((id: string) => Promise<Uint8Array>) | undefined
+let customImageFetcher: CustomImageFetcher | undefined
 
 /**
  * Registers a custom fetcher function for image retrieval.
  * When set, this function will be used instead of the default fetcher.
  */
 export const registerCustomImageFetcher = (
-  fetcher: (id: string) => Promise<Uint8Array>,
+  fetcher: CustomImageFetcher | undefined,
 ) => {
   customImageFetcher = fetcher
 }
