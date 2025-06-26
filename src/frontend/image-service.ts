@@ -23,8 +23,6 @@ export const getImage = async (
     return cached.data
   }
 
-  console.log('FROM-API-context: ', context)
-
   // Otherwise, fetch the latest encoded image from the backend
   const encoded = await fetchEncodedImage(record.id, context)
 

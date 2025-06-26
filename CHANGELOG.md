@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/sDenizOzturk/pixstore/compare/v1.1.1...v1.2.0) (2025-06-26)
+
+
+### Features
+
+* support optional context parameter in custom image fetcher ([2e8676d](https://github.com/sDenizOzturk/pixstore/commit/2e8676dacf911179112e67837581d4eb45fa3e48)), closes [#48](https://github.com/sDenizOzturk/pixstore/issues/48)
+
 ## [1.1.1](https://github.com/sDenizOzturk/pixstore/compare/v1.1.0...v1.1.1) (2025-06-25)
 
 
