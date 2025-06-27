@@ -1,3 +1,18 @@
+# [1.2.0](https://github.com/sDenizOzturk/pixstore/compare/v1.1.1...v1.2.0) (2025-06-27)
+
+
+### Bug Fixes
+
+* bump version to 1.2.2 ([287a9af](https://github.com/sDenizOzturk/pixstore/commit/287a9af7c9f8e08855401b04ec652beb59aecc31))
+* retrigger release ([1a31bca](https://github.com/sDenizOzturk/pixstore/commit/1a31bcab515a7aab24052088be19cdeaa1c64da9))
+* retrigger release ([a50531a](https://github.com/sDenizOzturk/pixstore/commit/a50531aa34ae32c8db14298897ac043f6e383f86))
+* strictly enforce frontend image cache limit and cleanup under parallel fetches ([bb88c8d](https://github.com/sDenizOzturk/pixstore/commit/bb88c8d19d4cd9a095e9994d914ddc69b534d6d7)), closes [#50](https://github.com/sDenizOzturk/pixstore/issues/50)
+
+
+### Features
+
+* support optional context parameter in custom image fetcher ([2e8676d](https://github.com/sDenizOzturk/pixstore/commit/2e8676dacf911179112e67837581d4eb45fa3e48)), closes [#48](https://github.com/sDenizOzturk/pixstore/issues/48)
+
 # [1.2.0](https://github.com/sDenizOzturk/pixstore/compare/v1.1.1...v1.2.0) (2025-06-26)
 
 
