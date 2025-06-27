@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/sDenizOzturk/pixstore/compare/v1.2.0...v1.2.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* trigger release ([5965d40](https://github.com/sDenizOzturk/pixstore/commit/5965d403dfb81e860eec244ee54a1177151ec2c7))
+
 # [1.2.0](https://github.com/sDenizOzturk/pixstore/compare/v1.1.1...v1.2.0) (2025-06-27)
 
 
