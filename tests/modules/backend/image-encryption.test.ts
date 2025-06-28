@@ -2,7 +2,7 @@ import { encryptImage } from '../../../src/backend/image-encryption'
 import { createDecipheriv } from 'crypto'
 import { readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
-import { AES_ALGORITHM } from '../../../src/shared/constants'
+import { BACKEND_AES_ALGORITHM } from '../../../src/shared/constants'
 
 const assetsDir = join(__dirname, '../../assets')
 
@@ -36,7 +36,7 @@ describe('encryptImage (with real assets)', () => {
 
       // Decrypt (for test only)
       const { key, iv, tag } = imageEncryptionMeta
-      const decipher = createDecipheriv(AES_ALGORITHM, key, iv)
+      const decipher = createDecipheriv(BACKEND_AES_ALGORITHM, key, iv)
       decipher.setAuthTag(tag)
       const plaintext = Buffer.concat([
         decipher.update(encryptedImage),

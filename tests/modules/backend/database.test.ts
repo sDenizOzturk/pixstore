@@ -7,7 +7,7 @@ import {
 } from '../../../src/backend/database.js'
 
 import fs from 'fs'
-import { sleep } from '../../utils.js'
+import { sleep } from '../../utils'
 
 const dbPath =
   process.env.NODE_ENV === 'test'

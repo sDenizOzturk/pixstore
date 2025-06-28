@@ -3,7 +3,7 @@ import type { EncryptedImageResult } from '../types/encrypted-image-result.js'
 import {
   AES_KEY_SIZE,
   AES_IV_SIZE,
-  AES_ALGORITHM,
+  BACKEND_AES_ALGORITHM,
 } from '../shared/constants.js'
 
 /**
@@ -29,7 +29,7 @@ const encrypt = (
   key: Buffer,
 ): { encrypted: Buffer; iv: Buffer; tag: Buffer } => {
   const iv = generateIV()
-  const cipher = createCipheriv(AES_ALGORITHM, key, iv)
+  const cipher = createCipheriv(BACKEND_AES_ALGORITHM, key, iv)
   const encrypted = Buffer.concat([cipher.update(plaintext), cipher.final()])
   const tag = cipher.getAuthTag()
   return { encrypted, iv, tag }
