@@ -10,7 +10,8 @@
 import http from 'http'
 import { getImage } from './image-service.js'
 import { encodeImagePayload } from '../shared/image-encoder.js'
-import { pixstoreConfig, IS_TEST } from '../shared/pixstore-config.js'
+import { pixstoreConfig } from '../shared/pixstore-config.js'
+import { IS_TEST } from '../shared/constants.js'
 
 let server: http.Server
 

@@ -16,9 +16,9 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm test
       - run: npm run build
       - run: npm run test:build
+      - run: npm test
       - run: npm run prepare-publish
 
       - name: Release (semantic-release)

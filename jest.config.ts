@@ -8,5 +8,5 @@ export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  globalTeardown: '<rootDir>/jest.teardown.ts',
+  globalTeardown: '<rootDir>/dist/jest.teardown.js',
 }
