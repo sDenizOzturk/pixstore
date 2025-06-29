@@ -1,10 +1,6 @@
-// Import Pixstore frontend image retrieval function and types.
-// getImage securely fetches and decodes images using Pixstore's protocol.
-
-import { getImage } from '../../../../../../dist/frontend'
-import type { ImageRecord } from '../../../../../../dist/types'
-//import { getImage } from "pixstore/frontend/";
-//import type { ImageRecord } from "pixstore/types";
+// Import Pixstore backend initializer from the official package.
+import { getImage } from 'pixstore/frontend/'
+import type { ImageRecord } from 'pixstore/types'
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../store/auth'

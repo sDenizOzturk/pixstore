@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
 import { getPlayerById, getGeneralManagerById } from '../store/in-memory-db'
-// Import Pixstore backend initializer from the official package.
-import { customEndpointHelper } from '../../../../../dist/backend'
-//import { customEndpointHelper } from "pixstore/backend";
+// Import Pixstore from the official package.
+import { customEndpointHelper } from 'pixstore/backend'
 import { SecureRequest } from '../middleware/auth'
 
 export const getPlayerImage = async (

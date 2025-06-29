@@ -1,6 +1,5 @@
 // Import Pixstore backend initializer from the official package.
-import { initPixstoreFrontend } from '../../../../dist/frontend'
-//import { initPixstoreFrontend } from "pixstore/frontend";
+import { initPixstoreFrontend } from 'pixstore/frontend'
 import { useAuth } from './store/auth'
 import { API_BASE } from './constants'
 

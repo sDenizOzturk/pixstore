@@ -1,6 +1,5 @@
-// Import Pixstore backend initializer from the official package.
-import { getImageRecord } from '../../../../../dist/backend'
-//import { getImageRecord } from "pixstore/backend";
+// Import Pixstore from the official package.
+import { getImageRecord } from 'pixstore/backend'
 
 import { getPlayerById, getGeneralManagerById } from '../store/in-memory-db'
 import { Request, Response } from 'express'

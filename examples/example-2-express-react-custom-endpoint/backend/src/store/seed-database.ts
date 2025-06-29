@@ -1,6 +1,5 @@
 // Import Pixstore backend initializer from the official package.
-import { saveImage } from '../../../../../dist/backend'
-//import { saveImage } from "pixstore/backend";
+import { saveImage } from 'pixstore/backend'
 
 import {
   addTeam,

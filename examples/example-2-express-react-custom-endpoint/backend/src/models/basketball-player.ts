@@ -1,5 +1,5 @@
-import type { ImageRecord } from '../../../../../dist/types'
-//import { ImageRecord } from "pixstore/types";
+// Import Pixstore from the official package.
+import { ImageRecord } from 'pixstore/types'
 
 export interface BasketballPlayerRecord {
   id: number
