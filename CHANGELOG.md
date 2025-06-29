@@ -1,3 +1,26 @@
+# [2.0.0](https://github.com/sDenizOzturk/pixstore/compare/v1.2.1...v2.0.0) (2025-06-29)
+
+
+### Features
+
+* add backend AES-GCM image encryption ([b2c04d9](https://github.com/sDenizOzturk/pixstore/commit/b2c04d941acdadeb48b292a74ac5b0e0e2546112))
+* add frontend AES-GCM image decryption and Node test polyfill ([1297be7](https://github.com/sDenizOzturk/pixstore/commit/1297be7faa076877c7adb8f9eddbdefeb8cb87af))
+* apply end-to-end AES-GCM image encryption and decryption across backend and frontend ([639a81f](https://github.com/sDenizOzturk/pixstore/commit/639a81fbf26f51848b9a342d9854678e5ea807dd))
+* introduce AES-GCM encrypted image support across backend and frontend ([dd63e8c](https://github.com/sDenizOzturk/pixstore/commit/dd63e8c85ef5378f206914d2d1bba5a86f7bfdcc))
+
+
+### BREAKING CHANGES
+
+* replaces all raw image operations with AES-256-GCM encryption
+
+- Implements end-to-end encryption for all image save/load operations
+- Introduces per-image key, IV, and authentication tag
+- Refactors backend save/load logic and wire protocol to use encrypted payloads
+- Adds decryptImage() on frontend with browser-compatible AES support
+- Updates examples to use encrypted records (meta.key, meta.iv, meta.tag)
+- Removes deprecated types and merges payload formats
+- All image operations now require encryption-aware records and logic
+
 ## [1.2.1](https://github.com/sDenizOzturk/pixstore/compare/v1.2.0...v1.2.1) (2025-06-27)
 
 
