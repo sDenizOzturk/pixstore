@@ -1,29 +1,28 @@
-import { formatEncodedImage } from '../../../src/frontend/format-image'
-import { encodeImagePayload } from '../../../src/shared/image-encoder'
+import { decryptedPayloadToBlob } from '../../../src/frontend/format-image'
+import type { DecryptedImagePayload } from '../../../src/types/decrypted-image-payload.js'
+import { ImageFormat } from '../../../src/types/image-format.js'
 
-describe('formatEncodedImage', () => {
-  it('decodes valid encoded payload and returns a FrontendImageRecord', () => {
-    // Dummy data: png, token=42, buffer=[1,2,3]
-    const payload = encodeImagePayload({
-      imageFormat: 'png',
-      token: 42,
-      buffer: new Uint8Array([1, 2, 3]),
-    })
-    const id = 'test-id'
-    const record = formatEncodedImage(id, payload)
+// Helper to create a dummy DecryptedImagePayload
+const createPayload = (
+  format: ImageFormat,
+  data: number[],
+): DecryptedImagePayload => ({
+  format,
+  buffer: new Uint8Array(data),
+})
 
-    expect(record.id).toBe(id)
-    expect(record.token).toBe(42)
-    expect(record.data).toBeInstanceOf(Blob)
-    expect(record.data.type).toBe('image/png')
-    expect(record.lastUsed).toBeGreaterThan(0)
+describe('decryptedPayloadToBlob', () => {
+  it('returns a Blob with the correct MIME type for a supported format', () => {
+    const payload = createPayload('png', [1, 2, 3])
+    const blob = decryptedPayloadToBlob(payload)
+    expect(blob).toBeInstanceOf(Blob)
+    expect(blob.type).toBe('image/png')
   })
 
-  it('throws for unsupported image format', () => {
-    const fakePayload = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 1])
-
-    expect(() => formatEncodedImage('bad-id', fakePayload)).toThrow(
-      'Unknown image format byte: 0',
+  it('throws an error for an unsupported image format', () => {
+    const payload = createPayload('bmp', [1, 2, 3])
+    expect(() => decryptedPayloadToBlob(payload)).toThrow(
+      'Unsupported image format: bmp',
     )
   })
 })

@@ -1,24 +1,24 @@
 import '../../utils/frontend-crypto-polyfill'
 
-import { decryptImage } from '../../../src/frontend/image-decryption'
-import { encryptImage } from '../../../src/backend/image-encryption'
+import { decryptImage } from '../../../src/frontend/image-decryption.js'
+import { encryptImage } from '../../../src/backend/image-encryption.js'
 import fs from 'fs'
 import path from 'path'
-import type { EncryptedImagePayload } from '../../../src/types/encrypted-image-payload'
+import type { EncryptedImagePayload } from '../../../src/types/encrypted-image-payload.js'
 import {
   AES_GCM_TAG_LENGTH,
   FRONTEND_AES_ALGORITHM,
-} from '../../../src/shared/constants'
+} from '../../../src/shared/constants.js'
+import {
+  byteToImageFormat,
+  imageFormatToByte,
+} from '../../../src/shared/format-image.js'
 
-const toArrayBuffer = (buffer: Buffer): ArrayBuffer =>
-  buffer.buffer.slice(
-    buffer.byteOffset,
-    buffer.byteOffset + buffer.byteLength,
-  ) as ArrayBuffer
+import { toArrayBuffer } from '../../utils'
 
 // Isolated decryption test (pure frontend)
 test('decryptImage returns original buffer and format', async () => {
-  const format = 1
+  const format = imageFormatToByte('png')
   const original = new Uint8Array([format, 9, 8, 7, 6])
   const key = window.crypto.getRandomValues(new Uint8Array(32))
   const iv = window.crypto.getRandomValues(new Uint8Array(12))
@@ -39,12 +39,12 @@ test('decryptImage returns original buffer and format', async () => {
   const ciphertext = encryptedBytes.slice(0, -16)
 
   const payload: EncryptedImagePayload = {
-    encrypted: ciphertext.buffer,
+    encrypted: ciphertext,
     meta: { key: key.buffer, iv: iv.buffer, tag: tag.buffer },
   }
 
   const result = await decryptImage(payload)
-  expect(result.format).toBe(format)
+  expect(result.format).toBe(byteToImageFormat(format))
   expect(Array.from(result.buffer)).toEqual(Array.from(original.slice(1)))
 })
 
@@ -52,19 +52,19 @@ test('decryptImage returns original buffer and format', async () => {
 test('backend encrypt, frontend decrypt (e2e)', async () => {
   const testImagePath = path.join(__dirname, '../../assets/antalya.jpg')
   const buffer = fs.readFileSync(testImagePath)
-  const format = 2
-  const { encryptedImage, imageEncryptionMeta } = encryptImage(format, buffer)
+
+  const { encrypted, meta } = encryptImage(buffer)
 
   const payload: EncryptedImagePayload = {
-    encrypted: toArrayBuffer(encryptedImage),
+    encrypted: encrypted,
     meta: {
-      key: toArrayBuffer(imageEncryptionMeta.key),
-      iv: toArrayBuffer(imageEncryptionMeta.iv),
-      tag: toArrayBuffer(imageEncryptionMeta.tag),
+      key: toArrayBuffer(meta.key),
+      iv: toArrayBuffer(meta.iv),
+      tag: toArrayBuffer(meta.tag),
     },
   }
 
   const result = await decryptImage(payload)
-  expect(result.format).toBe(format)
+  expect(result.format).toBe('jpg')
   expect(Buffer.from(result.buffer).equals(buffer)).toBe(true)
 })

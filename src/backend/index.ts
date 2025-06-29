@@ -26,7 +26,6 @@ export {
   updateImageFromFile,
   deleteImage,
   imageExists,
-  getImage,
 } from './image-service.js'
 
 // Export helper for creating custom endpoints

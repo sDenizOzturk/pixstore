@@ -1,12 +1,14 @@
-import { encryptImage } from '../../../src/backend/image-encryption'
+import { encryptImage } from '../../../src/backend/image-encryption.js'
 import { createDecipheriv } from 'crypto'
 import { readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { BACKEND_AES_ALGORITHM } from '../../../src/shared/constants'
+import { getImageFormat } from '../../../src/backend/format-image.js'
+import { imageFormatToByte } from '../../../src/shared/format-image.js'
+import { isValidImage } from '../../../src/backend/format-image.js'
 
 const assetsDir = join(__dirname, '../../assets')
 
-// Select supported image files in assets
 const imageFiles = readdirSync(assetsDir).filter((f) =>
   /\.(png|jpg|jpeg|webp)$/i.test(f),
 )
@@ -17,37 +19,42 @@ describe('encryptImage (with real assets)', () => {
     (file) => {
       const filePath = join(assetsDir, file)
       const buffer = readFileSync(filePath)
-      // Determine format code by file extension
-      const ext = file.split('.').pop()!.toLowerCase()
-      const formatMap: Record<string, number> = {
-        png: 0,
-        webp: 1,
-        jpg: 2,
-        jpeg: 2,
-      }
-      const format = formatMap[ext] ?? 9
+
+      // Use actual format from buffer content instead of extension
+      const format = getImageFormat(buffer)
+      const expectedFormatByte = imageFormatToByte(format)
 
       const start = Date.now()
-      const { encryptedImage, imageEncryptionMeta } = encryptImage(
-        format,
-        buffer,
-      )
+      const { encrypted, meta } = encryptImage(buffer)
       const duration = Date.now() - start
 
-      // Decrypt (for test only)
-      const { key, iv, tag } = imageEncryptionMeta
-      const decipher = createDecipheriv(BACKEND_AES_ALGORITHM, key, iv)
-      decipher.setAuthTag(tag)
+      const decipher = createDecipheriv(
+        BACKEND_AES_ALGORITHM,
+        meta.key,
+        meta.iv,
+      )
+      decipher.setAuthTag(meta.tag)
       const plaintext = Buffer.concat([
-        decipher.update(encryptedImage),
+        decipher.update(encrypted),
         decipher.final(),
       ])
-      const decryptedFormat = plaintext[0]
+
+      const decryptedFormatByte = plaintext[0]
       const decryptedBuffer = plaintext.slice(1)
 
-      expect(decryptedFormat).toBe(format)
+      expect(decryptedFormatByte).toBe(expectedFormatByte)
       expect(decryptedBuffer.equals(buffer)).toBe(true)
       expect(duration).toBeLessThanOrEqual(10)
     },
   )
+})
+
+describe('isValidImage utility', () => {
+  it('returns true for valid images and false for invalid', () => {
+    const validBuffer = readFileSync(join(assetsDir, '1-pixel.png'))
+    const invalidBuffer = Buffer.from('not an image')
+
+    expect(isValidImage(validBuffer)).toBe(true)
+    expect(isValidImage(invalidBuffer)).toBe(false)
+  })
 })

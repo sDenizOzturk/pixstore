@@ -2,47 +2,60 @@ import {
   readImageRecord,
   writeImageRecord,
   deleteImageRecord,
+  imageRecordExists,
 } from './database.js'
 import { fetchEncodedImage } from './image-fetcher.js'
-import { formatEncodedImage } from './format-image.js'
-import type { ImageRecord } from '../types/image-record.js'
+import { decryptedPayloadToBlob } from './format-image.js'
+import type { FrontendImageRecord } from '../types/frontend-image-record.js'
+import { decryptImage } from './image-decryption.js'
+import { decodeWirePayload } from '../shared/wire-encoder.js'
+import { IndexedDBImageRecord } from '../types/indexeddb-image-record.js'
 
 /**
  * Retrieves image data using token-based cache validation.
  * Returns the cached Blob if token matches; otherwise fetches, updates, and returns new Blob.
  */
 export const getImage = async (
-  record: ImageRecord,
+  record: FrontendImageRecord,
   context?: any,
 ): Promise<Blob> => {
   // Attempt to read the cached image from IndexedDB by ID
-  const cached = await readImageRecord(record.id)
+  const { id, token, meta } = record
+  const cached = await readImageRecord(id)
 
   // If a cached image exists and the token matches, return it immediately
-  if (cached && cached.token === record.token) {
-    return cached.data
+  if (cached && cached.token === token) {
+    const indexedDBRecord = await readImageRecord(id)
+    const encrypted = indexedDBRecord!.encrypted
+    const imagePayload = await decryptImage({ encrypted, meta })
+    return decryptedPayloadToBlob(imagePayload)
   }
 
   // Otherwise, fetch the latest encoded image from the backend
   const encoded = await fetchEncodedImage(record.id, context)
 
-  // Decode and convert the encoded payload into a usable image record
-  const formatted = formatEncodedImage(record.id, encoded)
+  // Decode the wire payload to extract encrypted data, meta, and token
+  const decodedWirePayload = decodeWirePayload(encoded)
+
+  // Prepare the IndexedDB record with fresh encrypted data and token
+  const indexedDBRecord: IndexedDBImageRecord = {
+    id,
+    encrypted: decodedWirePayload.encrypted,
+    token: decodedWirePayload.token,
+    lastUsed: Date.now(),
+  }
 
   // Save the updated image into the local cache
-  await writeImageRecord(formatted)
+  await writeImageRecord(indexedDBRecord)
+
+  // Decrypt the image using the extracted encrypted data and meta
+  const imagePayload = await decryptImage({
+    encrypted: decodedWirePayload.encrypted,
+    meta: decodedWirePayload.meta,
+  })
 
   // Return the up-to-date Blob for rendering
-  return formatted.data
-}
-
-/**
- * Retrieves a Blob from cache if available.
- * Returns null if not found.
- */
-export const getCachedImage = async (id: string): Promise<Blob | null> => {
-  const cached = await readImageRecord(id)
-  return cached?.data ?? null
+  return decryptedPayloadToBlob(imagePayload)
 }
 
 /**
@@ -50,4 +63,11 @@ export const getCachedImage = async (id: string): Promise<Blob | null> => {
  */
 export const deleteCachedImage = async (id: string): Promise<void> => {
   await deleteImageRecord(id)
+}
+
+/**
+ * Returns true if a cached image exists in IndexedDB for the given id.
+ */
+export const cachedImageExists = async (id: string): Promise<boolean> => {
+  return await imageRecordExists(id)
 }

@@ -1,20 +1,21 @@
 import fs from 'fs'
 import path from 'path'
 import {
-  deleteImage,
-  getImageRecord,
-  imageExists,
-  getImage,
   saveImageFromFile,
   updateImageFromFile,
-} from '../../../src/backend/image-service'
+  getWirePayload,
+  deleteImage,
+  imageExists,
+  getImageRecord,
+} from '../../../src/backend/image-service.js'
 import {
   initializeDatabase,
   readImageRecord,
-} from '../../../src/backend/database'
-import { toFilePath } from '../../../src/backend/unique-id'
+} from '../../../src/backend/database.js'
+import { toFilePath } from '../../../src/backend/unique-id.js'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
+import { sleep } from '../../utils'
 
 beforeAll(() => {
   initializeDatabase()
@@ -22,29 +23,37 @@ beforeAll(() => {
 
 describe('saveImageFromFile', () => {
   const testDir = 'saveImageFromFile'
-  it('saves a valid image and creates a DB record (with dir)', async () => {
+
+  it('should save a valid image and create a DB record with dir prefix', async () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
     const record = await saveImageFromFile(filePath, testDir)
 
-    const fileOnDisk = toFilePath(record.id)
-    const dbRecord = readImageRecord(record.id)
+    // file on disk
+    expect(fs.existsSync(toFilePath(record.id))).toBe(true)
 
-    expect(fs.existsSync(fileOnDisk)).toBe(true)
-    expect(dbRecord).toEqual(record)
+    // DB record must exist and match id+token
+    const dbRecord = readImageRecord(record.id)!
+    expect(dbRecord.id).toBe(record.id)
+    expect(dbRecord.token).toBe(record.token)
+
+    // metadata must be present
+    expect(dbRecord.meta).toBeDefined()
+    expect(dbRecord.meta.key).toBeDefined()
+    expect(dbRecord.meta.iv).toBeDefined()
+    expect(dbRecord.meta.tag).toBeDefined()
   })
 
-  it('saves a valid image and creates a DB record (no dir)', async () => {
+  it('should save a valid image and create a DB record with no dir', async () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
     const record = await saveImageFromFile(filePath)
 
-    const fileOnDisk = toFilePath(record.id)
-    const dbRecord = readImageRecord(record.id)
-
-    expect(fs.existsSync(fileOnDisk)).toBe(true)
-    expect(dbRecord).toEqual(record)
+    expect(fs.existsSync(toFilePath(record.id))).toBe(true)
+    const dbRecord = readImageRecord(record.id)!
+    expect(dbRecord.id).toBe(record.id)
+    expect(dbRecord.token).toBe(record.token)
   })
 
-  it('throws if given an invalid image file', async () => {
+  it('should reject when given a non-image file', async () => {
     const filePath = path.join(assetsDir, 'no-text.txt')
     await expect(saveImageFromFile(filePath, testDir)).rejects.toThrow(
       'Invalid image file',
@@ -54,32 +63,28 @@ describe('saveImageFromFile', () => {
 
 describe('updateImageFromFile', () => {
   const testDir = 'updateImageFromFile'
-  it('overwrites existing image and updates its token', async () => {
-    const originalPath = path.join(assetsDir, '1-pixel.png')
-    const originalRecord = await saveImageFromFile(originalPath, testDir)
 
-    const updatedPath = path.join(assetsDir, '1-pixel.png')
-    const updatedRecord = await updateImageFromFile(
-      originalRecord.id,
-      updatedPath,
+  it('should overwrite existing image and update its token', async () => {
+    const originalPath = path.join(assetsDir, '1-pixel.png')
+    const original = await saveImageFromFile(originalPath, testDir)
+
+    await sleep(5)
+
+    const updated = await updateImageFromFile(
+      original.id,
+      originalPath,
       testDir,
     )
 
-    // verify returned record
-    expect(updatedRecord.id).toBe(originalRecord.id)
-    expect(updatedRecord.token).not.toBe(originalRecord.token)
+    expect(updated.id).toBe(original.id)
+    expect(updated.token).not.toBe(original.token)
 
-    // verify file on disk
-    const fileOnDisk = toFilePath(updatedRecord.id)
-    expect(fs.existsSync(fileOnDisk)).toBe(true)
-
-    // verify database record
-    const dbRecord = readImageRecord(updatedRecord.id)
-    expect(dbRecord).not.toBeNull()
-    expect(dbRecord!.token).toBe(updatedRecord.token)
+    // DB record was updated
+    const dbRecord = readImageRecord(updated.id)!
+    expect(dbRecord.token).toBe(updated.token)
   })
 
-  it('rejects when updating a non-existent image', async () => {
+  it('should reject when updating a non-existent image', async () => {
     const fakeId = `${testDir}:no-such-id`
     const filePath = path.join(assetsDir, '1-pixel.png')
     await expect(
@@ -90,95 +95,87 @@ describe('updateImageFromFile', () => {
 
 describe('getImageRecord', () => {
   const testDir = 'getImageRecord'
-  it('returns the DB record for an existing image', async () => {
-    const filePath = path.join(assetsDir, '1-pixel.png')
-    const record = await saveImageFromFile(filePath, testDir)
 
-    const result = getImageRecord(record.id)
-    expect(result).toEqual(record)
+  it('should return the DB record for an existing image', async () => {
+    const filePath = path.join(assetsDir, '1-pixel.png')
+    const saved = await saveImageFromFile(filePath, testDir)
+
+    const result = getImageRecord(saved.id)!
+    expect(result.id).toBe(saved.id)
+    expect(result.token).toBe(saved.token)
   })
 
-  it('returns null if image record is not found', () => {
-    const result = getImageRecord(`${testDir}:nonexistent`)
-    expect(result).toBeNull()
+  it('should return null if no record found', () => {
+    expect(getImageRecord(`${testDir}:nonexistent`)).toBeNull()
   })
 })
 
-describe('readImage', () => {
-  const testDir = 'readImage'
-  it('returns image buffer and token for existing image', async () => {
+describe('getWirePayload', () => {
+  const testDir = 'getWirePayload'
+
+  it('should return encrypted, token, and meta for an existing image', async () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
-    const record = await saveImageFromFile(filePath, testDir)
+    const saved = await saveImageFromFile(filePath, testDir)
 
-    const { buffer, token } = await getImage(record.id)
-    const fileOnDisk = toFilePath(record.id)
+    const { encrypted, token, meta } = await getWirePayload(saved.id)
 
-    expect(Buffer.isBuffer(buffer)).toBe(true)
-    expect(buffer.length).toBeGreaterThan(0)
-    expect(token).toBe(record.token)
-    expect(fs.existsSync(fileOnDisk)).toBe(true)
+    expect(Buffer.isBuffer(encrypted)).toBe(true)
+    expect(encrypted.length).toBeGreaterThan(0)
+    expect(token).toBe(saved.token)
+
+    expect(meta).toBeDefined()
   })
 
-  it('throws if image record is missing', () => {
-    expect(async () => {
-      await getImage(`${testDir}:missing-id`)
-    }).rejects.toThrow('Image record not found')
+  it('should throw if record is missing', async () => {
+    await expect(getWirePayload(`${testDir}:missing-id`)).rejects.toThrow(
+      'Image record not found',
+    )
   })
 })
+
 describe('deleteImage', () => {
   const testDir = 'deleteImage'
-  it('deletes image file and DB record if both exist', async () => {
+
+  it('should delete both file and DB record when both exist', async () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
-    const record = await saveImageFromFile(filePath, testDir)
+    const saved = await saveImageFromFile(filePath, testDir)
 
-    const result = await deleteImage(record.id)
-
-    expect(result).toBe(true)
-    expect(fs.existsSync(toFilePath(record.id))).toBe(false)
-    expect(readImageRecord(record.id)).toBeNull()
+    expect(await deleteImage(saved.id)).toBe(true)
+    expect(fs.existsSync(toFilePath(saved.id))).toBe(false)
+    expect(readImageRecord(saved.id)).toBeNull()
   })
 
-  it('deletes only DB record if file is missing', async () => {
+  it('should delete only DB record if file is already missing', async () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
-    const record = await saveImageFromFile(filePath, testDir)
+    const saved = await saveImageFromFile(filePath, testDir)
 
-    // delete file manually
-    fs.unlinkSync(toFilePath(record.id))
-
-    const result = await deleteImage(record.id)
-
-    expect(result).toBe(true)
-    expect(readImageRecord(record.id)).toBeNull()
+    fs.unlinkSync(toFilePath(saved.id))
+    expect(await deleteImage(saved.id)).toBe(true)
+    expect(readImageRecord(saved.id)).toBeNull()
   })
 
-  it('returns false if image does not exist at all', async () => {
-    const result = await deleteImage(`${testDir}:nonexistent`)
-    expect(result).toBe(false)
+  it('should return false if nothing existed', async () => {
+    expect(await deleteImage(`${testDir}:ghost`)).toBe(false)
   })
 })
 
 describe('imageExists', () => {
   const testDir = 'imageExists'
-  it('returns true if image file and DB record exist', async () => {
-    const filePath = path.join(assetsDir, '1-pixel.png')
-    const record = await saveImageFromFile(filePath, testDir)
 
-    const result = await imageExists(record.id)
-    expect(result).toBe(true)
+  it('should return true if both file and DB record exist', async () => {
+    const filePath = path.join(assetsDir, '1-pixel.png')
+    const saved = await saveImageFromFile(filePath, testDir)
+    expect(await imageExists(saved.id)).toBe(true)
   })
 
-  it('returns true if only DB record exists', async () => {
+  it('should return true if only DB record exists', async () => {
     const filePath = path.join(assetsDir, '1-pixel.png')
-    const record = await saveImageFromFile(filePath, testDir)
-
-    fs.unlinkSync(toFilePath(record.id)) // delete file
-
-    const result = await imageExists(record.id)
-    expect(result).toBe(true)
+    const saved = await saveImageFromFile(filePath, testDir)
+    fs.unlinkSync(toFilePath(saved.id))
+    expect(await imageExists(saved.id)).toBe(true)
   })
 
-  it('returns false if image does not exist anywhere', async () => {
-    const result = await imageExists(`${testDir}:ghost`)
-    expect(result).toBe(false)
+  it('should return false if neither exists', async () => {
+    expect(await imageExists(`${testDir}:nonexistent`)).toBe(false)
   })
 })

@@ -1,2 +1,5 @@
 // Export backend image record type
-export type { ImageRecord } from './image-record.js'
+export type { BackendImageRecord } from './backend-image-record.js'
+
+// Export frontend image record type
+export type { FrontendImageRecord } from './frontend-image-record.js'

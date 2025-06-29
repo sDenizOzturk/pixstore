@@ -6,8 +6,8 @@ import {
   diskToBuffer,
   readImageFile,
   saveImageFile,
-} from '../../../src/backend/file-storage'
-import { toFilePath } from '../../../src/backend/unique-id'
+} from '../../../src/backend/file-storage.js'
+import { toFilePath } from '../../../src/backend/unique-id.js'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 const pngBuffer = fs.readFileSync(path.join(assetsDir, '1-pixel.png'))
@@ -35,13 +35,6 @@ describe('file-storage', () => {
     await saveImageFile(id, webpBuffer)
     const readBuffer = await readImageFile(id)
     expect(Buffer.isBuffer(readBuffer)).toBe(true)
-  })
-
-  it('should throw when saving a non-image file', async () => {
-    const id = makeTestId('txt')
-    await expect(saveImageFile(id, txtBuffer)).rejects.toThrow(
-      'Invalid image format',
-    )
   })
 
   it('should throw when reading a missing file', async () => {

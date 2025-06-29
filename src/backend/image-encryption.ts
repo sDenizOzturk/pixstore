@@ -1,10 +1,12 @@
 import { randomBytes, createCipheriv } from 'crypto'
-import type { EncryptedImageResult } from '../types/encrypted-image-result.js'
+import type { EncryptedImage } from '../types/encrypted-image.js'
 import {
   AES_KEY_SIZE,
   AES_IV_SIZE,
   BACKEND_AES_ALGORITHM,
 } from '../shared/constants.js'
+import { getImageFormat, isValidImage } from './format-image.js'
+import { imageFormatToByte } from '../shared/format-image.js'
 
 /**
  * Generates a random AES key for per-image encryption.
@@ -39,15 +41,18 @@ const encrypt = (
  * Encrypts [format][buffer] for an image.
  * Returns the encrypted image and all encryption metadata.
  */
-export const encryptImage = (
-  format: number,
-  buffer: Buffer,
-): EncryptedImageResult => {
+export const encryptImage = (buffer: Buffer): EncryptedImage => {
+  if (!isValidImage(buffer)) {
+    throw new Error('Invalid image file')
+  }
+  const format = getImageFormat(buffer)
+
   const key = generateKey()
-  const plaintext = Buffer.concat([Buffer.from([format]), buffer])
+  const formatBuffer = Buffer.from([imageFormatToByte(format)])
+  const plaintext = Buffer.concat([formatBuffer, Buffer.from(buffer)])
   const { encrypted, iv, tag } = encrypt(plaintext, key)
   return {
-    encryptedImage: encrypted,
-    imageEncryptionMeta: { key, iv, tag },
+    encrypted,
+    meta: { key, iv, tag },
   }
 }

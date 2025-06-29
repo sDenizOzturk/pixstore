@@ -3,15 +3,16 @@ import {
   AES_GCM_TAG_LENGTH,
 } from '../shared/constants.js'
 import type { EncryptedImagePayload } from '../types/encrypted-image-payload.js'
-import type { DecodedImagePayload } from '../types/decoded-image-payload.js'
+import type { DecryptedImagePayload } from '../types/decrypted-image-payload.js'
+import { byteToImageFormat } from '../shared/format-image.js'
 
 /**
  * Decrypts an EncryptedImagePayload using the Web Crypto API.
- * Returns a DecodedImagePayload ({ format, buffer }).
+ * Returns a DecryptedImagePayload ({ format, buffer }).
  */
 export const decryptImage = async (
   payload: EncryptedImagePayload,
-): Promise<DecodedImagePayload> => {
+): Promise<DecryptedImagePayload> => {
   const { encrypted, meta } = payload
 
   // 1) Import the raw AES key
@@ -44,7 +45,7 @@ export const decryptImage = async (
   // 4) Peel off the first byte as format, rest is the image data
   const bytes = new Uint8Array(decrypted)
   return {
-    format: bytes[0],
+    format: byteToImageFormat(bytes[0]),
     buffer: bytes.slice(1),
   }
 }

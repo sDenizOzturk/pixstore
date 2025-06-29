@@ -7,19 +7,17 @@ import {
   getAllImageRecords,
   deleteImageRecords,
   getImageRecordCount,
-} from '../../../src/frontend/database'
-import { FrontendImageRecord } from '../../../src/types/frontend-image-record'
-
-const fakeBlob = new Blob(['test'], { type: 'image/png' })
+} from '../../../src/frontend/database.js'
+import type { IndexedDBImageRecord } from '../../../src/types/indexeddb-image-record.js'
 
 describe('Frontend Database CRUD', () => {
   const id = 'city:1232323'
-  const initialBlob = new Blob(['mockdata-1'], { type: 'image/jpeg' })
-  const updatedBlob = new Blob(['mockdata-2'], { type: 'image/jpeg' })
+  const initialEncrypted = new Uint8Array([1, 2, 3])
+  const updatedEncrypted = new Uint8Array([4, 5, 6])
 
-  const record: FrontendImageRecord = {
+  const record: IndexedDBImageRecord = {
     id,
-    data: initialBlob,
+    encrypted: initialEncrypted,
     token: 42,
     lastUsed: Date.now(),
   }
@@ -28,31 +26,25 @@ describe('Frontend Database CRUD', () => {
     await writeImageRecord(record)
     const result = await readImageRecord(id)
     expect(result).not.toBeNull()
-    expect(result?.id).toBe(id)
-    expect(result?.token).toBe(42)
-    expect(result?.data).toBeInstanceOf(Blob)
-    expect(result?.data.type).toBe('image/jpeg')
-    // Check the blob content matches the original
-    const text = await result!.data.text()
-    expect(text).toBe('mockdata-1')
+    expect(result!.id).toBe(record.id)
+    expect(result!.token).toBe(record.token)
+    expect(result!.encrypted).toBeInstanceOf(Uint8Array)
+    expect(result!.encrypted).toEqual(initialEncrypted)
+    expect(typeof result!.lastUsed).toBe('number')
   })
 
-  it('updates an image record and verifies blob/content change', async () => {
-    const updated: FrontendImageRecord = {
+  it('updates an image record and verifies encrypted change', async () => {
+    const updated: IndexedDBImageRecord = {
       id,
-      data: updatedBlob,
+      encrypted: updatedEncrypted,
       token: 99,
       lastUsed: Date.now(),
     }
     await writeImageRecord(updated)
     const res = await readImageRecord(id)
     expect(res).not.toBeNull()
-    expect(res?.token).toBe(99)
-    expect(res?.data).toBeInstanceOf(Blob)
-    expect(res?.data.type).toBe('image/jpeg')
-    // Ensure the blob content is updated
-    const text = await res!.data.text()
-    expect(text).toBe('mockdata-2')
+    expect(res!.token).toBe(99)
+    expect(res!.encrypted).toEqual(updatedEncrypted)
   })
 
   it('checks for record existence', async () => {
@@ -69,28 +61,29 @@ describe('Frontend Database CRUD', () => {
 })
 
 describe('getImageRecordCount', () => {
-  it('returns 0 when no records exist', async () => {
-    // Benzersiz id eklemeden önce tüm kayıtları sil
-    const records = await getAllImageRecords()
-    if (records.length > 0) {
-      const ids = records.map((r) => r.id)
-      await deleteImageRecords(ids)
+  beforeEach(async () => {
+    // clear all records
+    const all = await getAllImageRecords()
+    if (all.length) {
+      await deleteImageRecords(all.map((r) => r.id))
     }
-    const count = await getImageRecordCount()
-    expect(count).toBe(0)
+  })
+
+  it('returns 0 when no records exist', async () => {
+    expect(await getImageRecordCount()).toBe(0)
   })
 
   it('returns correct count after adding records', async () => {
     await writeImageRecord({
       id: 'count-1',
+      encrypted: new Uint8Array([1]),
       token: 1,
-      data: fakeBlob,
       lastUsed: Date.now(),
     })
     await writeImageRecord({
       id: 'count-2',
+      encrypted: new Uint8Array([2]),
       token: 2,
-      data: fakeBlob,
       lastUsed: Date.now(),
     })
     const count = await getImageRecordCount()
@@ -99,17 +92,24 @@ describe('getImageRecordCount', () => {
 })
 
 describe('getAllImageRecords', () => {
+  beforeEach(async () => {
+    const all = await getAllImageRecords()
+    if (all.length) {
+      await deleteImageRecords(all.map((r) => r.id))
+    }
+  })
+
   it('returns all records that were added', async () => {
     await writeImageRecord({
       id: 'all-1',
+      encrypted: new Uint8Array([1]),
       token: 1,
-      data: fakeBlob,
       lastUsed: Date.now(),
     })
     await writeImageRecord({
       id: 'all-2',
+      encrypted: new Uint8Array([2]),
       token: 2,
-      data: fakeBlob,
       lastUsed: Date.now(),
     })
     const records = await getAllImageRecords()
@@ -120,17 +120,24 @@ describe('getAllImageRecords', () => {
 })
 
 describe('deleteImageRecords', () => {
+  beforeEach(async () => {
+    const all = await getAllImageRecords()
+    if (all.length) {
+      await deleteImageRecords(all.map((r) => r.id))
+    }
+  })
+
   it('deletes specified records in a single transaction', async () => {
     await writeImageRecord({
       id: 'del-1',
+      encrypted: new Uint8Array([1]),
       token: 11,
-      data: fakeBlob,
       lastUsed: Date.now(),
     })
     await writeImageRecord({
       id: 'del-2',
+      encrypted: new Uint8Array([2]),
       token: 12,
-      data: fakeBlob,
       lastUsed: Date.now(),
     })
     await deleteImageRecords(['del-1', 'del-2'])

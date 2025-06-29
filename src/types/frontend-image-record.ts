@@ -1,6 +1,7 @@
-export type FrontendImageRecord = {
+import type { ImageDecryptionMeta } from './image-decryption-meta.js'
+
+export interface FrontendImageRecord {
   id: string
-  data: Blob
   token: number
-  lastUsed: number
+  meta: ImageDecryptionMeta
 }

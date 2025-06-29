@@ -10,10 +10,6 @@ export const saveImageFile = async (
   id: string,
   data: Buffer,
 ): Promise<void> => {
-  if (!isValidImage(data)) {
-    throw new Error('Invalid image format')
-  }
-
   const filepath = toFilePath(id)
   const dir = path.dirname(filepath)
 
@@ -30,9 +26,6 @@ export const saveImageFile = async (
 export const readImageFile = async (id: string): Promise<Buffer> => {
   const filepath = toFilePath(id)
   const buffer = await fs.readFile(filepath)
-  if (!isValidImage(buffer)) {
-    throw new Error('Invalid image file')
-  }
   return buffer
 }
 

@@ -9,16 +9,22 @@ import {
 import fs from 'fs'
 import { sleep } from '../../utils'
 
-const dbPath =
-  process.env.NODE_ENV === 'test'
-    ? './.pixstore-test.sqlite'
-    : './.pixstore.sqlite'
+import { randomBytes } from 'crypto'
+import { pixstoreConfig } from '../../../src/shared/pixstore-config.js'
+
+const dummyMeta = {
+  key: randomBytes(32),
+  iv: randomBytes(12),
+  tag: randomBytes(16),
+}
+
+const DB_PATH = pixstoreConfig.databasePath
 
 describe('firstWrite', () => {
   it('creates storage directory on first write', () => {
     initializeDatabase()
-    writeImageRecord('first-write')
-    expect(fs.existsSync(dbPath)).toBe(true)
+    writeImageRecord('first-write', dummyMeta)
+    expect(fs.existsSync(DB_PATH)).toBe(true)
   })
 })
 
@@ -27,7 +33,7 @@ describe('readImageRecord', () => {
 
   beforeAll(() => {
     initializeDatabase()
-    writeImageRecord(testId)
+    writeImageRecord(testId, dummyMeta)
   })
 
   it('returns the correct record for existing id', () => {
@@ -46,9 +52,9 @@ describe('writeImageRecord - update behavior', () => {
   const testId = 'write-update-test'
 
   it('overwrites record and generates new token', async () => {
-    const initialWrite = writeImageRecord(testId)
+    const initialWrite = writeImageRecord(testId, dummyMeta)
     await sleep(10) // ensure timestamp gap
-    const overwrittenWrite = writeImageRecord(testId)
+    const overwrittenWrite = writeImageRecord(testId, dummyMeta)
 
     expect(overwrittenWrite.token).toBeGreaterThan(initialWrite.token)
 
@@ -61,7 +67,7 @@ describe('deleteImageRecord', () => {
   const testId = 'delete-test'
 
   beforeEach(() => {
-    writeImageRecord(testId)
+    writeImageRecord(testId, dummyMeta)
   })
 
   it('removes existing record', () => {
@@ -80,7 +86,7 @@ describe('imageRecordExists', () => {
   const testId = 'exists-test'
 
   it('returns true if record exists', () => {
-    writeImageRecord(testId)
+    writeImageRecord(testId, dummyMeta)
     const exists = imageRecordExists(testId)
     expect(exists).toBe(true)
   })
