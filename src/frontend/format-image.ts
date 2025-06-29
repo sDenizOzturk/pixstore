@@ -1,6 +1,6 @@
 import type { ImageFormat } from '../types/image-format.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
-import { DecryptedImagePayload } from '../types/decrypted-image-payload.js'
+import { DecryptedImagePayload } from '../types/image-payload.js'
 
 /**
  * Converts an image format (e.g. 'png') to the corresponding MIME type.

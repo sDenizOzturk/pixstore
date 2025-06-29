@@ -46,7 +46,7 @@ describe('fetchEncodedImage (integration)', () => {
     expect(meta.iv).toEqual(record.meta.iv)
     expect(meta.tag).toEqual(record.meta.tag)
 
-    const decrypted = await decryptImage({ encrypted, meta })
+    const decrypted = await decryptImage(encrypted, meta)
 
     expect(decrypted.format).toBe('jpg')
     expect(decrypted.buffer).toBeInstanceOf(Uint8Array)

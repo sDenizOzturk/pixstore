@@ -1,5 +1,5 @@
 import { decryptedPayloadToBlob } from '../../../src/frontend/format-image'
-import type { DecryptedImagePayload } from '../../../src/types/decrypted-image-payload.js'
+import type { DecryptedImagePayload } from '../../../src/types/image-payload.js'
 import { ImageFormat } from '../../../src/types/image-format.js'
 
 // Helper to create a dummy DecryptedImagePayload

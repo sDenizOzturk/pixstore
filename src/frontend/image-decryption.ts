@@ -2,20 +2,19 @@ import {
   FRONTEND_AES_ALGORITHM,
   AES_GCM_TAG_LENGTH,
 } from '../shared/constants.js'
-import type { EncryptedImagePayload } from '../types/encrypted-image-payload.js'
-import type { DecryptedImagePayload } from '../types/decrypted-image-payload.js'
+import type { DecryptedImagePayload } from '../types/image-payload.js'
 import { byteToImageFormat } from '../shared/format-image.js'
 import { base64ToArrayBuffer } from '../shared/format-buffer.js'
+import { ImageDecryptionMeta } from '../types/image-decryption-meta.js'
 
 /**
- * Decrypts an EncryptedImagePayload using the Web Crypto API.
+ * Decrypts an encrypted image payload using the Web Crypto API.
  * Returns a DecryptedImagePayload ({ format, buffer }).
  */
 export const decryptImage = async (
-  payload: EncryptedImagePayload,
+  encrypted: Uint8Array,
+  meta: ImageDecryptionMeta,
 ): Promise<DecryptedImagePayload> => {
-  const { encrypted, meta } = payload
-
   // Convert meta fields from base64 string to ArrayBuffer
   const key = base64ToArrayBuffer(meta.key)
   const iv = base64ToArrayBuffer(meta.iv)

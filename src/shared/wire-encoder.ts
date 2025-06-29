@@ -1,5 +1,5 @@
-import type { BackendWirePayload } from '../types/backend-wire-payload.js'
-import type { FrontendWirePayload } from '../types/frontend-wire-payload.js'
+import type { BackendWirePayload } from '../types/wire-payload.js'
+import type { FrontendWirePayload } from '../types/wire-payload.js'
 import {
   AES_KEY_SIZE,
   AES_IV_SIZE,

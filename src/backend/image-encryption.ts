@@ -1,5 +1,5 @@
 import { randomBytes, createCipheriv } from 'crypto'
-import type { EncryptedImage } from '../types/encrypted-image.js'
+import type { EncryptedImagePayload } from '../types/image-payload.js'
 import {
   AES_KEY_SIZE,
   AES_IV_SIZE,
@@ -42,7 +42,7 @@ const encrypt = (
  * Encrypts [format][buffer] for an image.
  * Returns the encrypted image and all encryption metadata.
  */
-export const encryptImage = (buffer: Buffer): EncryptedImage => {
+export const encryptImage = (buffer: Buffer): EncryptedImagePayload => {
   if (!isValidImage(buffer)) {
     throw new Error('Invalid image file')
   }

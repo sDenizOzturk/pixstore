@@ -4,7 +4,6 @@ import { decryptImage } from '../../../src/frontend/image-decryption.js'
 import { encryptImage } from '../../../src/backend/image-encryption.js'
 import fs from 'fs'
 import path from 'path'
-import type { EncryptedImagePayload } from '../../../src/types/encrypted-image-payload.js'
 import {
   AES_GCM_TAG_LENGTH,
   FRONTEND_AES_ALGORITHM,
@@ -38,16 +37,11 @@ test('decryptImage returns original buffer and format', async () => {
   const tag = encryptedBytes.slice(-16)
   const ciphertext = encryptedBytes.slice(0, -16)
 
-  const payload: EncryptedImagePayload = {
-    encrypted: ciphertext,
-    meta: {
-      key: arrayBufferToBase64(key.buffer),
-      iv: arrayBufferToBase64(iv.buffer),
-      tag: arrayBufferToBase64(tag.buffer),
-    },
-  }
-
-  const result = await decryptImage(payload)
+  const result = await decryptImage(ciphertext, {
+    key: arrayBufferToBase64(key.buffer),
+    iv: arrayBufferToBase64(iv.buffer),
+    tag: arrayBufferToBase64(tag.buffer),
+  })
   expect(result.format).toBe(byteToImageFormat(format))
   expect(Array.from(result.buffer)).toEqual(Array.from(original.slice(1)))
 })
@@ -59,16 +53,11 @@ test('backend encrypt, frontend decrypt (e2e)', async () => {
 
   const { encrypted, meta } = encryptImage(buffer)
 
-  const payload: EncryptedImagePayload = {
-    encrypted: encrypted,
-    meta: {
-      key: meta.key,
-      iv: meta.iv,
-      tag: meta.tag,
-    },
-  }
-
-  const result = await decryptImage(payload)
+  const result = await decryptImage(encrypted, {
+    key: meta.key,
+    iv: meta.iv,
+    tag: meta.tag,
+  })
   expect(result.format).toBe('jpg')
   expect(Buffer.from(result.buffer).equals(buffer)).toBe(true)
 })

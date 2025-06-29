@@ -14,7 +14,7 @@ import {
 import { createUniqueId } from './unique-id.js'
 import type { ImageRecord } from '../types/image-record.js'
 import { encryptImage } from './image-encryption.js'
-import { BackendWirePayload } from '../types/backend-wire-payload.js'
+import { BackendWirePayload } from '../types/wire-payload.js'
 
 /**
  * Retrieves the encrypted image payload (wire format) for the given image ID.

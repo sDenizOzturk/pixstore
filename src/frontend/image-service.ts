@@ -27,7 +27,7 @@ export const getImage = async (
   if (cached && cached.token === token) {
     const indexedDBRecord = await readImageRecord(id)
     const encrypted = indexedDBRecord!.encrypted
-    const imagePayload = await decryptImage({ encrypted, meta })
+    const imagePayload = await decryptImage(encrypted, meta)
     return decryptedPayloadToBlob(imagePayload)
   }
 
@@ -49,10 +49,10 @@ export const getImage = async (
   await writeImageRecord(indexedDBRecord)
 
   // Decrypt the image using the extracted encrypted data and meta
-  const imagePayload = await decryptImage({
-    encrypted: decodedWirePayload.encrypted,
-    meta: decodedWirePayload.meta,
-  })
+  const imagePayload = await decryptImage(
+    decodedWirePayload.encrypted,
+    decodedWirePayload.meta,
+  )
 
   // Return the up-to-date Blob for rendering
   return decryptedPayloadToBlob(imagePayload)

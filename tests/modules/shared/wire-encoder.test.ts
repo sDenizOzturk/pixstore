@@ -7,7 +7,7 @@ import {
   AES_IV_SIZE,
   AES_GCM_TAG_LENGTH,
 } from '../../../src/shared/constants.js'
-import { BackendWirePayload } from '../../../src/types/backend-wire-payload.js'
+import { BackendWirePayload } from '../../../src/types/wire-payload.js'
 import { arrayBufferToBase64 } from '../../../src/shared/format-buffer.js'
 import { ImageDecryptionMeta } from '../../../src/types/image-decryption-meta.js'
 
