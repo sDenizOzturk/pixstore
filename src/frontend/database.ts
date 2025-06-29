@@ -1,4 +1,4 @@
-import type { FrontendImageRecord } from '../types/frontend-image-record.js'
+import type { IndexedDBImageRecord } from '../types/indexeddb-image-record.js'
 import { cleanupImageCache } from './cleanup.js'
 
 import { pixstoreConfig } from '../shared/pixstore-config.js'
@@ -50,14 +50,14 @@ export const getImageStore = async (
 
 /**
  * Reads an image record from IndexedDB by its id.
- * Returns the FrontendImageRecord if found, otherwise null.
+ * Returns the IndexedDBImageRecord if found, otherwise null.
  */
 export const readImageRecord = async (
   id: string,
-): Promise<FrontendImageRecord | null> => {
+): Promise<IndexedDBImageRecord | null> => {
   const { store } = await getImageStore()
   // Attempt to get the record by id
-  return await new Promise<FrontendImageRecord | null>((resolve, reject) => {
+  return await new Promise<IndexedDBImageRecord | null>((resolve, reject) => {
     const request = store.get(id)
     request.onsuccess = () => {
       // If record exists, resolve with the object; else resolve with null
@@ -73,7 +73,7 @@ export const readImageRecord = async (
  * Uses 'put' operation (insert or update).
  */
 export const writeImageRecord = async (
-  record: FrontendImageRecord,
+  record: IndexedDBImageRecord,
 ): Promise<void> => {
   // Start a readwrite transaction on the main image store
   const { store } = await getImageStore('readwrite')
@@ -135,9 +135,9 @@ export const getImageRecordCount = async (): Promise<number> => {
  * Returns all image records from IndexedDB as an array.
  * Reads the entire contents of the image store.
  */
-export const getAllImageRecords = async (): Promise<FrontendImageRecord[]> => {
+export const getAllImageRecords = async (): Promise<IndexedDBImageRecord[]> => {
   const { store } = await getImageStore()
-  return await new Promise<FrontendImageRecord[]>((resolve, reject) => {
+  return await new Promise<IndexedDBImageRecord[]>((resolve, reject) => {
     const request = store.getAll()
     request.onsuccess = () => resolve(request.result)
     request.onerror = () => reject(request.error)

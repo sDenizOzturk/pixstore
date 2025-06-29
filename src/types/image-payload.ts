@@ -1,7 +1,12 @@
-import type { ImageFormat } from './image-format.js'
+import { ImageFormat } from './image-format.js'
+import { ImageDecryptionMeta } from './image-decryption-meta.js'
 
-export interface ImagePayload {
+export interface DecryptedImagePayload {
+  format: ImageFormat
   buffer: Uint8Array
-  token: number
-  imageFormat: ImageFormat
+}
+
+export interface EncryptedImagePayload {
+  encrypted: Buffer
+  meta: ImageDecryptionMeta
 }

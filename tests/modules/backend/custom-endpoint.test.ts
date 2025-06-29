@@ -6,7 +6,7 @@ import {
 import { saveImage } from '../../../src/backend/image-service.js'
 import fs from 'fs/promises'
 import path from 'path'
-import { sleep } from '../../utils.js'
+import { sleep } from '../../utils'
 import { initializeDatabase } from '../../../src/backend/database.js'
 
 const assetDir = path.resolve(__dirname, '../../assets')

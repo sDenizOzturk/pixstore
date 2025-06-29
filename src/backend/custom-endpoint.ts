@@ -1,5 +1,5 @@
-import { getImage } from './image-service.js'
-import { encodeImagePayload } from '../shared/image-encoder.js'
+import { getWirePayload } from './image-service.js'
+import { encodeWirePayload } from '../shared/wire-encoder.js'
 import { isServerStarted } from './default-endpoint.js'
 
 /**
@@ -13,6 +13,6 @@ export const customEndpointHelper = async (id: string): Promise<Uint8Array> => {
       'Pixstore custom endpoint mode is not active. Please disable the default endpoint before using customEndpointHelper().',
     )
   }
-  const image = await getImage(id)
-  return encodeImagePayload(image)
+  const wirePayload = await getWirePayload(id)
+  return encodeWirePayload(wirePayload)
 }

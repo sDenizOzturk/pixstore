@@ -4,17 +4,18 @@ import {
   getAllImageRecords,
   getImageRecordCount,
   deleteImageRecords,
-} from '../../../src/frontend/database'
-import { cleanupImageCache } from '../../../src/frontend/cleanup'
+} from '../../../src/frontend/database.js'
+import { cleanupImageCache } from '../../../src/frontend/cleanup.js'
 
 import { sleep } from '../../utils'
-import { pixstoreConfig } from '../../../src/shared/pixstore-config'
+import { pixstoreConfig } from '../../../src/shared/pixstore-config.js'
+import { IndexedDBImageRecord } from '../../../src/types/indexeddb-image-record.js'
 const FRONTEND_IMAGE_CACHE_LIMIT = pixstoreConfig.frontendImageCacheLimit
 const FRONTEND_CLEANUP_BATCH = pixstoreConfig.frontendCleanupBatch
 
-const makeRecord = (id: string, offsetMs: number) => ({
+const makeRecord = (id: string, offsetMs: number): IndexedDBImageRecord => ({
   id,
-  data: new Blob(['img'], { type: 'image/png' }),
+  encrypted: new Uint8Array([1, 2, 3]),
   token: Math.floor(Math.random() * 1e6),
   lastUsed: Date.now() - offsetMs,
 })

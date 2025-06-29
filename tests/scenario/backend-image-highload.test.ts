@@ -1,12 +1,13 @@
 import path from 'path'
 import {
-  getImage,
+  getImageRecord,
   deleteImage,
   saveImage,
   updateImage,
-} from '../../src/backend/image-service'
+  getWirePayload,
+} from '../../src/backend/image-service.js'
 import fs from 'fs'
-import { initializeDatabase } from '../../src/backend/database'
+import { initializeDatabase } from '../../src/backend/database.js'
 
 const assetsDir = path.resolve(__dirname, '../assets')
 const imageFile = path.join(assetsDir, 'antalya.jpg')
@@ -32,8 +33,8 @@ describe('Pixstore backend highload scenario', () => {
 
   it('should read all images', async () => {
     for (const id of ids) {
-      const { buffer } = await getImage(id)
-      expect(buffer.length).toBeGreaterThan(0)
+      const { encrypted } = await getWirePayload(id)
+      expect(encrypted.length).toBeGreaterThan(0)
     }
   })
 
@@ -41,15 +42,15 @@ describe('Pixstore backend highload scenario', () => {
     const buffer2 = fs.readFileSync(imageFile2)
     for (const id of ids) {
       await updateImage(id, buffer2, prefix)
-      const { buffer } = await getImage(id)
-      expect(buffer.length).toBeGreaterThan(0)
+      const { encrypted } = await getWirePayload(id)
+      expect(encrypted.length).toBeGreaterThan(0)
     }
   })
 
   it('should read all images after update', async () => {
     for (const id of ids) {
-      const { buffer } = await getImage(id)
-      expect(buffer.length).toBeGreaterThan(0)
+      const { encrypted } = await getWirePayload(id)
+      expect(encrypted.length).toBeGreaterThan(0)
     }
   })
 

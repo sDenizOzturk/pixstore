@@ -1,0 +1,100 @@
+import type { BackendWirePayload } from '../types/wire-payload.js'
+import type { FrontendWirePayload } from '../types/wire-payload.js'
+import {
+  AES_KEY_SIZE,
+  AES_IV_SIZE,
+  AES_GCM_TAG_LENGTH, // in bits
+} from '../shared/constants.js'
+import { ImageDecryptionMeta } from '../types/image-decryption-meta.js'
+import { arrayBufferToBase64, base64ToArrayBuffer } from './format-buffer.js'
+
+const TAG_SIZE_BYTES = AES_GCM_TAG_LENGTH / 8
+
+/**
+ * Encodes a BackendWirePayload into a binary Uint8Array.
+ * Layout: [token (8 bytes, LE)] [key (32 bytes)] [iv (12 bytes)]
+ *         [tag (16 bytes)] [encrypted image buffer]
+ */
+export const encodeWirePayload = (payload: BackendWirePayload): Uint8Array => {
+  const { token, meta, encrypted } = payload
+
+  // Convert base64 string to ArrayBuffer
+  const keyBuf = base64ToArrayBuffer(meta.key)
+  const ivBuf = base64ToArrayBuffer(meta.iv)
+  const tagBuf = base64ToArrayBuffer(meta.tag)
+
+  // Token as 8 bytes (LE)
+  const tokenBuf = new ArrayBuffer(8)
+  new DataView(tokenBuf).setBigUint64(0, BigInt(token), true)
+
+  const total =
+    8 + AES_KEY_SIZE + AES_IV_SIZE + TAG_SIZE_BYTES + encrypted.byteLength
+  const result = new Uint8Array(total)
+
+  let offset = 0
+  result.set(new Uint8Array(tokenBuf), offset)
+  offset += 8
+
+  result.set(new Uint8Array(keyBuf), offset)
+  offset += AES_KEY_SIZE
+
+  result.set(new Uint8Array(ivBuf), offset)
+  offset += AES_IV_SIZE
+
+  result.set(new Uint8Array(tagBuf), offset)
+  offset += TAG_SIZE_BYTES
+
+  result.set(new Uint8Array(encrypted), offset)
+  return result
+}
+
+/**
+ * Decodes a Uint8Array into a FrontendWirePayload.
+ * Expects the same layout as above.
+ */
+export const decodeWirePayload = (data: Uint8Array): FrontendWirePayload => {
+  let offset = 0
+
+  // 1) token
+  const token = Number(
+    new DataView(data.buffer, data.byteOffset + offset, 8).getBigUint64(
+      0,
+      true,
+    ),
+  )
+  offset += 8
+
+  // 2) key
+  const keySlice = data.subarray(offset, offset + AES_KEY_SIZE)
+  const key = keySlice.buffer.slice(
+    keySlice.byteOffset,
+    keySlice.byteOffset + keySlice.byteLength,
+  ) as ArrayBuffer
+  offset += AES_KEY_SIZE
+
+  // 3) iv
+  const ivSlice = data.subarray(offset, offset + AES_IV_SIZE)
+  const iv = ivSlice.buffer.slice(
+    ivSlice.byteOffset,
+    ivSlice.byteOffset + ivSlice.byteLength,
+  ) as ArrayBuffer
+  offset += AES_IV_SIZE
+
+  // 4) tag
+  const tagSlice = data.subarray(offset, offset + TAG_SIZE_BYTES)
+  const tag = tagSlice.buffer.slice(
+    tagSlice.byteOffset,
+    tagSlice.byteOffset + tagSlice.byteLength,
+  ) as ArrayBuffer
+  offset += TAG_SIZE_BYTES
+
+  // 5) encrypted buffer
+  const encrypted = data.subarray(offset)
+
+  const meta: ImageDecryptionMeta = {
+    key: arrayBufferToBase64(key),
+    iv: arrayBufferToBase64(iv),
+    tag: arrayBufferToBase64(tag),
+  }
+  return { token, meta, encrypted }
+}

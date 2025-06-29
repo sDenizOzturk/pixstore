@@ -13,22 +13,30 @@ import {
 } from './database.js'
 import { createUniqueId } from './unique-id.js'
 import type { ImageRecord } from '../types/image-record.js'
-import type { ImagePayload } from '../types/image-payload.js'
-import { getImageFormat } from './format-image.js'
+import { encryptImage } from './image-encryption.js'
+import { BackendWirePayload } from '../types/wire-payload.js'
 
 /**
- * Reads the image buffer from disk and returns it along with the DB token.
- * Throws if the image or database record is not found.
+ * Retrieves the encrypted image payload (wire format) for the given image ID.
+ *
+ * Reads the encrypted image buffer from disk and fetches its metadata and token from the database.
+ * Throws an error if the image record is not found.
+ *
+ * Returns a BackendWirePayload containing:
+ * - encrypted: the encrypted image data as a Buffer,
+ * - meta: encryption metadata (key, iv, tag),
+ * - token: the current version token for cache validation.
  */
-export const getImage = async (id: string): Promise<ImagePayload> => {
+export const getWirePayload = async (
+  id: string,
+): Promise<BackendWirePayload> => {
   const record = readImageRecord(id)
   if (!record) throw new Error(`Image record not found: ${id}`)
 
-  const buffer = await readImageFile(id)
-  const imageFormat = getImageFormat(buffer)
-  const token = record.token
+  const encrypted = await readImageFile(id)
+  const { token, meta } = record
 
-  return { buffer, imageFormat, token }
+  return { encrypted, meta, token }
 }
 
 /**
@@ -40,9 +48,10 @@ const writeImage = async (
   buffer: Buffer,
   dir?: string,
 ): Promise<ImageRecord> => {
-  await saveImageFile(id, buffer)
+  const { encrypted, meta } = encryptImage(buffer)
+  await saveImageFile(id, encrypted)
   try {
-    return writeImageRecord(id)
+    return writeImageRecord(id, meta)
   } catch (err) {
     deleteImageFile(id)
     throw err

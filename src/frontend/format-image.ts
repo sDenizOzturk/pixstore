@@ -1,7 +1,6 @@
-import { decodeImagePayload } from '../shared/image-encoder.js'
-import type { FrontendImageRecord } from '../types/frontend-image-record.js'
 import type { ImageFormat } from '../types/image-format.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
+import { DecryptedImagePayload } from '../types/image-payload.js'
 
 /**
  * Converts an image format (e.g. 'png') to the corresponding MIME type.
@@ -15,20 +14,11 @@ const imageFormatToMime = (format: ImageFormat): string => {
 }
 
 /**
- * Converts a wire-encoded image payload to a FrontendImageRecord.
- * Decodes payload, determines MIME type, and creates a Blob for browser use.
+ * Converts a DecryptedImagePayload to a Blob for frontend usage.
  */
-export const formatEncodedImage = (
-  id: string,
-  encoded: Uint8Array,
-): FrontendImageRecord => {
-  const { buffer, token, imageFormat } = decodeImagePayload(encoded)
-  const mime = imageFormatToMime(imageFormat)
-  const data = new Blob([new Uint8Array(buffer)], { type: mime })
-  return {
-    id,
-    data,
-    token,
-    lastUsed: Date.now(),
-  }
+export const decryptedPayloadToBlob = (
+  payload: DecryptedImagePayload,
+): Blob => {
+  const mime = imageFormatToMime(payload.format)
+  return new Blob([payload.buffer.buffer as ArrayBuffer], { type: mime })
 }

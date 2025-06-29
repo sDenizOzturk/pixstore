@@ -1,19 +1,22 @@
+import '../../utils/frontend-crypto-polyfill.js'
+
 import 'fake-indexeddb/auto'
 import path from 'path'
 import fs from 'fs/promises'
-import { ImageRecord } from '../../../src/types/image-record'
+import { ImageRecord } from '../../../src/types/image-record.js'
 import {
   getImage,
-  getCachedImage,
   deleteCachedImage,
-} from '../../../src/frontend/image-service'
-import { readImageRecord } from '../../../src/frontend/database'
+  cachedImageExists,
+} from '../../../src/frontend/image-service.js'
+import { readImageRecord } from '../../../src/frontend/database.js'
 import {
   startDefaultEndpoint,
   stopDefaultEndpoint,
-} from '../../../src/backend/default-endpoint'
-import { saveImage, updateImage } from '../../../src/backend/image-service'
-import { initializeDatabase } from '../../../src/backend/database'
+} from '../../../src/backend/default-endpoint.js'
+import { saveImage, updateImage } from '../../../src/backend/image-service.js'
+import { initializeDatabase } from '../../../src/backend/database.js'
+import { toArrayBuffer } from '../../utils'
 
 const assetDir = path.resolve(__dirname, '../../assets')
 const ANTALYA_PATH = path.join(assetDir, 'antalya.jpg')
@@ -25,6 +28,7 @@ const expectBlobsToBeEqual = async (a: Blob, b: Blob) => {
   const bufB = Buffer.from(await b.arrayBuffer())
   expect(Buffer.compare(bufA, bufB)).toBe(0)
 }
+
 beforeAll(() => {
   initializeDatabase()
 })
@@ -35,7 +39,15 @@ describe('frontend image-service – full flow', () => {
   beforeAll(async () => {
     startDefaultEndpoint()
     const saved = await saveImage(await fs.readFile(ANTALYA_PATH), 'students')
-    record = { id: saved.id, token: saved.token }
+    record = {
+      id: saved.id,
+      token: saved.token,
+      meta: {
+        key: saved.meta.key,
+        iv: saved.meta.iv,
+        tag: saved.meta.tag,
+      },
+    }
   })
 
   afterAll(async () => {
@@ -59,14 +71,14 @@ describe('frontend image-service – full flow', () => {
     expect(cachedRecord1).not.toBeNull()
     expect(cachedRecord1!.token).toBe(record.token)
 
-    // 4) getCachedImage returns the same blob
-    const cachedBlob1 = await getCachedImage(record.id)
-    expect(cachedBlob1).toBeInstanceOf(Blob)
-    await expectBlobsToBeEqual(cachedBlob1!, blob1)
+    // 4) Cache existence check
+    const exists1 = await cachedImageExists(record.id)
+    expect(exists1).toBe(true)
 
     // 5) Delete from cache
     await deleteCachedImage(record.id)
-    expect(await getCachedImage(record.id)).toBeNull()
+    const exists2 = await cachedImageExists(record.id)
+    expect(exists2).toBe(false)
 
     // 6) Re-fetch after deletion: should re-cache original blob
     const blob2 = await getImage(record)
@@ -81,7 +93,15 @@ describe('frontend image-service – full flow', () => {
     expect(updated.token).not.toBe(record.token)
 
     // 8) Token mismatch triggers cache update on getImage
-    const blob3 = await getImage({ id: updated.id, token: updated.token })
+    const blob3 = await getImage({
+      id: updated.id,
+      token: updated.token,
+      meta: {
+        key: updated.meta.key,
+        iv: updated.meta.iv,
+        tag: updated.meta.tag,
+      },
+    })
     expect(blob3).toBeInstanceOf(Blob)
     const buf2 = Buffer.from(await blob2.arrayBuffer())
     const buf3 = Buffer.from(await blob3.arrayBuffer())
@@ -91,9 +111,8 @@ describe('frontend image-service – full flow', () => {
     const cachedRecord2 = await readImageRecord(record.id)
     expect(cachedRecord2!.token).toBe(updated.token)
 
-    // 10) Cached blob matches the updated blob
-    const finalCached = await getCachedImage(record.id)
-    expect(finalCached).toBeInstanceOf(Blob)
-    await expectBlobsToBeEqual(finalCached!, blob3)
+    // 10) Final cache existence check
+    const existsFinal = await cachedImageExists(record.id)
+    expect(existsFinal).toBe(true)
   })
 })

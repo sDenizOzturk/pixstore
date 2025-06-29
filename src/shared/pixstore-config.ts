@@ -1,15 +1,8 @@
 import type { ImageFormat } from '../types/image-format.js'
 import type { PixstoreConfig } from '../types/pixstore-config.js'
+import { DEFAULT_IMAGE_FORMATS } from './constants.js'
 
-/**
- * Indicates test environment based on NODE_ENV.
- */
-export const IS_TEST = process.env.NODE_ENV === 'test'
-
-/**
- * Default image formats supported by Pixstore.
- */
-const DEFAULT_IMAGE_FORMATS = ['png', 'webp', 'jpg', 'jpeg'] as const
+const IS_TEST = true
 
 /**
  * Utility to build encoding maps for supported image formats.

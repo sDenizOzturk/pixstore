@@ -15,4 +15,8 @@ export const initPixstoreFrontend = (
   registerCustomImageFetcher(customImageFetcher)
 }
 // Export main image service functions for external use
-export { getImage, getCachedImage, deleteCachedImage } from './image-service.js'
+export {
+  getImage,
+  deleteCachedImage,
+  cachedImageExists,
+} from './image-service.js'

@@ -1,9 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { isValidImage } from '../../../src/backend/format-image'
-
-import { pixstoreConfig } from '../../../src/shared/pixstore-config'
-const IMAGE_FORMATS = pixstoreConfig.imageFormats
+import { isValidImage } from '../../../src/backend/format-image.js'
 
 const assetsDir = path.resolve(__dirname, '../../assets')
 const pngBuffer = fs.readFileSync(path.join(assetsDir, '1-pixel.png'))

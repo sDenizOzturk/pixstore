@@ -3,7 +3,7 @@ import * as Frontend from '../../dist/frontend/index.js'
 const expectedExports = [
   'initPixstoreFrontend',
   'getImage',
-  'getCachedImage',
+  'cachedImageExists',
   'deleteCachedImage',
 ].sort()
 

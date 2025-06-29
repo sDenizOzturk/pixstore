@@ -7,6 +7,28 @@ import { getAllPlayers } from './in-memory-db';
 //   import { getImageRecord } from 'pixstore/backend'
 //
 import { getImageRecord } from '../../../../dist/backend';
+import { ImageRecord } from './image-record.entity';
+
+const bufferToBase64 = (input: Buffer | ArrayBuffer): string => {
+  if (Buffer.isBuffer(input)) {
+    return input.toString('base64');
+  } else if (input instanceof ArrayBuffer) {
+    return Buffer.from(new Uint8Array(input)).toString('base64');
+  }
+  throw new Error('Unknown input type for bufferToBase64');
+};
+
+const backendRecordToGql = (record: any): ImageRecord => {
+  return {
+    id: record.id,
+    token: record.token,
+    meta: {
+      key: record.meta.key,
+      iv: record.meta.iv,
+      tag: record.meta.tag,
+    },
+  };
+};
 
 @Resolver(() => RealMadridPlayer)
 export class RmPlayerResolver {
@@ -16,9 +38,6 @@ export class RmPlayerResolver {
     // return array of RealMadridPlayer with correct shape
     return Promise.all(
       dbPlayers.map((p) => {
-        // Fetch the image record for this player from Pixstore by imageId.
-        // Note: Instead of sending an image URL, we send the full image record object.
-        // This allows the frontend to handle image fetching and caching in its own way.
         const rec = getImageRecord(p.imageId);
         if (!rec) throw new Error(`Missing ImageRecord for id=${p.imageId}`);
         return {
@@ -26,7 +45,7 @@ export class RmPlayerResolver {
           name: p.name,
           birthDate: p.birthDate,
           position: p.position,
-          pixstoreRecord: rec,
+          pixstoreRecord: backendRecordToGql(rec),
         };
       }),
     );

@@ -2,6 +2,7 @@ import BetterSqlite3 from 'better-sqlite3'
 
 import type { ImageRecord } from '../types/image-record.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
+import { ImageDecryptionMeta } from '../types/image-decryption-meta.js'
 
 let database: InstanceType<typeof BetterSqlite3> | null = null
 
@@ -20,9 +21,10 @@ export const initializeDatabase = () => {
   // Initialize table (once)
   database.exec(
     `CREATE TABLE IF NOT EXISTS image_records (
-    id TEXT PRIMARY KEY,
-    token INTEGER NOT NULL
-  )`,
+      id TEXT PRIMARY KEY,
+      token INTEGER NOT NULL,
+      meta TEXT NOT NULL
+    )`,
   )
 }
 
@@ -30,16 +32,20 @@ export const initializeDatabase = () => {
  * Inserts or updates an image record with the given ID.
  * If the ID already exists, the token is updated.
  */
-export const writeImageRecord = (id: string): ImageRecord => {
+export const writeImageRecord = (
+  id: string,
+  meta: ImageDecryptionMeta,
+): ImageRecord => {
   const token = Date.now()
+  const metaJSON = JSON.stringify(meta)
   const statement = database!.prepare(
-    `INSERT INTO image_records (id, token)
-    VALUES (?, ?)
-    ON CONFLICT(id) DO UPDATE SET token=excluded.token`,
+    `INSERT INTO image_records (id, token, meta)
+     VALUES (?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET token=excluded.token, meta=excluded.meta`,
   )
-  statement.run(id, token)
+  statement.run(id, token, metaJSON)
 
-  return { id, token }
+  return { id, token, meta }
 }
 
 /**
@@ -48,9 +54,18 @@ export const writeImageRecord = (id: string): ImageRecord => {
  */
 export const readImageRecord = (id: string): ImageRecord | null => {
   const row = database!
-    .prepare(`SELECT id, token FROM image_records WHERE id = ?`)
-    .get(id)
-  return row ? (row as ImageRecord) : null
+    .prepare(`SELECT id, token, meta FROM image_records WHERE id = ?`)
+    .get(id) as { id: string; token: number; meta: string } | undefined
+
+  if (!row) return null
+
+  const meta = JSON.parse(row.meta) as ImageDecryptionMeta // Hepsi base64 string!
+
+  return {
+    id: row.id,
+    token: row.token,
+    meta,
+  }
 }
 
 /**

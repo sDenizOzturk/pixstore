@@ -5,7 +5,6 @@ import PlayerDetailCard from './components/PlayerDetailCard.vue'
 
 <template>
   <header><ListRMPlayers /></header>
-
   <main><PlayerDetailCard /></main>
 </template>
 

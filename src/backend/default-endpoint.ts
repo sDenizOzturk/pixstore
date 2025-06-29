@@ -8,9 +8,10 @@
  */
 
 import http from 'http'
-import { getImage } from './image-service.js'
-import { encodeImagePayload } from '../shared/image-encoder.js'
-import { pixstoreConfig, IS_TEST } from '../shared/pixstore-config.js'
+import { getWirePayload } from './image-service.js'
+import { encodeWirePayload } from '../shared/wire-encoder.js'
+import { pixstoreConfig } from '../shared/pixstore-config.js'
+import { IS_TEST } from '../shared/constants.js'
 
 let server: http.Server
 
@@ -54,15 +55,15 @@ const requestHandler = (
     const id = decodeURIComponent(match[1])
     ;(async () => {
       try {
-        const image = await getImage(id)
-        const payload = encodeImagePayload(image)
+        const wirePayload = await getWirePayload(id)
+        const rawData = encodeWirePayload(wirePayload)
 
         res.writeHead(200, {
           'Content-Type': 'application/octet-stream',
-          'Content-Length': String(payload.length),
-          'X-Token': String(image.token),
+          'Content-Length': String(rawData.length),
+          'X-Token': String(wirePayload.token),
         })
-        res.end(payload)
+        res.end(rawData)
       } catch (err) {
         res
           .writeHead(404, { 'Content-Type': 'text/plain' })
