@@ -9,7 +9,6 @@ const expectedExports = [
   'updateImageFromFile',
   'deleteImage',
   'imageExists',
-  'getImage',
   'customEndpointHelper',
 ].sort()
 
