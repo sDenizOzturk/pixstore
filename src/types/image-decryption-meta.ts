@@ -1,5 +1,5 @@
 export interface ImageDecryptionMeta {
-  key: ArrayBuffer
-  iv: ArrayBuffer
-  tag: ArrayBuffer
+  key: string
+  iv: string
+  tag: string
 }

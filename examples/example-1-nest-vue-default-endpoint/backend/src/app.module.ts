@@ -10,6 +10,7 @@ import { RmPlayerResolver } from './rm-player.resolver';
       driver: ApolloDriver,
       autoSchemaFile: true,
       cors: false,
+      playground: true,
     }),
   ],
   providers: [RmPlayerResolver],

@@ -1,6 +1,6 @@
 import type { ImageDecryptionMeta } from './image-decryption-meta.js'
 
-export interface FrontendImageRecord {
+export interface ImageRecord {
   id: string
   token: number
   meta: ImageDecryptionMeta

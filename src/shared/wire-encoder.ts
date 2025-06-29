@@ -6,6 +6,7 @@ import {
   AES_GCM_TAG_LENGTH, // in bits
 } from '../shared/constants.js'
 import { ImageDecryptionMeta } from '../types/image-decryption-meta.js'
+import { arrayBufferToBase64, base64ToArrayBuffer } from './format-buffer.js'
 
 const TAG_SIZE_BYTES = AES_GCM_TAG_LENGTH / 8
 
@@ -17,11 +18,15 @@ const TAG_SIZE_BYTES = AES_GCM_TAG_LENGTH / 8
 export const encodeWirePayload = (payload: BackendWirePayload): Uint8Array => {
   const { token, meta, encrypted } = payload
 
+  // Convert base64 string to ArrayBuffer
+  const keyBuf = base64ToArrayBuffer(meta.key)
+  const ivBuf = base64ToArrayBuffer(meta.iv)
+  const tagBuf = base64ToArrayBuffer(meta.tag)
+
   // Token as 8 bytes (LE)
   const tokenBuf = new ArrayBuffer(8)
   new DataView(tokenBuf).setBigUint64(0, BigInt(token), true)
 
-  // Total length in bytes
   const total =
     8 + AES_KEY_SIZE + AES_IV_SIZE + TAG_SIZE_BYTES + encrypted.byteLength
   const result = new Uint8Array(total)
@@ -30,13 +35,13 @@ export const encodeWirePayload = (payload: BackendWirePayload): Uint8Array => {
   result.set(new Uint8Array(tokenBuf), offset)
   offset += 8
 
-  result.set(new Uint8Array(meta.key), offset)
+  result.set(new Uint8Array(keyBuf), offset)
   offset += AES_KEY_SIZE
 
-  result.set(new Uint8Array(meta.iv), offset)
+  result.set(new Uint8Array(ivBuf), offset)
   offset += AES_IV_SIZE
 
-  result.set(new Uint8Array(meta.tag), offset)
+  result.set(new Uint8Array(tagBuf), offset)
   offset += TAG_SIZE_BYTES
 
   result.set(new Uint8Array(encrypted), offset)
@@ -86,6 +91,10 @@ export const decodeWirePayload = (data: Uint8Array): FrontendWirePayload => {
   // 5) encrypted buffer
   const encrypted = data.subarray(offset)
 
-  const meta: ImageDecryptionMeta = { key, iv, tag }
+  const meta: ImageDecryptionMeta = {
+    key: arrayBufferToBase64(key),
+    iv: arrayBufferToBase64(iv),
+    tag: arrayBufferToBase64(tag),
+  }
   return { token, meta, encrypted }
 }

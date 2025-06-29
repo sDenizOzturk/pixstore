@@ -3,7 +3,7 @@ import '../../utils/frontend-crypto-polyfill.js'
 import 'fake-indexeddb/auto'
 import path from 'path'
 import fs from 'fs/promises'
-import { FrontendImageRecord } from '../../../src/types/frontend-image-record.js'
+import { ImageRecord } from '../../../src/types/image-record.js'
 import {
   getImage,
   deleteCachedImage,
@@ -34,7 +34,7 @@ beforeAll(() => {
 })
 
 describe('frontend image-service – full flow', () => {
-  let record: FrontendImageRecord
+  let record: ImageRecord
 
   beforeAll(async () => {
     startDefaultEndpoint()
@@ -43,9 +43,9 @@ describe('frontend image-service – full flow', () => {
       id: saved.id,
       token: saved.token,
       meta: {
-        key: toArrayBuffer(saved.meta.key),
-        iv: toArrayBuffer(saved.meta.iv),
-        tag: toArrayBuffer(saved.meta.tag),
+        key: saved.meta.key,
+        iv: saved.meta.iv,
+        tag: saved.meta.tag,
       },
     }
   })
@@ -97,9 +97,9 @@ describe('frontend image-service – full flow', () => {
       id: updated.id,
       token: updated.token,
       meta: {
-        key: toArrayBuffer(updated.meta.key),
-        iv: toArrayBuffer(updated.meta.iv),
-        tag: toArrayBuffer(updated.meta.tag),
+        key: updated.meta.key,
+        iv: updated.meta.iv,
+        tag: updated.meta.tag,
       },
     })
     expect(blob3).toBeInstanceOf(Blob)

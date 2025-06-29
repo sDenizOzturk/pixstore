@@ -11,11 +11,12 @@ import { sleep } from '../../utils'
 
 import { randomBytes } from 'crypto'
 import { pixstoreConfig } from '../../../src/shared/pixstore-config.js'
+import { arrayBufferToBase64 } from '../../../src/shared/format-buffer.js'
 
 const dummyMeta = {
-  key: randomBytes(32),
-  iv: randomBytes(12),
-  tag: randomBytes(16),
+  key: arrayBufferToBase64(randomBytes(32)),
+  iv: arrayBufferToBase64(randomBytes(12)),
+  tag: arrayBufferToBase64(randomBytes(16)),
 }
 
 const DB_PATH = pixstoreConfig.databasePath

@@ -7,6 +7,7 @@ import {
 } from '../shared/constants.js'
 import { getImageFormat, isValidImage } from './format-image.js'
 import { imageFormatToByte } from '../shared/format-image.js'
+import { arrayBufferToBase64 } from '../shared/format-buffer.js'
 
 /**
  * Generates a random AES key for per-image encryption.
@@ -53,6 +54,10 @@ export const encryptImage = (buffer: Buffer): EncryptedImage => {
   const { encrypted, iv, tag } = encrypt(plaintext, key)
   return {
     encrypted,
-    meta: { key, iv, tag },
+    meta: {
+      key: arrayBufferToBase64(key),
+      iv: arrayBufferToBase64(iv),
+      tag: arrayBufferToBase64(tag),
+    },
   }
 }

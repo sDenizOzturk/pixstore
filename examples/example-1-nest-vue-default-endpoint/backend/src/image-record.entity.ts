@@ -7,10 +7,25 @@ import { ImageRecord as ImageRecordModel } from '../../../../dist/types';
 import { ObjectType, Field, ID, Float } from '@nestjs/graphql';
 
 @ObjectType()
+export class ImageMeta {
+  @Field(() => String)
+  key: string;
+
+  @Field(() => String)
+  iv: string;
+
+  @Field(() => String)
+  tag: string;
+}
+
+@ObjectType()
 export class ImageRecord implements ImageRecordModel {
   @Field(() => ID)
   id: string;
 
   @Field(() => Float)
   token: number;
+
+  @Field(() => ImageMeta)
+  meta: ImageMeta;
 }

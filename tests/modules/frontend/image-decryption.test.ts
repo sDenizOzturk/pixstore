@@ -14,7 +14,7 @@ import {
   imageFormatToByte,
 } from '../../../src/shared/format-image.js'
 
-import { toArrayBuffer } from '../../utils'
+import { arrayBufferToBase64 } from '../../../src/shared/format-buffer.js'
 
 // Isolated decryption test (pure frontend)
 test('decryptImage returns original buffer and format', async () => {
@@ -40,7 +40,11 @@ test('decryptImage returns original buffer and format', async () => {
 
   const payload: EncryptedImagePayload = {
     encrypted: ciphertext,
-    meta: { key: key.buffer, iv: iv.buffer, tag: tag.buffer },
+    meta: {
+      key: arrayBufferToBase64(key.buffer),
+      iv: arrayBufferToBase64(iv.buffer),
+      tag: arrayBufferToBase64(tag.buffer),
+    },
   }
 
   const result = await decryptImage(payload)
@@ -58,9 +62,9 @@ test('backend encrypt, frontend decrypt (e2e)', async () => {
   const payload: EncryptedImagePayload = {
     encrypted: encrypted,
     meta: {
-      key: toArrayBuffer(meta.key),
-      iv: toArrayBuffer(meta.iv),
-      tag: toArrayBuffer(meta.tag),
+      key: meta.key,
+      iv: meta.iv,
+      tag: meta.tag,
     },
   }
 

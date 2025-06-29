@@ -71,7 +71,7 @@ Go to [http://localhost:5173/](http://localhost:5173/) in your browser.
 - In production, you’d use much higher cache limits!
 - You can adjust `FRONTEND_IMAGE_CACHE_LIMIT` and `FRONTEND_CLEANUP_BATCH` in `frontend/src/main.ts` to experiment.
 - Pixstore is imported from a local build for demo purposes. In your own project, just use:
-
+z"
   ```js
   import { getImage } from 'pixstore/frontend'
   ```

@@ -2,7 +2,7 @@ import { encryptImage } from '../../../src/backend/image-encryption.js'
 import { createDecipheriv } from 'crypto'
 import { readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
-import { BACKEND_AES_ALGORITHM } from '../../../src/shared/constants'
+import { BACKEND_AES_ALGORITHM } from '../../../src/shared/constants.js'
 import { getImageFormat } from '../../../src/backend/format-image.js'
 import { imageFormatToByte } from '../../../src/shared/format-image.js'
 import { isValidImage } from '../../../src/backend/format-image.js'
@@ -30,10 +30,11 @@ describe('encryptImage (with real assets)', () => {
 
       const decipher = createDecipheriv(
         BACKEND_AES_ALGORITHM,
-        meta.key,
-        meta.iv,
+        Buffer.from(meta.key, 'base64'),
+        Buffer.from(meta.iv, 'base64'),
       )
-      decipher.setAuthTag(meta.tag)
+
+      decipher.setAuthTag(Buffer.from(meta.tag, 'base64'))
       const plaintext = Buffer.concat([
         decipher.update(encrypted),
         decipher.final(),

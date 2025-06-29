@@ -6,7 +6,7 @@ import {
 } from './database.js'
 import { fetchEncodedImage } from './image-fetcher.js'
 import { decryptedPayloadToBlob } from './format-image.js'
-import type { FrontendImageRecord } from '../types/frontend-image-record.js'
+import type { ImageRecord } from '../types/image-record.js'
 import { decryptImage } from './image-decryption.js'
 import { decodeWirePayload } from '../shared/wire-encoder.js'
 import { IndexedDBImageRecord } from '../types/indexeddb-image-record.js'
@@ -16,7 +16,7 @@ import { IndexedDBImageRecord } from '../types/indexeddb-image-record.js'
  * Returns the cached Blob if token matches; otherwise fetches, updates, and returns new Blob.
  */
 export const getImage = async (
-  record: FrontendImageRecord,
+  record: ImageRecord,
   context?: any,
 ): Promise<Blob> => {
   // Attempt to read the cached image from IndexedDB by ID

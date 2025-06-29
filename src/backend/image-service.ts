@@ -12,7 +12,7 @@ import {
   writeImageRecord,
 } from './database.js'
 import { createUniqueId } from './unique-id.js'
-import type { BackendImageRecord } from '../types/backend-image-record.js'
+import type { ImageRecord } from '../types/image-record.js'
 import { encryptImage } from './image-encryption.js'
 import { BackendWirePayload } from '../types/backend-wire-payload.js'
 
@@ -47,7 +47,7 @@ const writeImage = async (
   id: string,
   buffer: Buffer,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   const { encrypted, meta } = encryptImage(buffer)
   await saveImageFile(id, encrypted)
   try {
@@ -65,7 +65,7 @@ const writeImage = async (
 export const saveImage = async (
   buffer: Buffer,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   const id = createUniqueId(dir)
   return await writeImage(id, buffer, dir)
 }
@@ -77,7 +77,7 @@ export const saveImage = async (
 export const saveImageFromFile = async (
   filePath: string,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   const buffer = await diskToBuffer(filePath)
   return await saveImage(buffer, dir)
 }
@@ -90,7 +90,7 @@ export const updateImage = async (
   id: string,
   buffer: Buffer,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   if (!imageRecordExists(id)) {
     throw new Error(`Image not found: ${id}`)
   }
@@ -105,7 +105,7 @@ export const updateImageFromFile = async (
   id: string,
   filePath: string,
   dir?: string,
-): Promise<BackendImageRecord> => {
+): Promise<ImageRecord> => {
   const buffer = await diskToBuffer(filePath)
   return await updateImage(id, buffer, dir)
 }
@@ -134,7 +134,7 @@ export const deleteImage = async (id: string): Promise<boolean> => {
  * Returns the image record (id + token) from the database.
  * Returns null if not found.
  */
-export const getImageRecord = (id: string): BackendImageRecord | null => {
+export const getImageRecord = (id: string): ImageRecord | null => {
   return readImageRecord(id)
 }
 

@@ -9,7 +9,7 @@ import { fetchEncodedImage } from '../../../src/frontend/image-fetcher'
 import { decodeWirePayload } from '../../../src/shared/wire-encoder'
 import fs from 'fs/promises'
 import path from 'path'
-import { BackendImageRecord } from '../../../src/types/backend-image-record'
+import { ImageRecord } from '../../../src/types/image-record'
 import { initializeDatabase } from '../../../src/backend/database'
 import { byteToImageFormat } from '../../../src/shared/format-image'
 import { decryptImage } from '../../../src/frontend/image-decryption.js'
@@ -26,7 +26,7 @@ afterAll(async () => {
 })
 
 describe('fetchEncodedImage (integration)', () => {
-  let record: BackendImageRecord
+  let record: ImageRecord
   beforeAll(async () => {
     record = await saveImageFromFile(TEST_IMAGE_PATH)
   })
@@ -42,9 +42,9 @@ describe('fetchEncodedImage (integration)', () => {
 
     expect(token).toBe(record.token)
 
-    expect(new Uint8Array(meta.key)).toEqual(new Uint8Array(record.meta.key))
-    expect(new Uint8Array(meta.iv)).toEqual(new Uint8Array(record.meta.iv))
-    expect(new Uint8Array(meta.tag)).toEqual(new Uint8Array(record.meta.tag))
+    expect(meta.key).toEqual(record.meta.key)
+    expect(meta.iv).toEqual(record.meta.iv)
+    expect(meta.tag).toEqual(record.meta.tag)
 
     const decrypted = await decryptImage({ encrypted, meta })
 

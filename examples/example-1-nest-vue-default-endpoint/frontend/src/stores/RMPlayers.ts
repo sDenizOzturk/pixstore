@@ -47,6 +47,11 @@ export const useRMPlayersStore = defineStore('RMPlayers', {
                 pixstoreRecord {
                   id
                   token
+                  meta {
+                    key
+                    iv
+                    tag
+                  }
                 }
               }
             }

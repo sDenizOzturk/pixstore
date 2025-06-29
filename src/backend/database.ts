@@ -1,8 +1,8 @@
 import BetterSqlite3 from 'better-sqlite3'
 
-import type { BackendImageRecord } from '../types/backend-image-record.js'
+import type { ImageRecord } from '../types/image-record.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
-import { ImageEncryptionMeta } from '../types/image-encryption-meta.js'
+import { ImageDecryptionMeta } from '../types/image-decryption-meta.js'
 
 let database: InstanceType<typeof BetterSqlite3> | null = null
 
@@ -34,16 +34,16 @@ export const initializeDatabase = () => {
  */
 export const writeImageRecord = (
   id: string,
-  meta: ImageEncryptionMeta,
-): BackendImageRecord => {
+  meta: ImageDecryptionMeta,
+): ImageRecord => {
   const token = Date.now()
-  const metaStr = JSON.stringify(meta)
+  const metaJSON = JSON.stringify(meta)
   const statement = database!.prepare(
     `INSERT INTO image_records (id, token, meta)
      VALUES (?, ?, ?)
      ON CONFLICT(id) DO UPDATE SET token=excluded.token, meta=excluded.meta`,
   )
-  statement.run(id, token, metaStr)
+  statement.run(id, token, metaJSON)
 
   return { id, token, meta }
 }
@@ -52,23 +52,14 @@ export const writeImageRecord = (
  * Retrieves the image record with the given ID.
  * Returns null if the record does not exist.
  */
-export const readImageRecord = (id: string): BackendImageRecord | null => {
+export const readImageRecord = (id: string): ImageRecord | null => {
   const row = database!
     .prepare(`SELECT id, token, meta FROM image_records WHERE id = ?`)
     .get(id) as { id: string; token: number; meta: string } | undefined
 
   if (!row) return null
 
-  // Parse meta and fix Buffer-serialized fields if necessary
-  const rawMeta = JSON.parse(row.meta) as any
-  const fixBuffer = (b: any): Buffer =>
-    Buffer.isBuffer(b) ? b : Buffer.from(Array.isArray(b) ? b : b.data) // covers both [1,2,3] and {data:[1,2,3]}
-
-  const meta: ImageEncryptionMeta = {
-    key: fixBuffer(rawMeta.key),
-    iv: fixBuffer(rawMeta.iv),
-    tag: fixBuffer(rawMeta.tag),
-  }
+  const meta = JSON.parse(row.meta) as ImageDecryptionMeta // Hepsi base64 string!
 
   return {
     id: row.id,

@@ -1,7 +1,7 @@
-import { ImageEncryptionMeta } from './image-encryption-meta.js'
+import { ImageDecryptionMeta } from './image-decryption-meta.js'
 
 export interface BackendWirePayload {
   encrypted: Buffer
-  meta: ImageEncryptionMeta
+  meta: ImageDecryptionMeta
   token: number
 }

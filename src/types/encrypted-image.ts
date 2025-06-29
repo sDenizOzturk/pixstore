@@ -1,6 +1,6 @@
-import { ImageEncryptionMeta } from './image-encryption-meta.js'
+import { ImageDecryptionMeta } from './image-decryption-meta.js'
 
 export interface EncryptedImage {
   encrypted: Buffer
-  meta: ImageEncryptionMeta
+  meta: ImageDecryptionMeta
 }
