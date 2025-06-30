@@ -75,7 +75,7 @@ export const defaultConfig: PixstoreConfig = {
     : 3001,
   defaultEndpointRoute: '/pixstore-image',
 
-  backendApiHost: IS_TEST ? '127.0.0.1' : 'unknown',
+  defaultEndpointHost: IS_TEST ? '127.0.0.1' : 'unknown',
   frontendDbName: IS_TEST ? 'pixstore-test' : 'pixstore',
   frontendDbVersion: 1,
   imageStoreName: 'images',

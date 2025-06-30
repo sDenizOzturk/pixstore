@@ -13,13 +13,14 @@ export interface PixstoreBackendConfig {
 
 export interface PixstoreFrontendConfig {
   imageFormats: readonly ImageFormat[]
-  backendApiHost: string
   frontendDbName: string
   frontendDbVersion: number
   imageStoreName: string
   frontendImageCacheLimit: number
   frontendCleanupBatch: number
+  defaultEndpointHost: string
   defaultEndpointPort: number
+  defaultEndpointRoute: string
 }
 
 export interface PixstoreConfig
