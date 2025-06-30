@@ -1,49 +1,44 @@
 <p align="center">
-  <img src="docusaurus/static/img/logo.png" alt="Lightweight Secure TCP" width="140" style="border-radius: 12px;" />
+  <img src="docusaurus/static/img/logo_w_text.png" width="140" />
 </p>
 
-<h1 align="center">Pixstore</h1>
 <p align="center"><em>Vanilla TypeScript Full Stack Image Caching Library</em></p>
 
-**Pixstore** is a modern, high-performance and secure image storage & caching library for Node.js backends and browser frontends.  
-It is built entirely with **Vanilla TypeScript**, with no reliance on external frameworks or heavy runtime dependencies.
+**Pixstore** is a modern, high-performance, and secure image storage & caching library for Node.js backends and browser frontends. It is built entirely with **Vanilla TypeScript**, with no reliance on external frameworks or heavy runtime dependencies.
 
-Pixstore enables encrypted, reliable and scalable image serving for all modern web apps. It is designed to be minimal, predictable, and easy to integrate into any stack — from plain JavaScript apps to complex full-stack frameworks.
-
----
+It enables encrypted, reliable, and scalable image serving for all modern web apps. Pixstore is designed to be minimal, predictable, and easy to integrate into any stack, from plain JavaScript apps to complex full-stack frameworks.
 
 ## 🔑 Key Features
 
-- **Universal API:** Same methods on frontend & backend
-- **Automatic caching:** IndexedDB (browser) & SQLite (backend)
-- **Efficient, scalable image serving** for demanding apps
-- **End-to-end AES-GCM encryption**
-- **Per-image encryption key:** Unique keys stored only on backend
-- **Minimal dependencies**
+- **Universal API:** Use the same methods on frontend & backend
+- **Automatic caching** in browser (IndexedDB) and backend (SQLite)
+- **Efficient, scalable image serving** for demanding applications
+- **End-to-end AES-GCM encryption** for maximum data security
+- **Per-image unique key:** Each image is encrypted with a unique key
+- **Minimal dependencies** for easy integration
 - **Full TypeScript support**
-- **Production-ready:** E2E tested
-- **Easy to extend:** Custom endpoint/fetcher support
+- **Production-ready:** Fully tested with E2E scenarios
+- **Easy extensibility:** Custom endpoint/fetcher
 
 ---
 
 ## 💡 Why Pixstore?
 
-- **Unified:** Use the same API across client & server
-- **Secure by design:** Encryption at rest & in transit
-- **Minimal setup:** Get started in minutes
-- **Future-proof:** Actively maintained and extensible
+- **Unified solution:** Handle both backend and frontend image storage with a single API.
+- **Built-in encryption:** Protect your users’ images at rest and in transit.
+- **Minimal setup:** Get started with just a few lines of code.
+- **Future-proof:** Actively maintained, with support for new features and storage backends.
 
-Ideal for secure, scalable and fast image handling — from personal projects to large-scale production deployments.
+Pixstore is ideal for projects that need secure, scalable and fast image handling, from personal projects to large-scale, production web applications.
 
 ---
 
 ## ✅ Compatibility
 
-- **Node.js:** v16+ (LTS)
-- **Frontend frameworks:** React, Vue, Next.js, etc.
-- **Backend frameworks:** Express, Fastify, NestJS, etc.
-- **Browsers:** Chrome, Firefox, Safari, Edge (recent versions)
-- **Modules:** ES Modules (ESM) only
+- **Node.js:** v16+ (tested on LTS versions)
+- **Frameworks:** Works with React, Vue, Next.js, Express, NestJS, etc.
+- **Browsers:** Chrome, Firefox, Safari, Edge (last 2 major versions)
+- **Module format:** ES Modules (ESM) only
 
 ---
 
