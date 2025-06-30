@@ -83,8 +83,8 @@ const requestHandler = (
  * - Uses `unref()` so Jest or other processes can exit cleanly.
  */
 export const startDefaultEndpoint = (): void => {
-  const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
-  const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
+  const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointListenHost
+  const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointListenPort
 
   if (server) return
 

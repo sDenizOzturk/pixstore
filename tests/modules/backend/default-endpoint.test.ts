@@ -14,9 +14,9 @@ import {
 
 import { pixstoreConfig } from '../../../src/shared/pixstore-config.js'
 import { initializeDatabase } from '../../../src/backend/database.js'
-const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointHost
+const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointConnectHost
 const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
-const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointPort
+const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointConnectPort
 
 beforeAll(() => {
   initializeDatabase()

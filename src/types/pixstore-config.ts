@@ -4,22 +4,23 @@ export interface PixstoreBackendConfig {
   imageFormats: readonly ImageFormat[]
   imageRootDir: string
   databasePath: string
-  defaultEndpointHost: string
   defaultEndpointEnabled: boolean
-  defaultEndpointPort: number
+  defaultEndpointListenHost: string
+  defaultEndpointListenPort: number
   defaultEndpointRoute: string
   accessControlAllowOrigin: string
 }
 
 export interface PixstoreFrontendConfig {
   imageFormats: readonly ImageFormat[]
-  backendApiHost: string
   frontendDbName: string
   frontendDbVersion: number
   imageStoreName: string
   frontendImageCacheLimit: number
   frontendCleanupBatch: number
-  defaultEndpointPort: number
+  defaultEndpointConnectHost: string
+  defaultEndpointConnectPort: number
+  defaultEndpointRoute: string
 }
 
 export interface PixstoreConfig
