@@ -1,3 +1,11 @@
+## [2.0.1](https://github.com/sDenizOzturk/pixstore/compare/v2.0.0...v2.0.1) (2025-06-30)
+
+
+### Bug Fixes
+
+* fix frontend config type ([efb373f](https://github.com/sDenizOzturk/pixstore/commit/efb373fb4db417b232e1e388ea3dbc8b73671cd2))
+* separate listen/connect endpoint configs and improve validation ([03544f2](https://github.com/sDenizOzturk/pixstore/commit/03544f2d7183abee92188e34e6a7260f9d888e6a))
+
 # [2.0.0](https://github.com/sDenizOzturk/pixstore/compare/v1.2.1...v2.0.0) (2025-06-29)
 
 
