@@ -7,7 +7,24 @@ on:
     branches: [main]
 
 jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+        working-directory: docusaurus
+
+      - name: Build Docs
+        run: npm run build
+        working-directory: docusaurus
+
   build-and-test:
+    needs: build-docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

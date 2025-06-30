@@ -21,6 +21,7 @@ pixstore-images/
 pixstore-images-test/
 *.log
 
-# Mac ve OS öntanımlı dosyalar
+# Mac OS
 .DS_Store
 Thumbs.db
+
