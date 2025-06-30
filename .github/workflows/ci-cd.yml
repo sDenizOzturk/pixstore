@@ -19,6 +19,11 @@ jobs:
       - run: npm run build
       - run: npm run test:build
       - run: npm test
+
+      - name: Build Docs
+        run: npm run build
+        working-directory: docusaurus
+
       - run: npm run prepare-publish
 
       - name: Release (semantic-release)
