@@ -46,16 +46,21 @@ const validateConfig = (config: Partial<PixstoreConfig>): void => {
     throw new Error('imageStoreName cannot be empty')
   }
 
-  // port must be in valid range
-  if (config.defaultEndpointPort !== undefined) {
-    const port = config.defaultEndpointPort
-    if (!Number.isInteger(port) || port < 1 || port > 65535) {
-      throw new Error(
-        'defaultEndpointPort must be an integer between 1 and 65535',
-      )
+  // ports must be in valid range
+  const validatePort = (name: string, port: number | undefined) => {
+    if (
+      port !== undefined &&
+      (!Number.isInteger(port) || port < 1 || port > 65535)
+    ) {
+      throw new Error(`${name} must be an integer between 1 and 65535`)
     }
   }
+
+  validatePort('defaultEndpointListenPort', config.defaultEndpointListenPort)
+  validatePort('defaultEndpointConnectPort', config.defaultEndpointConnectPort)
 }
+
+const DEFAULT_ENDPOINT_TEST_PORT = 10000 + Math.floor(Math.random() * 50000)
 
 /**
  * The default Pixstore configuration object.
@@ -66,16 +71,14 @@ export const defaultConfig: PixstoreConfig = {
   ...buildFormatMaps(DEFAULT_IMAGE_FORMATS),
   imageExtension: '.pixstore-image',
   imageRootDir: IS_TEST ? 'pixstore-test-images' : 'pixstore-images',
-
   databasePath: IS_TEST ? './.pixstore-test.sqlite' : './.pixstore.sqlite',
-  defaultEndpointHost: IS_TEST ? '127.0.0.1' : '0.0.0.0',
   defaultEndpointEnabled: true,
-  defaultEndpointPort: IS_TEST
-    ? 10000 + Math.floor(Math.random() * 50000)
-    : 3001,
   defaultEndpointRoute: '/pixstore-image',
+  defaultEndpointListenHost: IS_TEST ? '127.0.0.1' : '0.0.0.0',
+  defaultEndpointListenPort: IS_TEST ? DEFAULT_ENDPOINT_TEST_PORT : 3001,
 
-  defaultEndpointHost: IS_TEST ? '127.0.0.1' : 'unknown',
+  defaultEndpointConnectHost: IS_TEST ? '127.0.0.1' : 'unknown',
+  defaultEndpointConnectPort: IS_TEST ? DEFAULT_ENDPOINT_TEST_PORT : 3001,
   frontendDbName: IS_TEST ? 'pixstore-test' : 'pixstore',
   frontendDbVersion: 1,
   imageStoreName: 'images',

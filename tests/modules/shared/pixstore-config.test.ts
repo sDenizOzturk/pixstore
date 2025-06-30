@@ -57,12 +57,21 @@ describe('Pixstore config system', () => {
     )
   })
 
-  it('throws if defaultEndpointPort out of range', () => {
-    expect(() => initPixstore({ defaultEndpointPort: 0 })).toThrow(
-      'defaultEndpointPort must be an integer between 1 and 65535',
+  it('throws if defaultEndpointListenPort out of range', () => {
+    expect(() => initPixstore({ defaultEndpointListenPort: 0 })).toThrow(
+      'defaultEndpointListenPort must be an integer between 1 and 65535',
     )
-    expect(() => initPixstore({ defaultEndpointPort: 70000 })).toThrow(
-      'defaultEndpointPort must be an integer between 1 and 65535',
+    expect(() => initPixstore({ defaultEndpointListenPort: 70000 })).toThrow(
+      'defaultEndpointListenPort must be an integer between 1 and 65535',
+    )
+  })
+
+  it('throws if defaultEndpointConnectPort out of range', () => {
+    expect(() => initPixstore({ defaultEndpointConnectPort: 0 })).toThrow(
+      'defaultEndpointConnectPort must be an integer between 1 and 65535',
+    )
+    expect(() => initPixstore({ defaultEndpointConnectPort: 70000 })).toThrow(
+      'defaultEndpointConnectPort must be an integer between 1 and 65535',
     )
   })
 })
