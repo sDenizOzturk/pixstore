@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docusaurus/static/img/logo_w_text.png" width="140" />
+  <img src="docusaurus/static/img/logo_w_text.png" width="400" />
 </p>
 
 <p align="center"><em>Vanilla TypeScript Full Stack Image Caching Library</em></p>
