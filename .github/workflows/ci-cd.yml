@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -7,24 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install deps
-        run: npm ci
-        working-directory: docusaurus
-
-      - name: Build Docs
-        run: npm run build
-        working-directory: docusaurus
-
-  build-and-test:
-    needs: build-docs
+  test-and-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +15,7 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
+
       - run: npm ci
       - run: npm run build
       - run: npm run test:build
@@ -44,3 +28,30 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
+
+  build-docs:
+    needs: test-and-release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # 👈 Ek güvenlik: PR'da docs push'lama!
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+        working-directory: docusaurus
+
+      - name: Build Docs
+        run: npm run build
+        working-directory: docusaurus
+
+      - name: Commit and push built docs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git commit -m "docs: update built documentation [skip ci]" || echo "No changes to commit"
+          git push
