@@ -1,4 +1,9 @@
-# Pixstore
+<p align="center">
+  <img src="docusaurus/static/img/logo.png" alt="Lightweight Secure TCP" width="140" style="border-radius: 12px;" />
+</p>
+
+<h1 align="center">Pixstore</h1>
+<p align="center"><em>Vanilla TypeScript Full Stack Image Caching Library</em></p>
 
 **Pixstore** is a modern, high-performance and secure image storage & caching library for Node.js backends and browser frontends.  
 It is built entirely with **Vanilla TypeScript**, with no reliance on external frameworks or heavy runtime dependencies.
@@ -56,12 +61,12 @@ Or using Yarn:
 yarn add pixstore
 ```
 
-## 📄 [View on npm (v2.0.0)](https://www.npmjs.com/package/pixstore)
+### 📄 [View on npm](https://www.npmjs.com/package/pixstore)
 
 ## 📚 Documentation
 
 Learn how to install, configure and use Pixstore:  
-👉 [View full documentation](https://sdenizozturk.github.io/pixstore/docs/introduction)
+👉 [View full documentation](https://sdenizozturk.github.io/pixstore)
 
 ---
 
