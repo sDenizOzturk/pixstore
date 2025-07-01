@@ -27,7 +27,11 @@ export const getImage = async (
   if (cached && cached.token === token) {
     const indexedDBRecord = await readImageRecord(id)
     const encrypted = indexedDBRecord!.encrypted
+
+    // Decrypt the image using the extracted encrypted data and meta
     const imagePayload = await decryptImage(encrypted, meta)
+
+    // Return the up-to-date Blob for rendering
     return decryptedPayloadToBlob(imagePayload)
   }
 
@@ -48,7 +52,8 @@ export const getImage = async (
   // Save the updated image into the local cache
   await writeImageRecord(indexedDBRecord)
 
-  // Decrypt the image using the extracted encrypted data and meta
+  // Decrypt the image using the encrypted data and meta from the wire payload.
+  // The `record.meta` is not used, using stale meta could break decryption if the image was recently updated.
   const imagePayload = await decryptImage(
     decodedWirePayload.encrypted,
     decodedWirePayload.meta,
@@ -62,6 +67,7 @@ export const getImage = async (
  * Removes a cached image from IndexedDB.
  */
 export const deleteCachedImage = async (id: string): Promise<void> => {
+  // Deletes the image record (by ID) from the local IndexedDB cache
   await deleteImageRecord(id)
 }
 
@@ -69,5 +75,6 @@ export const deleteCachedImage = async (id: string): Promise<void> => {
  * Returns true if a cached image exists in IndexedDB for the given id.
  */
 export const cachedImageExists = async (id: string): Promise<boolean> => {
+  // Checks IndexedDB for an image record with the specified ID
   return await imageRecordExists(id)
 }

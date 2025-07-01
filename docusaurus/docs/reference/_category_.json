@@ -1,0 +1,8 @@
+{
+  "label": "API Reference",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Reference for all Pixstore public APIs, including backend and frontend modules."
+  }
+}
