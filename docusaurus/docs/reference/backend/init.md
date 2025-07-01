@@ -4,6 +4,8 @@ title: Initialization
 sidebar_position: 1
 ---
 
+import HowItWorksWarning from '@site/src/components/HowItWorksWarning'
+
 The function on this page is exported from the `pixstore/backend` entrypoint:
 
 ```ts
@@ -76,6 +78,8 @@ Otherwise, the frontend mechanism of this library can not fetch images automatic
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**

@@ -4,6 +4,8 @@ title: Image Service
 sidebar_position: 2
 ---
 
+import HowItWorksWarning from '@site/src/components/HowItWorksWarning'
+
 # Image Service
 
 This module provides high-level functions to retrieve and manage encrypted images on the frontend.
@@ -68,6 +70,8 @@ try {
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**
@@ -164,6 +168,8 @@ await deleteCachedImage(imageId)
 
 ### How it works?
 
+<HowItWorksWarning />
+
 ```ts
 /**
  * Removes a cached image from IndexedDB.
@@ -219,6 +225,8 @@ if (exists) {
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**

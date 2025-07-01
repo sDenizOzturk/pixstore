@@ -4,6 +4,8 @@ title: Image Service
 sidebar_position: 2
 ---
 
+import HowItWorksWarning from '@site/src/components/HowItWorksWarning'
+
 # Image Service
 
 This module provides high-level functions to store, retrieve, update, and delete encrypted images on the backend.
@@ -69,6 +71,8 @@ res.json(player)
 
 ### How it works?
 
+<HowItWorksWarning />
+
 ```ts
 /**
  * Returns the image record (id + token) from the database.
@@ -129,6 +133,8 @@ res.json(player)
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**
@@ -212,6 +218,8 @@ const imageRecord = await saveImageFromFile('./assets/logo.png', 'system')
 
 ### How it works?
 
+<HowItWorksWarning />
+
 ```ts
 /**
  * Reads an image file from disk and saves it as a new image
@@ -273,6 +281,8 @@ try {
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**
@@ -358,6 +368,8 @@ await updateImageFromFile('player-123', './images/new-logo.png')
 
 ### How it works?
 
+<HowItWorksWarning />
+
 ```ts
 /**
  * Reads a buffer from a file and updates the image with the given ID.
@@ -417,6 +429,8 @@ if (success) {
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**
@@ -483,6 +497,8 @@ if (await imageExists(imageId)) {
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**

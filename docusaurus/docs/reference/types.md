@@ -4,6 +4,8 @@ title: Shared Types
 sidebar_position: 3
 ---
 
+import HowItWorksWarning from '@site/src/components/HowItWorksWarning'
+
 # Shared Types
 
 This page documents the shared type definitions used across Pixstore frontend and backend.
@@ -43,6 +45,8 @@ export interface ImageRecord {
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 // Metadata required to decrypt an encrypted image

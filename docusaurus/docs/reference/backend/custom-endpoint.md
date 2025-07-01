@@ -4,6 +4,8 @@ title: Custom Endpoint Helper
 sidebar_position: 3
 ---
 
+import HowItWorksWarning from '@site/src/components/HowItWorksWarning'
+
 The function on this page is exported from the `pixstore/backend` entrypoint:
 
 ```ts
@@ -56,6 +58,8 @@ try {
 ---
 
 ### How it works?
+
+<HowItWorksWarning />
 
 ```ts
 /**
