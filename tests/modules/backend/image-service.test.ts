@@ -70,11 +70,7 @@ describe('updateImageFromFile', () => {
 
     await sleep(5)
 
-    const updated = await updateImageFromFile(
-      original.id,
-      originalPath,
-      testDir,
-    )
+    const updated = await updateImageFromFile(original.id, originalPath)
 
     expect(updated.id).toBe(original.id)
     expect(updated.token).not.toBe(original.token)
@@ -87,9 +83,7 @@ describe('updateImageFromFile', () => {
   it('should reject when updating a non-existent image', async () => {
     const fakeId = `${testDir}:no-such-id`
     const filePath = path.join(assetsDir, '1-pixel.png')
-    await expect(
-      updateImageFromFile(fakeId, filePath, testDir),
-    ).rejects.toThrow()
+    await expect(updateImageFromFile(fakeId, filePath)).rejects.toThrow()
   })
 })
 
