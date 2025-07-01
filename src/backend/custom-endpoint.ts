@@ -8,11 +8,16 @@ import { isServerStarted } from './default-endpoint.js'
  * Can be used in any custom endpoint handler to build a response.
  */
 export const customEndpointHelper = async (id: string): Promise<Uint8Array> => {
+  // Prevent usage if the default endpoint is active (safety guard)
   if (isServerStarted()) {
     throw new Error(
       'Pixstore custom endpoint mode is not active. Please disable the default endpoint before using customEndpointHelper().',
     )
   }
+
+  // Fetch decrypted image and metadata as a wire payload structure
   const wirePayload = await getWirePayload(id)
+
+  // Encode it as Uint8Array in Pixstore wire format (used by frontend to decode)
   return encodeWirePayload(wirePayload)
 }
