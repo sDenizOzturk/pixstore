@@ -40,6 +40,15 @@ export const getWirePayload = async (
 }
 
 /**
+ * Returns the image record (id + token) from the database
+ * Returns null if not found
+ */
+export const getImageRecord = (id: string): ImageRecord | null => {
+  // Reads imageRecord from database (includes id, token, and meta fields)
+  return readImageRecord(id)
+}
+
+/**
  * Writes an image buffer to disk and updates or creates its database record.
  * If writing to the database fails, the file is deleted to maintain consistency.
  */
@@ -96,7 +105,6 @@ export const saveImageFromFile = async (
 
 /**
  * Updates an existing image by overwriting the file and refreshing the database record
- * Optionally, a directory prefix can be specified
  */
 export const updateImage = async (
   id: string,
@@ -146,15 +154,6 @@ export const deleteImage = async (id: string): Promise<boolean> => {
   }
 
   return deleted
-}
-
-/**
- * Returns the image record (id + token) from the database
- * Returns null if not found
- */
-export const getImageRecord = (id: string): ImageRecord | null => {
-  // Reads imageRecord from database (includes id, token, and meta fields)
-  return readImageRecord(id)
 }
 
 /**

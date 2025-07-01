@@ -11,9 +11,13 @@ export const initPixstoreFrontend = (
   config: Partial<PixstoreFrontendConfig> = {},
   customImageFetcher?: CustomImageFetcher,
 ) => {
+  // Apply user config to internal state
   initPixstore(config)
+
+  // Register optional image fetcher override
   registerCustomImageFetcher(customImageFetcher)
 }
+
 // Export main image service functions for external use
 export {
   getImage,
