@@ -59,7 +59,7 @@ describe('Pixstore default endpoint – single file update flow', () => {
     expect(meta1).toBeDefined()
 
     // Update with new image
-    const record2 = await updateImage(imageId, buffer2, 'students')
+    const record2 = await updateImage(imageId, buffer2)
     expect(record2.token).not.toBe(originalToken)
 
     // Fetch updated via endpoint

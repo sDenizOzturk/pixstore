@@ -41,7 +41,7 @@ describe('Pixstore backend highload scenario', () => {
   it('should update all images', async () => {
     const buffer2 = fs.readFileSync(imageFile2)
     for (const id of ids) {
-      await updateImage(id, buffer2, prefix)
+      await updateImage(id, buffer2)
       const { encrypted } = await getWirePayload(id)
       expect(encrypted.length).toBeGreaterThan(0)
     }
