@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/sDenizOzturk/pixstore/compare/v2.0.1...v2.0.2) (2025-07-01)
+
+
+### Bug Fixes
+
+* remove unnecessary `dir` param from updateImageFromFile ([cb02c42](https://github.com/sDenizOzturk/pixstore/commit/cb02c42120245b0c252e05fcb83d6d71684a056d))
+
 ## [2.0.1](https://github.com/sDenizOzturk/pixstore/compare/v2.0.0...v2.0.1) (2025-06-30)
 
 
