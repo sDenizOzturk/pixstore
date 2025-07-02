@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/sDenizOzturk/pixstore/compare/v2.1.0...v2.1.1) (2025-07-02)
+
+
+### Bug Fixes
+
+* throw PixstoreError for invalid image files to align with centralized error handling ([8ee2dff](https://github.com/sDenizOzturk/pixstore/commit/8ee2dffba91b4e3d7a4257b98fed31028c522bf4))
+
 # [2.1.0](https://github.com/sDenizOzturk/pixstore/compare/v2.0.2...v2.1.0) (2025-07-02)
 
 
