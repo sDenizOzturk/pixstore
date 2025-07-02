@@ -15,6 +15,7 @@ import { createUniqueId } from './unique-id.js'
 import type { ImageRecord } from '../types/image-record.js'
 import { encryptImage } from './image-encryption.js'
 import { BackendWirePayload } from '../types/wire-payload.js'
+import { handleErrorAsync, handleErrorSync } from '../shared/handle-error.js'
 
 /**
  * Retrieves the encrypted image payload (wire format) for the given image ID.
@@ -44,8 +45,10 @@ export const getWirePayload = async (
  * Returns null if not found
  */
 export const getImageRecord = (id: string): ImageRecord | null => {
-  // Reads imageRecord from database (includes id, token, and meta fields)
-  return readImageRecord(id)
+  return handleErrorSync(() => {
+    // Reads imageRecord from database (includes id, token, and meta fields)
+    return readImageRecord(id)
+  })
 }
 
 /**
@@ -80,12 +83,14 @@ const writeImage = async (
 export const saveImage = async (
   buffer: Buffer,
   dir?: string,
-): Promise<ImageRecord> => {
-  // Generate a unique ID for this image, optionally scoped by dir
-  const id = createUniqueId(dir)
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Generate a unique ID for this image, optionally scoped by dir
+    const id = createUniqueId(dir)
 
-  // Write the encrypted image and metadata
-  return await writeImage(id, buffer, dir)
+    // Write the encrypted image and metadata
+    return await writeImage(id, buffer, dir)
+  })
 }
 
 /**
@@ -95,12 +100,14 @@ export const saveImage = async (
 export const saveImageFromFile = async (
   filePath: string,
   dir?: string,
-): Promise<ImageRecord> => {
-  // Read file content into a Buffer
-  const buffer = await diskToBuffer(filePath)
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Read file content into a Buffer
+    const buffer = await diskToBuffer(filePath)
 
-  // Save buffer as encrypted image
-  return await saveImage(buffer, dir)
+    // Save buffer as encrypted image
+    return await saveImage(buffer, dir)
+  })
 }
 
 /**
@@ -109,14 +116,16 @@ export const saveImageFromFile = async (
 export const updateImage = async (
   id: string,
   buffer: Buffer,
-): Promise<ImageRecord> => {
-  // Check if image exists in the database
-  if (!imageRecordExists(id)) {
-    throw new Error(`Image not found: ${id}`)
-  }
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Check if image exists in the database
+    if (!imageRecordExists(id)) {
+      throw new Error(`Image not found: ${id}`)
+    }
 
-  // Overwrite image and update its metadata
-  return await writeImage(id, buffer)
+    // Overwrite image and update its metadata
+    return await writeImage(id, buffer)
+  })
 }
 
 /**
@@ -126,40 +135,46 @@ export const updateImage = async (
 export const updateImageFromFile = async (
   id: string,
   filePath: string,
-): Promise<ImageRecord> => {
-  // Read file content into a Buffer
-  const buffer = await diskToBuffer(filePath)
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Read file content into a Buffer
+    const buffer = await diskToBuffer(filePath)
 
-  // Overwrite existing image with new buffer
-  return await updateImage(id, buffer)
+    // Overwrite existing image with new buffer
+    return await updateImage(id, buffer)
+  })
 }
 
 /**
  * Deletes the image file and corresponding database record for the given ID
  * Returns true if at least one of them was deleted
  */
-export const deleteImage = async (id: string): Promise<boolean> => {
-  let deleted = false
+export const deleteImage = (id: string): Promise<boolean | null> => {
+  return handleErrorAsync(async () => {
+    let deleted = false
 
-  // Delete the image file if it exists
-  if (await imageFileExists(id)) {
-    await deleteImageFile(id)
-    deleted = true
-  }
+    // Delete the image file if it exists
+    if (await imageFileExists(id)) {
+      await deleteImageFile(id)
+      deleted = true
+    }
 
-  // Delete the metadata record if it exists
-  if (imageRecordExists(id)) {
-    deleteImageRecord(id)
-    deleted = true
-  }
+    // Delete the metadata record if it exists
+    if (imageRecordExists(id)) {
+      deleteImageRecord(id)
+      deleted = true
+    }
 
-  return deleted
+    return deleted
+  })
 }
 
 /**
  * Checks whether the image exists either on disk or in the database
  */
-export const imageExists = async (id: string): Promise<boolean> => {
-  // Returns true if image file or metadata record exists
-  return (await imageFileExists(id)) || imageRecordExists(id)
+export const imageExists = async (id: string): Promise<boolean | null> => {
+  return handleErrorAsync(async () => {
+    // Returns true if image file or metadata record exists
+    return (await imageFileExists(id)) || imageRecordExists(id)
+  })
 }

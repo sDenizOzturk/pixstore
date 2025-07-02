@@ -28,7 +28,8 @@ afterAll(async () => {
 describe('fetchEncodedImage (integration)', () => {
   let record: ImageRecord
   beforeAll(async () => {
-    record = await saveImageFromFile(TEST_IMAGE_PATH)
+    record = (await saveImageFromFile(TEST_IMAGE_PATH)) as ImageRecord
+    if (!record) throw new Error('Test image could not be saved!')
   })
 
   it('fetches and decodes the image as expected', async () => {

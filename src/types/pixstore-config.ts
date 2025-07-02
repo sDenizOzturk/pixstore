@@ -1,4 +1,5 @@
 import type { ImageFormat } from './image-format.js'
+import type { ErrorHandlingMode } from './error-handling-mode.ts'
 
 export interface PixstoreBackendConfig {
   imageFormats: readonly ImageFormat[]
@@ -9,6 +10,7 @@ export interface PixstoreBackendConfig {
   defaultEndpointListenPort: number
   defaultEndpointRoute: string
   accessControlAllowOrigin: string
+  errorHandlingMode: ErrorHandlingMode
 }
 
 export interface PixstoreFrontendConfig {
@@ -21,6 +23,7 @@ export interface PixstoreFrontendConfig {
   defaultEndpointConnectHost: string
   defaultEndpointConnectPort: number
   defaultEndpointRoute: string
+  errorHandlingMode: ErrorHandlingMode
 }
 
 export interface PixstoreConfig

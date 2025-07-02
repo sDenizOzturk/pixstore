@@ -41,7 +41,7 @@ Otherwise, the image is fetched from the backend in encrypted wire format, decod
 export const getImage = (
   record: ImageRecord,
   context?: any
-): Promise<Blob>
+): Promise<Blob | null>
 ```
 
 ---
@@ -58,11 +58,11 @@ export const getImage = (
 ### Example
 
 ```ts
-try {
-  const blob = await getImage(imageRecord)
+const blob = await getImage(imageRecord)
+if (blob) {
   const url = URL.createObjectURL(blob)
   // ...use in <img> or wherever
-} catch {
+} else {
   // show fallback, placeholder, etc.
 }
 ```
@@ -81,49 +81,51 @@ try {
 export const getImage = async (
   record: ImageRecord,
   context?: any,
-): Promise<Blob> => {
-  // Attempt to read the cached image from IndexedDB by ID
-  const { id, token, meta } = record
-  const cached = await readImageRecord(id)
+): Promise<Blob | null> => {
+  return handleErrorAsync(async () => {
+    // Attempt to read the cached image from IndexedDB by ID
+    const { id, token, meta } = record
+    const cached = await readImageRecord(id)
 
-  // If a cached image exists and the token matches, return it immediately
-  if (cached && cached.token === token) {
-    const indexedDBRecord = await readImageRecord(id)
-    const encrypted = indexedDBRecord!.encrypted
+    // If a cached image exists and the token matches, return it immediately
+    if (cached && cached.token === token) {
+      const indexedDBRecord = await readImageRecord(id)
+      const encrypted = indexedDBRecord!.encrypted
 
-    // Decrypt the image using the extracted encrypted data and meta
-    const imagePayload = await decryptImage(encrypted, meta)
+      // Decrypt the image using the extracted encrypted data and meta
+      const imagePayload = await decryptImage(encrypted, meta)
+
+      // Return the up-to-date Blob for rendering
+      return decryptedPayloadToBlob(imagePayload)
+    }
+
+    // Otherwise, fetch the latest encoded image from the backend
+    const encoded = await fetchEncodedImage(record.id, context)
+
+    // Decode the wire payload to extract encrypted data, meta, and token
+    const decodedWirePayload = decodeWirePayload(encoded)
+
+    // Prepare the IndexedDB record with fresh encrypted data and token
+    const indexedDBRecord: IndexedDBImageRecord = {
+      id,
+      encrypted: decodedWirePayload.encrypted,
+      token: decodedWirePayload.token,
+      lastUsed: Date.now(),
+    }
+
+    // Save the updated image into the local cache
+    await writeImageRecord(indexedDBRecord)
+
+    // Decrypt the image using the encrypted data and meta from the wire payload.
+    // The `record.meta` is not used, using stale meta could break decryption if the image was recently updated.
+    const imagePayload = await decryptImage(
+      decodedWirePayload.encrypted,
+      decodedWirePayload.meta,
+    )
 
     // Return the up-to-date Blob for rendering
     return decryptedPayloadToBlob(imagePayload)
-  }
-
-  // Otherwise, fetch the latest encoded image from the backend
-  const encoded = await fetchEncodedImage(record.id, context)
-
-  // Decode the wire payload to extract encrypted data, meta, and token
-  const decodedWirePayload = decodeWirePayload(encoded)
-
-  // Prepare the IndexedDB record with fresh encrypted data and token
-  const indexedDBRecord: IndexedDBImageRecord = {
-    id,
-    encrypted: decodedWirePayload.encrypted,
-    token: decodedWirePayload.token,
-    lastUsed: Date.now(),
-  }
-
-  // Save the updated image into the local cache
-  await writeImageRecord(indexedDBRecord)
-
-  // Decrypt the image using the encrypted data and meta from the wire payload.
-  // The `record.meta` is not used, using stale meta could break decryption if the image was recently updated.
-  const imagePayload = await decryptImage(
-    decodedWirePayload.encrypted,
-    decodedWirePayload.meta,
-  )
-
-  // Return the up-to-date Blob for rendering
-  return decryptedPayloadToBlob(imagePayload)
+  })
 }
 ```
 
@@ -141,7 +143,7 @@ Useful when you want to manually clear outdated or unused images from the fronte
 ```ts
 export const deleteCachedImage = (
   id: string
-): Promise<void>
+): Promise<void | null>
 ```
 
 ---
@@ -157,10 +159,7 @@ export const deleteCachedImage = (
 ### Example
 
 ```ts
-import { deleteCachedImage } from 'pixstore/frontend'
-
 await deleteCachedImage(imageId)
-
 // Optional: update UI or local state
 ```
 
@@ -174,9 +173,11 @@ await deleteCachedImage(imageId)
 /**
  * Removes a cached image from IndexedDB.
  */
-export const deleteCachedImage = async (id: string): Promise<void> => {
-  // Deletes the image record (by ID) from the local IndexedDB cache
-  await deleteImageRecord(id)
+export const deleteCachedImage = async (id: string): Promise<void | null> => {
+  return handleErrorAsync(async () => {
+    // Deletes the image record (by ID) from the local IndexedDB cache
+    await deleteImageRecord(id)
+  })
 }
 ```
 
@@ -195,7 +196,7 @@ This can be used to conditionally load or invalidate image data before making a 
 ```ts
 export const cachedImageExists = (
   id: string
-): Promise<boolean>
+): Promise<boolean | null>
 ```
 
 ---
@@ -211,8 +212,6 @@ export const cachedImageExists = (
 ### Example
 
 ```ts
-import { cachedImageExists } from 'pixstore/frontend'
-
 const exists = await cachedImageExists(imageId)
 
 if (exists) {
@@ -232,9 +231,13 @@ if (exists) {
 /**
  * Returns true if a cached image exists in IndexedDB for the given id.
  */
-export const cachedImageExists = async (id: string): Promise<boolean> => {
-  // Checks IndexedDB for an image record with the specified ID
-  return await imageRecordExists(id)
+export const cachedImageExists = async (
+  id: string,
+): Promise<boolean | null> => {
+  return handleErrorAsync(async () => {
+    // Checks IndexedDB for an image record with the specified ID
+    return await imageRecordExists(id)
+  })
 }
 ```
 

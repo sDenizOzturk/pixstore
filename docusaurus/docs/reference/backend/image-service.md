@@ -55,7 +55,11 @@ export const getImageRecord = (id: string): ImageRecord | null
 ### Example
 
 ```ts
-const imageRecord = getImageRecord(imageId)!
+const imageRecord = getImageRecord(imageId)
+
+if (!imageRecord) {
+  // Image not found
+}
 
 // Send this to the frontend.
 // The Pixstore frontend needs imageRecord to fetch and decrypt the actual image.
@@ -75,12 +79,14 @@ res.json(player)
 
 ```ts
 /**
- * Returns the image record (id + token) from the database.
- * Returns null if not found.
+ * Returns the image record (id + token) from the database
+ * Returns null if not found
  */
 export const getImageRecord = (id: string): ImageRecord | null => {
-  // Reads imageRecord from database (includes id, token, and meta fields)
-  return readImageRecord(id)
+  return handleErrorSync(() => {
+    // Reads imageRecord from database (includes id, token, and meta fields)
+    return readImageRecord(id)
+  })
 }
 ```
 
@@ -101,7 +107,7 @@ This function generates a unique `id` for the image, optionally namespaced by a 
 export const saveImage = (
   buffer: Buffer,
   dir?: string
-): Promise<ImageRecord>
+): Promise<ImageRecord | null>
 ```
 
 ---
@@ -119,6 +125,10 @@ export const saveImage = (
 
 ```ts
 const imageRecord = await saveImage(imageBuffer, 'players')
+
+if (!imageRecord) {
+  // Image could not be saved
+}
 
 // Send this to the frontend.
 // The Pixstore frontend needs imageRecord to fetch and decrypt the actual image.
@@ -144,12 +154,14 @@ res.json(player)
 export const saveImage = async (
   buffer: Buffer,
   dir?: string,
-): Promise<ImageRecord> => {
-  // Generate a unique ID for this image, optionally scoped by dir
-  const id = createUniqueId(dir)
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Generate a unique ID for this image, optionally scoped by dir
+    const id = createUniqueId(dir)
 
-  // Write the encrypted image and metadata
-  return await writeImage(id, buffer, dir)
+    // Write the encrypted image and metadata
+    return await writeImage(id, buffer, dir)
+  })
 }
 
 /**
@@ -194,7 +206,7 @@ This is a convenience wrapper around `saveImage()`. It lets you work directly wi
 export const saveImageFromFile = (
   filePath: string,
   dir?: string
-): Promise<ImageRecord>
+): Promise<ImageRecord | null>
 ```
 
 ---
@@ -212,6 +224,10 @@ export const saveImageFromFile = (
 
 ```ts
 const imageRecord = await saveImageFromFile('./assets/logo.png', 'system')
+
+if (!imageRecord) {
+  // Image could not be saved
+}
 ```
 
 ---
@@ -228,12 +244,14 @@ const imageRecord = await saveImageFromFile('./assets/logo.png', 'system')
 export const saveImageFromFile = async (
   filePath: string,
   dir?: string,
-): Promise<ImageRecord> => {
-  // Read file content into a Buffer
-  const buffer = await diskToBuffer(filePath)
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Read file content into a Buffer
+    const buffer = await diskToBuffer(filePath)
 
-  // Save buffer as encrypted image
-  return await saveImage(buffer, dir)
+    // Save buffer as encrypted image
+    return await saveImage(buffer, dir)
+  })
 }
 ```
 
@@ -243,7 +261,7 @@ export const saveImageFromFile = async (
 
 Overwrites an existing image with new binary content and refreshes the corresponding metadata.
 
-This function expects the image ID to already exist in the database. If not, it throws an error.
+This function expects the image ID to already exist in the database. If not, returns null.
 
 ---
 
@@ -253,7 +271,7 @@ This function expects the image ID to already exist in the database. If not, it 
 export const updateImage = (
   id: string,
   buffer: Buffer,
-): Promise<ImageRecord>
+): Promise<ImageRecord | null>
 ```
 
 ---
@@ -270,11 +288,9 @@ export const updateImage = (
 ### Example
 
 ```ts
-try {
-  const updatedImageRecord = await updateImage('player-123', newBuffer)
-  // Return the updated imageRecord to frontend for cache update
-} catch {
-  // Image not found!
+const updatedImageRecord = await updateImage(playerId, newBuffer)
+if (!updatedImageRecord) {
+  // Image not found
 }
 ```
 
@@ -291,14 +307,16 @@ try {
 export const updateImage = async (
   id: string,
   buffer: Buffer,
-): Promise<ImageRecord> => {
-  // Check if image exists in the database
-  if (!imageRecordExists(id)) {
-    throw new Error(`Image not found: ${id}`)
-  }
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Check if image exists in the database
+    if (!imageRecordExists(id)) {
+      throw new Error(`Image not found: ${id}`)
+    }
 
-  // Overwrite image and update its metadata
-  return await writeImage(id, buffer)
+    // Overwrite image and update its metadata
+    return await writeImage(id, buffer)
+  })
 }
 
 /**
@@ -344,7 +362,7 @@ It is a convenience wrapper around `updateImage()` and lets you work directly wi
 export const updateImageFromFile = (
   id: string,
   filePath: string
-): Promise<ImageRecord>
+): Promise<ImageRecord | null>
 ```
 
 ---
@@ -361,7 +379,13 @@ export const updateImageFromFile = (
 ### Example
 
 ```ts
-await updateImageFromFile('player-123', './images/new-logo.png')
+const updatedImageRecord = await updateImageFromFile(
+  imageId,
+  './images/new-logo.png',
+)
+if (!updatedImageRecord) {
+  // Image not found
+}
 ```
 
 ---
@@ -372,17 +396,20 @@ await updateImageFromFile('player-123', './images/new-logo.png')
 
 ```ts
 /**
- * Reads a buffer from a file and updates the image with the given ID.
+ * Reads a buffer from a file and updates the image with the given ID
+ * Optionally, a directory prefix can be specified
  */
 export const updateImageFromFile = async (
   id: string,
   filePath: string,
-): Promise<ImageRecord> => {
-  // Read file content into a Buffer
-  const buffer = await diskToBuffer(filePath)
+): Promise<ImageRecord | null> => {
+  return handleErrorAsync(async () => {
+    // Read file content into a Buffer
+    const buffer = await diskToBuffer(filePath)
 
-  // Overwrite existing image with new buffer
-  return await updateImage(id, buffer)
+    // Overwrite existing image with new buffer
+    return await updateImage(id, buffer)
+  })
 }
 ```
 
@@ -401,7 +428,7 @@ Returns `true` if at least one of them was successfully deleted.
 ```ts
 export const deleteImage = (
   id: string
-): Promise<boolean>
+): Promise<boolean | null>
 ```
 
 ---
@@ -437,22 +464,24 @@ if (success) {
  * Deletes the image file and corresponding database record for the given ID
  * Returns true if at least one of them was deleted
  */
-export const deleteImage = async (id: string): Promise<boolean> => {
-  let deleted = false
+export const deleteImage = (id: string): Promise<boolean | null> => {
+  return handleErrorAsync(async () => {
+    let deleted = false
 
-  // Delete the image file if it exists
-  if (await imageFileExists(id)) {
-    await deleteImageFile(id)
-    deleted = true
-  }
+    // Delete the image file if it exists
+    if (await imageFileExists(id)) {
+      await deleteImageFile(id)
+      deleted = true
+    }
 
-  // Delete the metadata record if it exists
-  if (imageRecordExists(id)) {
-    deleteImageRecord(id)
-    deleted = true
-  }
+    // Delete the metadata record if it exists
+    if (imageRecordExists(id)) {
+      deleteImageRecord(id)
+      deleted = true
+    }
 
-  return deleted
+    return deleted
+  })
 }
 ```
 
@@ -471,7 +500,7 @@ This can be used to verify if an image is still present in storage. Useful for d
 ```ts
 export const imageExists = (
   id: string
-): Promise<boolean>
+): Promise<boolean | null>
 ```
 
 ---
@@ -504,9 +533,11 @@ if (await imageExists(imageId)) {
 /**
  * Checks whether the image exists either on disk or in the database
  */
-export const imageExists = async (id: string): Promise<boolean> => {
-  // Returns true if image file or metadata record exists
-  return (await imageFileExists(id)) || imageRecordExists(id)
+export const imageExists = async (id: string): Promise<boolean | null> => {
+  return handleErrorAsync(async () => {
+    // Returns true if image file or metadata record exists
+    return (await imageFileExists(id)) || imageRecordExists(id)
+  })
 }
 ```
 

@@ -32,29 +32,9 @@ export const initPixstoreBackend = (
 
 ### Parameters
 
-| Name   | Type                             | Description                                     |
-| ------ | -------------------------------- | ----------------------------------------------- |
-| config | `Partial<PixstoreBackendConfig>` | Optional runtime configuration for the backend. |
-
-#### PixstoreBackendConfig
-
-The `PixstoreBackendConfig` object allows you to customize how Pixstore behaves in the backend environment.
-All fields are optional; missing values are filled using the internal `defaultConfig`.
-
-| Property                    | Type            | Default (non-test)        | Description                                                     |
-| --------------------------- | --------------- | ------------------------- | --------------------------------------------------------------- |
-| `imageFormats`              | `ImageFormat[]` | `['png', 'jpeg', 'webp']` | Allowed image formats                                           |
-| `imageRootDir`              | `string`        | `'pixstore-images'`       | Folder where images are saved                                   |
-| `databasePath`              | `string`        | `'./.pixstore.sqlite'`    | Path to SQLite metadata DB                                      |
-| `defaultEndpointEnabled`    | `boolean`       | `true`                    | Whether to expose the default GET image endpoint                |
-| `defaultEndpointRoute`      | `string`        | `'/pixstore-image'`       | Route path for the default image endpoint                       |
-| `defaultEndpointListenHost` | `string`        | `'0.0.0.0'`               | Host/IP where the image endpoint HTTP server listens            |
-| `defaultEndpointListenPort` | `number`        | `3001`                    | Port where the image endpoint HTTP server listens               |
-| `accessControlAllowOrigin`  | `string`        | `'*'`                     | CORS `Access-Control-Allow-Origin` header for the default route |
-
-> ℹ️ When running in test mode (`IS_TEST === true`), values like paths and ports are automatically randomized or sandboxed.
-
----
+| Name   | Type                                                                   | Description                                     |
+| ------ | ---------------------------------------------------------------------- | ----------------------------------------------- |
+| config | `Partial<`[`PixstoreBackendConfig`](../types#pixstorebackendconfig)`>` | Optional runtime configuration for the backend. |
 
 ### Example
 

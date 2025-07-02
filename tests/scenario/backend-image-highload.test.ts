@@ -27,7 +27,8 @@ describe('Pixstore backend highload scenario', () => {
 
     for (let i = 0; i < N; ++i) {
       const record = await saveImage(buffer, prefix)
-      ids.push(record.id)
+      expect(record).not.toBeNull()
+      ids.push(record!.id)
     }
   })
 

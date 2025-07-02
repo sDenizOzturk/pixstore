@@ -19,14 +19,14 @@ describe('customEndpointHelper', () => {
     initializeDatabase()
     // Save a test image to backend and keep the ID
     const saved = await saveImage(await fs.readFile(ANTALYA_PATH), 'students')
-    id = saved.id
+    id = saved!.id
   })
 
   it('returns valid wire format payload when default endpoint is not running', async () => {
     const payload = await customEndpointHelper(id)
     // Payload must be a Uint8Array and at least 9 bytes (wire format minimum)
     expect(payload).toBeInstanceOf(Uint8Array)
-    expect(payload.length).toBeGreaterThan(8)
+    expect(payload!.length).toBeGreaterThan(8)
   })
 
   it('throws if default endpoint is running', async () => {

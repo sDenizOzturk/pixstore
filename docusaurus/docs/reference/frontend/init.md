@@ -33,33 +33,10 @@ export const initPixstoreFrontend = (
 
 ### Parameters
 
-| Name                 | Type                              | Description                                             |
-| -------------------- | --------------------------------- | ------------------------------------------------------- |
-| `config`             | `Partial<PixstoreFrontendConfig>` | Optional overrides for internal frontend configuration. |
-| `customImageFetcher` | `CustomImageFetcher`              | Optional function to override how images are fetched.   |
-
----
-
-### PixstoreFrontendConfig
-
-The `PixstoreFrontendConfig` object lets you customize the image caching behavior and database names.
-
-All fields are optional; if not provided, Pixstore uses defaults from its internal `defaultConfig`.
-
-| Property                     | Type     | Default (non-test)  | Description                                                                |
-| ---------------------------- | -------- | ------------------- | -------------------------------------------------------------------------- |
-| `frontendDbName`             | `string` | `'pixstore'`        | IndexedDB database name                                                    |
-| `frontendDbVersion`          | `number` | `1`                 | IndexedDB schema version                                                   |
-| `imageStoreName`             | `string` | `'images'`          | Object store name for image records                                        |
-| `frontendImageCacheLimit`    | `number` | `1000`              | Maximum number of images to keep in the local cache                        |
-| `frontendCleanupBatch`       | `number` | `50`                | Number of items to remove per cleanup cycle when limit is exceeded         |
-| `defaultEndpointConnectHost` | `string` | `'unknown'`         | Host to contact for image fetching (used if no custom fetcher is provided) |
-| `defaultEndpointConnectPort` | `number` | `3001`              | Port to contact for image fetching                                         |
-| `defaultEndpointRoute`       | `string` | `'/pixstore-image'` | Route to contact for image fetching                                        |
-
----
-
-> ℹ️ In test mode (`IS_TEST === true`), database names and limits are automatically sandboxed.
+| Name                 | Type                                                                     | Description                                             |
+| -------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `config`             | `Partial<`[`PixstoreFrontendConfig`](../types#pixstorefrontendconfig)`>` | Optional overrides for internal frontend configuration. |
+| `customImageFetcher` | [`CustomImageFetcher`](#customimagefetcher)                              | Optional function to override how images are fetched.   |
 
 ---
 

@@ -70,7 +70,7 @@ export async function seedDatabase() {
     const buffer = fs.readFileSync(filePath);
 
     const imageRecord = await saveImage(buffer);
-    const id = imageRecord.id;
+    const id = imageRecord!.id;
 
     const meta = playerMetaMap[filename];
     if (!meta) {
