@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/sDenizOzturk/pixstore/compare/v2.0.2...v2.1.0) (2025-07-02)
+
+
+### Features
+
+* trigger release for centralized error handling and config changes ([6ded281](https://github.com/sDenizOzturk/pixstore/commit/6ded28183454cb44e3288f25987f21e18c34af1d))
+
 ## [2.0.2](https://github.com/sDenizOzturk/pixstore/compare/v2.0.1...v2.0.2) (2025-07-01)
 
 
