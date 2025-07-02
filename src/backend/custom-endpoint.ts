@@ -2,6 +2,7 @@ import { getWirePayload } from './image-service.js'
 import { encodeWirePayload } from '../shared/wire-encoder.js'
 import { isServerStarted } from './default-endpoint.js'
 import { handleErrorAsync } from '../shared/handle-error.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Returns a Pixstore wire format encoded image payload (Uint8Array) for the given image id.
@@ -14,7 +15,7 @@ export const customEndpointHelper = async (
   return handleErrorAsync(async () => {
     // Prevent usage if the default endpoint is active (safety guard)
     if (isServerStarted()) {
-      throw new Error(
+      throw new PixstoreError(
         'Pixstore custom endpoint mode is not active. Please disable the default endpoint before using customEndpointHelper().',
       )
     }

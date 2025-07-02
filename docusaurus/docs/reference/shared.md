@@ -87,4 +87,4 @@ export const setCustomErrorHandler = (
 
 ---
 
-📄 Source: [`src/shared/handle-error.ts`](https://github.com/sDenizOzturk/pixstore/blob/main/src/shared/handle-error.ts)
+📄 Source: [`src/shared/handle-error.js`](https://github.com/sDenizOzturk/pixstore/blob/main/src/shared/handle-error.js)

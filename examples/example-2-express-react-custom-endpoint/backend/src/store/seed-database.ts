@@ -37,12 +37,17 @@ export const seedTeamsAndPlayers = async (defaultImagesDir: string) => {
       // Store the player's image in Pixstore and receive its unique imageId.
       // The image buffer is saved to the Pixstore backend storage.
       // The returned imageId will be used to link this image with the player record.
-      const { id: imageId } = await saveImage(imageBuffer)
+      const imageRecord = await saveImage(imageBuffer)
+      if (!imageRecord) {
+        throw new Error(
+          `Failed to save image for player ${playerName} (${imagePath})`,
+        )
+      }
 
       addPlayer({
         id: playerId,
         name: playerName,
-        imageId: imageId,
+        imageId: imageRecord.id,
         teamId: teamId,
       })
       playerId++

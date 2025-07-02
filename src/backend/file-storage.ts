@@ -2,6 +2,7 @@ import * as fs from 'fs/promises'
 import path from 'path'
 import { toFilePath } from './unique-id.js'
 import { isValidImage } from './format-image.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Saves the image buffer to disk at the canonical file path for the given id.
@@ -50,7 +51,7 @@ export const deleteImageFile = async (id: string): Promise<void> => {
 export const diskToBuffer = async (filepath: string): Promise<Buffer> => {
   const buffer = await fs.readFile(filepath)
   if (!isValidImage(buffer)) {
-    throw new Error('Invalid image file')
+    throw new PixstoreError('Invalid image file')
   }
   return buffer
 }

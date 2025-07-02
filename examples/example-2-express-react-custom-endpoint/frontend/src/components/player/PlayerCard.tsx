@@ -55,7 +55,7 @@ const PlayerCard = ({ id }: { id: number }) => {
               const imgData = await getImage(playerData.imageRecord, {
                 playerId: playerData.id,
               })
-              const blob = new Blob([imgData])
+              const blob = new Blob([imgData!])
               setImageUrl(URL.createObjectURL(blob))
               return true
             } catch {

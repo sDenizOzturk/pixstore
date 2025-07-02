@@ -209,4 +209,4 @@ export type ErrorHandlingMode =
 
 📄 Source: [`src/types/error-handling-mode.ts`](https://github.com/sDenizOzturk/pixstore/blob/main/src/types/error-handling-mode.ts)
 
-📄 Source: [`src/shared/handle-error.ts`](https://github.com/sDenizOzturk/pixstore/blob/main/src/shared/handle-error.ts)
+📄 Source: [`src/shared/handle-error.js`](https://github.com/sDenizOzturk/pixstore/blob/main/src/shared/handle-error.js)

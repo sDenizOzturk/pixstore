@@ -8,6 +8,7 @@ import {
 import { getImageFormat, isValidImage } from './format-image.js'
 import { imageFormatToByte } from '../shared/format-image.js'
 import { arrayBufferToBase64 } from '../shared/format-buffer.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Generates a random AES key for per-image encryption.
@@ -44,7 +45,7 @@ const encrypt = (
  */
 export const encryptImage = (buffer: Buffer): EncryptedImagePayload => {
   if (!isValidImage(buffer)) {
-    throw new Error('Invalid image file')
+    throw new PixstoreError('Invalid image file')
   }
   const format = getImageFormat(buffer)
 

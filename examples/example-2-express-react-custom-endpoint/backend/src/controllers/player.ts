@@ -1,7 +1,7 @@
 // Import Pixstore from the official package.
 import { getImageRecord } from 'pixstore/backend'
 
-import { getPlayerById, getGeneralManagerById } from '../store/in-memory-db'
+import { getPlayerById } from '../store/in-memory-db'
 import { Request, Response } from 'express'
 import { BasketballPlayer } from '../models/basketball-player'
 import { SecureRequest } from '../middleware/auth'

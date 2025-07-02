@@ -1,6 +1,7 @@
 import type { ImageFormat } from '../types/image-format.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 import { DecryptedImagePayload } from '../types/image-payload.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Converts an image format (e.g. 'png') to the corresponding MIME type.
@@ -9,7 +10,7 @@ import { DecryptedImagePayload } from '../types/image-payload.js'
 const imageFormatToMime = (format: ImageFormat): string => {
   const IMAGE_FORMATS = pixstoreConfig.imageFormats
   if (!IMAGE_FORMATS.includes(format))
-    throw new Error(`Unsupported image format: ${format}`)
+    throw new PixstoreError(`Unsupported image format: ${format}`)
   return `image/${format}`
 }
 

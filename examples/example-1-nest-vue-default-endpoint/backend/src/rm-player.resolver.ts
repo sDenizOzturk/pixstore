@@ -9,16 +9,7 @@ import { getAllPlayers } from './in-memory-db';
 import { getImageRecord } from '../../../../dist/backend';
 import { ImageRecord } from './image-record.entity';
 
-const bufferToBase64 = (input: Buffer | ArrayBuffer): string => {
-  if (Buffer.isBuffer(input)) {
-    return input.toString('base64');
-  } else if (input instanceof ArrayBuffer) {
-    return Buffer.from(new Uint8Array(input)).toString('base64');
-  }
-  throw new Error('Unknown input type for bufferToBase64');
-};
-
-const backendRecordToGql = (record: any): ImageRecord => {
+const backendRecordToGql = (record: ImageRecord): ImageRecord => {
   return {
     id: record.id,
     token: record.token,

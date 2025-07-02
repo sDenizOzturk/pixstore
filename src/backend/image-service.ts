@@ -16,6 +16,7 @@ import type { ImageRecord } from '../types/image-record.js'
 import { encryptImage } from './image-encryption.js'
 import { BackendWirePayload } from '../types/wire-payload.js'
 import { handleErrorAsync, handleErrorSync } from '../shared/handle-error.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Retrieves the encrypted image payload (wire format) for the given image ID.
@@ -32,7 +33,7 @@ export const getWirePayload = async (
   id: string,
 ): Promise<BackendWirePayload> => {
   const record = readImageRecord(id)
-  if (!record) throw new Error(`Image record not found: ${id}`)
+  if (!record) throw new PixstoreError(`Image record not found: ${id}`)
 
   const encrypted = await readImageFile(id)
   const { token, meta } = record
@@ -120,7 +121,7 @@ export const updateImage = async (
   return handleErrorAsync(async () => {
     // Check if image exists in the database
     if (!imageRecordExists(id)) {
-      throw new Error(`Image not found: ${id}`)
+      throw new PixstoreError(`Image not found: ${id}`)
     }
 
     // Overwrite image and update its metadata

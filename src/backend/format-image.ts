@@ -1,6 +1,7 @@
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 import imageType from 'image-type'
 import type { ImageFormat } from '../types/image-format.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Checks if the given buffer is a valid image of supported type.
@@ -21,7 +22,7 @@ export const getImageFormat = (buffer: Buffer): ImageFormat => {
   const IMAGE_FORMATS = pixstoreConfig.imageFormats
   const type = imageType(buffer)
   if (!type || !IMAGE_FORMATS.includes(type.ext as ImageFormat)) {
-    throw new Error('Unsupported or invalid image format')
+    throw new PixstoreError('Unsupported or invalid image format')
   }
   return type.ext as ImageFormat
 }

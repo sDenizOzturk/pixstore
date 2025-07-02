@@ -1,4 +1,5 @@
 import { pixstoreConfig } from '../shared/pixstore-config.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Fetches a raw encoded image payload from the Pixstore backend.
@@ -18,7 +19,9 @@ const defaultImageFetcher = async (id: string): Promise<Uint8Array> => {
 
   // Ensure the response is OK (200-level)
   if (!res.ok) {
-    throw new Error(`Failed to fetch image: ${res.status} ${res.statusText}`)
+    throw new PixstoreError(
+      `Failed to fetch image: ${res.status} ${res.statusText}`,
+    )
   }
 
   // Read and convert response body to Uint8Array

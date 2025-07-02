@@ -37,6 +37,7 @@ export const initPixstore = () => {
     {
       frontendImageCacheLimit: FRONTEND_IMAGE_CACHE_LIMIT,
       frontendCleanupBatch: FRONTEND_CLEANUP_BATCH,
+      errorHandlingMode: 'throw',
     },
     customImageFetcher,
   )
