@@ -85,6 +85,7 @@ export const defaultConfig: PixstoreConfig = {
   frontendImageCacheLimit: IS_TEST ? 50 : 1000,
   frontendCleanupBatch: IS_TEST ? 5 : 50,
   accessControlAllowOrigin: '*',
+  errorHandlingMode: IS_TEST ? 'throw' : 'hybrid',
 }
 
 /**

@@ -19,7 +19,7 @@ const FRONTEND_CLEANUP_BATCH = 2 // Number of images to clean up in a single bat
 
 // Initialize Pixstore frontend: must be called before using any Pixstore features.
 initPixstoreFrontend({
-  defaultEndpointPort: DEFAULT_ENDPOINT_PORT,
+  defaultEndpointConnectPort: DEFAULT_ENDPOINT_PORT,
   frontendImageCacheLimit: FRONTEND_IMAGE_CACHE_LIMIT,
   frontendCleanupBatch: FRONTEND_CLEANUP_BATCH,
 })

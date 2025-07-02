@@ -44,7 +44,7 @@ export const initPixstore = () => {
   initPixstoreBackend({
     imageRootDir: IMAGE_ROOT_DIR,
     databasePath: DATABASE_PATH,
-    defaultEndpointPort: DEFAULT_ENDPOINT_PORT,
+    defaultEndpointListenPort: DEFAULT_ENDPOINT_PORT,
     accessControlAllowOrigin: ACCESS_CONTROL_ALLOW_ORIGIN,
   });
 };

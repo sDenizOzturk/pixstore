@@ -16,7 +16,6 @@ import {
 } from '../../../src/backend/default-endpoint.js'
 import { saveImage, updateImage } from '../../../src/backend/image-service.js'
 import { initializeDatabase } from '../../../src/backend/database.js'
-import { toArrayBuffer } from '../../utils'
 
 const assetDir = path.resolve(__dirname, '../../assets')
 const ANTALYA_PATH = path.join(assetDir, 'antalya.jpg')
@@ -40,12 +39,12 @@ describe('frontend image-service – full flow', () => {
     startDefaultEndpoint()
     const saved = await saveImage(await fs.readFile(ANTALYA_PATH), 'students')
     record = {
-      id: saved.id,
-      token: saved.token,
+      id: saved!.id,
+      token: saved!.token,
       meta: {
-        key: saved.meta.key,
-        iv: saved.meta.iv,
-        tag: saved.meta.tag,
+        key: saved!.meta.key,
+        iv: saved!.meta.iv,
+        tag: saved!.meta.tag,
       },
     }
   })
@@ -62,9 +61,9 @@ describe('frontend image-service – full flow', () => {
     // 2) Compare blob content with original backend file
     const _originalBuffer = await fs.readFile(ANTALYA_PATH)
     const originalBuffer = new Blob([new Uint8Array(_originalBuffer)], {
-      type: blob1.type,
+      type: blob1!.type,
     })
-    await expectBlobsToBeEqual(blob1, originalBuffer)
+    await expectBlobsToBeEqual(blob1!, originalBuffer)
 
     // 3) Ensure cached record token matches backend token
     const cachedRecord1 = await readImageRecord(record.id)
@@ -83,33 +82,33 @@ describe('frontend image-service – full flow', () => {
     // 6) Re-fetch after deletion: should re-cache original blob
     const blob2 = await getImage(record)
     expect(blob2).toBeInstanceOf(Blob)
-    await expectBlobsToBeEqual(blob2, blob1)
+    await expectBlobsToBeEqual(blob2!, blob1!)
 
     // 7) Update backend image (same ID, new token)
     const updated = await updateImage(
       record.id,
       await fs.readFile(VILNIUS_PATH),
     )
-    expect(updated.token).not.toBe(record.token)
+    expect(updated!.token).not.toBe(record.token)
 
     // 8) Token mismatch triggers cache update on getImage
     const blob3 = await getImage({
-      id: updated.id,
-      token: updated.token,
+      id: updated!.id,
+      token: updated!.token,
       meta: {
-        key: updated.meta.key,
-        iv: updated.meta.iv,
-        tag: updated.meta.tag,
+        key: updated!.meta.key,
+        iv: updated!.meta.iv,
+        tag: updated!.meta.tag,
       },
     })
     expect(blob3).toBeInstanceOf(Blob)
-    const buf2 = Buffer.from(await blob2.arrayBuffer())
-    const buf3 = Buffer.from(await blob3.arrayBuffer())
+    const buf2 = Buffer.from(await blob2!.arrayBuffer())
+    const buf3 = Buffer.from(await blob3!.arrayBuffer())
     expect(Buffer.compare(buf2, buf3)).not.toBe(0)
 
     // 9) Verify cached record has been updated with new token
     const cachedRecord2 = await readImageRecord(record.id)
-    expect(cachedRecord2!.token).toBe(updated.token)
+    expect(cachedRecord2!.token).toBe(updated!.token)
 
     // 10) Final cache existence check
     const existsFinal = await cachedImageExists(record.id)

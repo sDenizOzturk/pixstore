@@ -18,6 +18,8 @@ This function allows you to build your own custom image-serving endpoint for Pix
 
 It returns an image payload encoded in Pixstore's wire format (`Uint8Array`), which is directly consumable by the frontend.
 
+If the image does not exist or another error occurs, this function returns null. Always check the result before sending a response.
+
 If the default endpoint is enabled, this function throws an error to prevent accidental dual-endpoint usage.
 
 ---
@@ -27,7 +29,7 @@ If the default endpoint is enabled, this function throws an error to prevent acc
 ```ts
 export const customEndpointHelper = (
   id: string
-): Promise<Uint8Array>
+): Promise<Uint8Array | null>
 ```
 
 ---
@@ -43,16 +45,13 @@ export const customEndpointHelper = (
 ### Example
 
 ```ts
-try {
-  // Get encrypted wire-format image buffer
-  const payload = await customEndpointHelper(imageId)
-
-  // Return to client as binary
-  res.send(payload)
-} catch {
-  // Handle missing image or endpoint conflict
-  res.status(404).json({ error: 'Image not found' })
+// Get encrypted wire-format image buffer
+const payload = await customEndpointHelper(imageId)
+if (!payload) {
+  // Handle missing image or other error
+  return res.status(404).json({ error: 'Image not found' })
 }
+res.send(payload)
 ```
 
 ---
@@ -62,24 +61,23 @@ try {
 <HowItWorksWarning />
 
 ```ts
-/**
- * Returns a Pixstore wire format encoded image payload (Uint8Array) for the given image id.
- * Throws if the default endpoint is running, to prevent accidental double endpoint use.
- * Can be used in any custom endpoint handler to build a response.
- */
-export const customEndpointHelper = async (id: string): Promise<Uint8Array> => {
-  // Prevent usage if the default endpoint is active (safety guard)
-  if (isServerStarted()) {
-    throw new Error(
-      'Pixstore custom endpoint mode is not active. Please disable the default endpoint before using customEndpointHelper().',
-    )
-  }
+export const customEndpointHelper = async (
+  id: string,
+): Promise<Uint8Array | null> => {
+  return handleErrorAsync(async () => {
+    // Prevent usage if the default endpoint is active (safety guard)
+    if (isServerStarted()) {
+      throw new Error(
+        'Pixstore custom endpoint mode is not active. Please disable the default endpoint before using customEndpointHelper().',
+      )
+    }
 
-  // Fetch decrypted image and metadata as a wire payload structure
-  const wirePayload = await getWirePayload(id)
+    // Fetch decrypted image and metadata as a wire payload structure
+    const wirePayload = await getWirePayload(id)
 
-  // Encode it as Uint8Array in Pixstore wire format (used by frontend to decode)
-  return encodeWirePayload(wirePayload)
+    // Encode it as Uint8Array in Pixstore wire format (used by frontend to decode)
+    return encodeWirePayload(wirePayload)
+  })
 }
 ```
 

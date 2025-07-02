@@ -39,8 +39,8 @@ describe('Pixstore default endpoint – single file update flow', () => {
   it('should save, fetch, update, fetch and delete correctly', async () => {
     // Save original image
     const record1 = await saveImage(buffer1, 'students')
-    imageId = record1.id
-    originalToken = record1.token
+    imageId = record1!.id
+    originalToken = record1!.token
 
     // Fetch original via endpoint
     let res = await fetch(
@@ -60,7 +60,7 @@ describe('Pixstore default endpoint – single file update flow', () => {
 
     // Update with new image
     const record2 = await updateImage(imageId, buffer2)
-    expect(record2.token).not.toBe(originalToken)
+    expect(record2!.token).not.toBe(originalToken)
 
     // Fetch updated via endpoint
     res = await fetch(
@@ -74,8 +74,8 @@ describe('Pixstore default endpoint – single file update flow', () => {
       meta: meta2,
     } = decodeWirePayload(raw)
     expect(fetched2.length).toBeGreaterThan(0)
-    expect(token2).toBe(record2.token)
-    expect(Number(res.headers.get('x-token'))).toBe(record2.token)
+    expect(token2).toBe(record2!.token)
+    expect(Number(res.headers.get('x-token'))).toBe(record2!.token)
     expect(meta2).toBeDefined()
 
     // Delete and ensure 404
