@@ -1,6 +1,10 @@
-// Import Pixstore backend initializer from the official package.
-import { getImage } from 'pixstore/frontend/'
-import type { ImageRecord } from 'pixstore/types'
+// IMPORTANT: In this example, Pixstore is imported directly from a local build path for demonstration purposes.
+// In real projects, you should install Pixstore via npm and import as follows:
+//
+//   import { initPixstoreBackend } from 'pixstore/backend'
+//
+import { getImage } from '../../../../../../dist/frontend/'
+import type { ImageRecord } from '../../../../../../dist/types'
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../store/auth'

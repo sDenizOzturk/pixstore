@@ -31,11 +31,20 @@ describe('Pixstore backend highload scenario', () => {
       ids.push(record!.id)
     }
   })
-
   it('should read all images', async () => {
     for (const id of ids) {
-      const { encrypted } = await getWirePayload(id)
-      expect(encrypted.length).toBeGreaterThan(0)
+      const payload = await getWirePayload(id, undefined)
+      // Only assert encrypted if image is found and state is Success/Updated
+      if (
+        payload.state === 0 || // WirePayloadState.Success
+        payload.state === 1 // WirePayloadState.Updated
+      ) {
+        expect(payload.encrypted.length).toBeGreaterThan(0)
+      } else {
+        throw new Error(
+          `Image not found or wrong state for id: ${id}, state=${payload.state}`,
+        )
+      }
     }
   })
 
@@ -43,15 +52,33 @@ describe('Pixstore backend highload scenario', () => {
     const buffer2 = fs.readFileSync(imageFile2)
     for (const id of ids) {
       await updateImage(id, buffer2)
-      const { encrypted } = await getWirePayload(id)
-      expect(encrypted.length).toBeGreaterThan(0)
+      const payload = await getWirePayload(id, undefined)
+      if (
+        payload.state === 0 || // WirePayloadState.Success
+        payload.state === 1 // WirePayloadState.Updated
+      ) {
+        expect(payload.encrypted.length).toBeGreaterThan(0)
+      } else {
+        throw new Error(
+          `Image not found or wrong state for id: ${id}, state=${payload.state}`,
+        )
+      }
     }
   })
 
   it('should read all images after update', async () => {
     for (const id of ids) {
-      const { encrypted } = await getWirePayload(id)
-      expect(encrypted.length).toBeGreaterThan(0)
+      const payload = await getWirePayload(id, undefined)
+      if (
+        payload.state === 0 || // WirePayloadState.Success
+        payload.state === 1 // WirePayloadState.Updated
+      ) {
+        expect(payload.encrypted.length).toBeGreaterThan(0)
+      } else {
+        throw new Error(
+          `Image not found or wrong state for id: ${id}, state=${payload.state}`,
+        )
+      }
     }
   })
 

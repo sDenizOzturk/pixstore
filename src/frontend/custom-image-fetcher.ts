@@ -1,4 +1,4 @@
-import type { CustomImageFetcher } from '../types/custom-image-fetcher.js'
+import type { CustomImageFetcher } from '../types/image-fetcher.js'
 
 /**
  * Stores the current custom fetcher function if registered by the user.
@@ -12,6 +12,9 @@ let customImageFetcher: CustomImageFetcher | undefined
 export const registerCustomImageFetcher = (
   fetcher: CustomImageFetcher | undefined,
 ) => {
+  if (customImageFetcher && fetcher) {
+    console.warn('Overwriting existing custom image fetcher.')
+  }
   customImageFetcher = fetcher
 }
 

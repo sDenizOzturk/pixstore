@@ -74,4 +74,27 @@ describe('Pixstore config system', () => {
       'defaultEndpointConnectPort must be an integer between 1 and 65535',
     )
   })
+  it('throws if statelessKeyWindowLength is 0, negative, or non-numeric', () => {
+    expect(() => initPixstore({ statelessKeyWindowLength: 0 })).toThrow(
+      'statelessKeyWindowLength must be a positive integer (milliseconds) or -1 for non-expiring proof',
+    )
+    expect(() => initPixstore({ statelessKeyWindowLength: -5 })).toThrow(
+      'statelessKeyWindowLength must be a positive integer (milliseconds) or -1 for non-expiring proof',
+    )
+    expect(() => initPixstore({ statelessKeyWindowLength: NaN })).toThrow(
+      'statelessKeyWindowLength must be a positive integer (milliseconds) or -1 for non-expiring proof',
+    )
+    expect(() =>
+      initPixstore({ statelessKeyWindowLength: 'abc' as any }),
+    ).toThrow(
+      'statelessKeyWindowLength must be a positive integer (milliseconds) or -1 for non-expiring proof',
+    )
+  })
+
+  it('allows statelessKeyWindowLength = -1 (non-expiring) or positive integer', () => {
+    expect(() => initPixstore({ statelessKeyWindowLength: -1 })).not.toThrow()
+    expect(() =>
+      initPixstore({ statelessKeyWindowLength: 60000 }),
+    ).not.toThrow()
+  })
 })

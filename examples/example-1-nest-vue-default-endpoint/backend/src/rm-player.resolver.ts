@@ -18,6 +18,7 @@ const backendRecordToGql = (record: ImageRecord): ImageRecord => {
       iv: record.meta.iv,
       tag: record.meta.tag,
     },
+    statelessProof: record.statelessProof,
   };
 };
 

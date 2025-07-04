@@ -28,4 +28,7 @@ export class ImageRecord implements ImageRecordModel {
 
   @Field(() => ImageMeta)
   meta: ImageMeta;
+
+  @Field(() => String)
+  statelessProof: string;
 }

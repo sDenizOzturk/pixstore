@@ -1,3 +1,4 @@
+import { ImageFetcher } from '../types/image-fetcher.js'
 import { getCustomImageFetcher } from './custom-image-fetcher.js'
 import { getDefaultImageFetcher } from './default-image-fetcher.js'
 
@@ -6,15 +7,12 @@ import { getDefaultImageFetcher } from './default-image-fetcher.js'
  * (if registered) or the default Pixstore fetcher.
  * Always returns the wire-format Uint8Array for the given image id.
  */
-export const fetchEncodedImage = async (
-  id: string,
-  context?: any,
-): Promise<Uint8Array> => {
+export const fetchEncodedImage: ImageFetcher = async (parameters) => {
   const customImageFetcher = getCustomImageFetcher()
 
   if (customImageFetcher) {
-    return customImageFetcher(id, context)
+    return customImageFetcher(parameters)
   }
   const defaultImageFetcher = getDefaultImageFetcher()
-  return defaultImageFetcher(id)
+  return defaultImageFetcher(parameters)
 }

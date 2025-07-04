@@ -32,3 +32,10 @@ export const AES_IV_SIZE = 12
  * Authentication tag length for AES-GCM (in bits, standard is 128)
  */
 export const AES_GCM_TAG_LENGTH = 128
+
+/**
+ * Length of the stateless proof-of-access key in bytes.
+ * This is the number of bytes taken from the SHA-256 hash to use as the proof.
+ * Typical value is 8 bytes (64 bits), which provides strong security for short-lived proofs.
+ */
+export const STATELESS_KEY_LENGTH = 8
