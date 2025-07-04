@@ -1,6 +1,6 @@
 import * as Frontend from '../../dist/shared/index.js'
 
-const expectedExports = ['setCustomErrorHandler'].sort()
+const expectedExports = ['setCustomErrorHandler', 'getLastPixstoreError'].sort()
 
 const actualExports = Object.keys(Frontend).sort()
 
