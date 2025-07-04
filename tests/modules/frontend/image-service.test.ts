@@ -16,6 +16,7 @@ import {
 import { saveImage, updateImage } from '../../../src/backend/image-service.js'
 import { initializeDatabase } from '../../../src/backend/database.js'
 import { getCurrentStatelessProof } from '../../../src/backend/stateless-proof.js'
+import { sleep } from '../../utils/'
 
 const assetDir = path.resolve(__dirname, '../../assets')
 const ANTALYA_PATH = path.join(assetDir, 'antalya.jpg')
@@ -52,6 +53,27 @@ describe('Pixstore frontend image-service – full flow', () => {
 
   afterAll(async () => {
     await stopDefaultEndpoint()
+  })
+
+  it('updates lastUsed timestamp on cache hit', async () => {
+    // Ensure image is cached
+    record.statelessProof = getCurrentStatelessProof(record.id)
+    await getImage(record)
+
+    const before = (await readImageRecord(record.id))!.lastUsed
+
+    // Wait to separate timestamps
+    await sleep(50)
+
+    // Trigger cache hit
+    record.statelessProof = getCurrentStatelessProof(record.id)
+    await getImage(record)
+
+    // Wait again for background write to complete
+    await sleep(50)
+
+    const after = (await readImageRecord(record.id))!.lastUsed
+    expect(after).toBeGreaterThan(before)
   })
 
   it('caches, deletes, and refreshes image correctly with blob and token validation', async () => {

@@ -29,7 +29,7 @@ describe('customEndpointHelper', () => {
 
   it('returns valid wire format payload when default endpoint is not running', async () => {
     const proof = getCurrentStatelessProof(id)
-    const payload = await customEndpointHelper(id, undefined, proof)
+    const payload = await customEndpointHelper(id, 0, proof)
     expect(payload).toBeInstanceOf(Uint8Array)
     expect(payload!.length).toBeGreaterThan(8)
   })
@@ -38,7 +38,7 @@ describe('customEndpointHelper', () => {
     startDefaultEndpoint()
     await sleep(50)
     const proof = getCurrentStatelessProof(id)
-    await expect(customEndpointHelper(id, undefined, proof)).rejects.toThrow(
+    await expect(customEndpointHelper(id, 0, proof)).rejects.toThrow(
       /custom endpoint mode is not active|default endpoint/i,
     )
     await stopDefaultEndpoint()

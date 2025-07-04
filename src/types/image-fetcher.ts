@@ -1,8 +1,6 @@
-export type ImageFetcher = (parameters: {
-  imageId: string
-  imageToken: number | undefined
-  statelessProof: string
-  context?: any
-}) => Promise<Uint8Array>
+import { ImageRecord } from './image-record.ts'
 
-export type CustomImageFetcher = ImageFetcher
+export type ImageFetcher = (
+  imageRecord: ImageRecord,
+  context?: any,
+) => Promise<Uint8Array>

@@ -35,21 +35,18 @@ export const getImage = async (
       // Decrypt the image using the extracted encrypted data and meta
       const imagePayload = await decryptImage(encrypted, meta)
 
+      // Update lastUsed timestamp (wihtout awaiting)
+      writeImageRecord({
+        ...indexedDBRecord!,
+        lastUsed: Date.now(),
+      })
+
       // Return the up-to-date Blob for rendering
       return decryptedPayloadToBlob(imagePayload)
     }
 
-    // If the cached token is outdated (record was updated elsewhere), use the cached token for conditional request.
-    const clientToken =
-      cached && cached.token !== token ? cached.token : undefined
-
     // Otherwise, fetch the latest encoded image from the backend
-    const encoded = await fetchEncodedImage({
-      imageId: id,
-      imageToken: clientToken,
-      statelessProof,
-      context,
-    })
+    const encoded = await fetchEncodedImage(record, context)
 
     // Decode the wire payload to extract encrypted data, meta, and token
     const decodedWirePayload = decodeWirePayload(encoded)
@@ -79,8 +76,8 @@ export const getImage = async (
       lastUsed: Date.now(),
     }
 
-    // Save the updated image into the local cache
-    await writeImageRecord(indexedDBRecord)
+    // Save the updated image into the local cache (wihtout awaiting)
+    writeImageRecord(indexedDBRecord)
 
     // Use the correct meta depending on response state (Success keeps old meta, Updated uses new meta)
     const latestMeta =
