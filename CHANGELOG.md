@@ -1,3 +1,15 @@
+# [3.2.0](https://github.com/sDenizOzturk/pixstore/compare/v3.1.1...v3.2.0) (2025-07-04)
+
+
+### Bug Fixes
+
+* update lastUsed timestamp when returning cached image ([d783167](https://github.com/sDenizOzturk/pixstore/commit/d783167fae0743ad436be206ddba7f8aabbeb99c)), closes [#66](https://github.com/sDenizOzturk/pixstore/issues/66)
+
+
+### Features
+
+* improve fetcher API and enforce token in customEndpointHelper ([0df00e0](https://github.com/sDenizOzturk/pixstore/commit/0df00e07eba6826c77407484915224b9d99e4ac5)), closes [#67](https://github.com/sDenizOzturk/pixstore/issues/67)
+
 ## [3.1.1](https://github.com/sDenizOzturk/pixstore/compare/v3.1.0...v3.1.1) (2025-07-04)
 
 
