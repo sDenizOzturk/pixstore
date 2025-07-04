@@ -2,6 +2,15 @@ import { pixstoreConfig } from './pixstore-config.js'
 import type { CustomErrorHandler } from '../types/custom-error-handler.js'
 import { PixstoreError } from './pixstore-error.js'
 
+// * Stores the latest PixstoreError for debugging and advanced usage.
+export let _lastPixstoreError: PixstoreError | null = null
+/**
+ * Returns the most recent PixstoreError handled by the API.
+ * Resets only when a new error is handled.
+ * For debugging, logging, and advanced error reporting.
+ */
+export const getLastPixstoreError = () => _lastPixstoreError
+
 /**
  * Handles synchronous errors for Pixstore API functions using centralized error handling logic.
  * See handleCatch() for details.
@@ -48,6 +57,8 @@ const handleCatch = (error: unknown) => {
   // 'hybrid': Only handle PixstoreError softly, throw all other errors
   if (ERROR_HANDLING_MODE === 'hybrid') {
     if (error instanceof PixstoreError) {
+      // Set last PixstoreError
+      _lastPixstoreError = error
       // Log PixstoreError as warning and return null
       console.warn(error)
       return null

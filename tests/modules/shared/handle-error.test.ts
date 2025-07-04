@@ -2,6 +2,7 @@ import {
   handleErrorSync,
   handleErrorAsync,
   setCustomErrorHandler,
+  getLastPixstoreError,
 } from '../../../src/shared/handle-error'
 import { PixstoreError } from '../../../src/shared/pixstore-error'
 import { pixstoreConfig } from '../../../src/shared/pixstore-config'
@@ -176,5 +177,68 @@ describe('handleErrorAsync', () => {
         throw new Error('throwAsync')
       }),
     ).rejects.toThrow('throwAsync')
+  })
+})
+
+describe('PixstoreError tracking (lastPixstoreError)', () => {
+  beforeEach(() => {
+    // Reset mode & clear last error
+    pixstoreConfig.errorHandlingMode = 'hybrid'
+    import('../../../src/shared/handle-error').then((mod) => {
+      mod._lastPixstoreError = null
+    })
+  })
+
+  it('sets lastPixstoreError when PixstoreError is caught (sync)', () => {
+    const err = new PixstoreError('TrackMe')
+    expect(getLastPixstoreError()).toBeNull()
+    handleErrorSync(() => {
+      throw err
+    })
+    expect(getLastPixstoreError()).toBe(err)
+  })
+
+  it('sets lastPixstoreError when PixstoreError is caught (async)', async () => {
+    const err = new PixstoreError('AsyncTrack')
+    expect(getLastPixstoreError()).toBeNull()
+    await handleErrorAsync(async () => {
+      throw err
+    })
+    expect(getLastPixstoreError()).toBe(err)
+  })
+
+  it('does not set lastPixstoreError for generic error (sync)', () => {
+    try {
+      handleErrorSync(() => {
+        throw new Error('not-pixstore')
+      })
+    } catch (_) {
+      // ignore
+    }
+    expect(getLastPixstoreError()).toBeNull()
+  })
+
+  it('does not set lastPixstoreError for generic error (async)', async () => {
+    try {
+      await handleErrorAsync(async () => {
+        throw new Error('not-pixstore')
+      })
+    } catch (_) {
+      // ignore
+    }
+    expect(getLastPixstoreError()).toBeNull()
+  })
+
+  it('lastPixstoreError resets only when new PixstoreError is handled', () => {
+    const err1 = new PixstoreError('first')
+    const err2 = new PixstoreError('second')
+    handleErrorSync(() => {
+      throw err1
+    })
+    expect(getLastPixstoreError()).toBe(err1)
+    handleErrorSync(() => {
+      throw err2
+    })
+    expect(getLastPixstoreError()).toBe(err2)
   })
 })
