@@ -1,3 +1,18 @@
+# [3.0.0](https://github.com/sDenizOzturk/pixstore/compare/v2.1.1...v3.0.0) (2025-07-04)
+
+
+### Features
+
+* secure stateless default endpoint & wire protocol refactor (BREAKING CHANGE) ([829ec49](https://github.com/sDenizOzturk/pixstore/commit/829ec49d5b3bc9d1e7b1b6b12f2a0e8e053ba415)), closes [#62](https://github.com/sDenizOzturk/pixstore/issues/62)
+
+
+### BREAKING CHANGES
+
+* - ImageRecord and all related access flows now require `statelessProof` and updated parameter structure; previous usages are incompatible.
+- Default endpoint is now secure and requires proof/token; public image fetching is no longer supported.
+- Wire protocol and API contracts are incompatible with previous Pixstore versions.
+- All client and backend integrations (including examples) must be updated to use the new access flow.
+
 ## [2.1.1](https://github.com/sDenizOzturk/pixstore/compare/v2.1.0...v2.1.1) (2025-07-02)
 
 
