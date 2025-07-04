@@ -9,14 +9,9 @@ import type { ImageFetcher } from '../types/image-fetcher.js'
  * the current wire protocol (status byte, token, stateless proof in headers).
  */
 const defaultImageFetcher: ImageFetcher = async (
-  parameters,
+  imageRecord,
 ): Promise<Uint8Array> => {
-  const {
-    imageId,
-    imageToken,
-    statelessProof,
-    // context (optional, ignored here)
-  } = parameters
+  const { id: imageId, token: imageToken, statelessProof } = imageRecord
 
   const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointConnectPort
   const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute

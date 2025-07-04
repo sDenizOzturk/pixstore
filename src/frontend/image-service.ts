@@ -45,17 +45,8 @@ export const getImage = async (
       return decryptedPayloadToBlob(imagePayload)
     }
 
-    // If the cached token is outdated (record was updated elsewhere), use the cached token for conditional request.
-    const clientToken =
-      cached && cached.token !== token ? cached.token : undefined
-
     // Otherwise, fetch the latest encoded image from the backend
-    const encoded = await fetchEncodedImage({
-      imageId: id,
-      imageToken: clientToken,
-      statelessProof,
-      context,
-    })
+    const encoded = await fetchEncodedImage(record, context)
 
     // Decode the wire payload to extract encrypted data, meta, and token
     const decodedWirePayload = decodeWirePayload(encoded)

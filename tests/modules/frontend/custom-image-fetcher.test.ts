@@ -1,4 +1,4 @@
-import type { CustomImageFetcher } from '../../../src/types/image-fetcher.js'
+import type { ImageFetcher } from '../../../src/types/image-fetcher.js'
 import {
   registerCustomImageFetcher,
   getCustomImageFetcher,
@@ -6,7 +6,7 @@ import {
 
 describe('custom-image-fetcher', () => {
   it('registers and retrieves a custom fetcher', () => {
-    const fetcher: CustomImageFetcher = async (_) => new Uint8Array([1])
+    const fetcher: ImageFetcher = async (_) => new Uint8Array([1])
     registerCustomImageFetcher(fetcher)
     expect(getCustomImageFetcher()).toBe(fetcher)
   })

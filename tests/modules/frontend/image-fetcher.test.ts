@@ -3,17 +3,20 @@ import { registerCustomImageFetcher } from '../../../src/frontend/custom-image-f
 import * as defaultFetcherModule from '../../../src/frontend/default-image-fetcher'
 
 describe('fetchEncodedImage', () => {
-  const parameters = {
-    imageId: 'abc123',
-    imageToken: 123,
+  const imageRecord = {
+    id: 'abc123',
+    token: 123,
     statelessProof: 'test-proof',
-    context: undefined,
+    meta: {
+      key: 'test-key',
+      iv: 'test-iv',
+      tag: 'test-tag',
+    },
   }
   const defaultData = new Uint8Array([42])
   const customData = new Uint8Array([99])
 
   afterEach(() => {
-    // Always unregister custom fetcher after each test to avoid cross-test pollution
     registerCustomImageFetcher(undefined)
     jest.restoreAllMocks()
   })
@@ -22,19 +25,19 @@ describe('fetchEncodedImage', () => {
     jest
       .spyOn(defaultFetcherModule, 'getDefaultImageFetcher')
       .mockReturnValue(async (params) => {
-        expect(params).toEqual(parameters)
+        expect(params).toEqual(imageRecord)
         return defaultData
       })
-    const result = await fetchEncodedImage(parameters)
+    const result = await fetchEncodedImage(imageRecord)
     expect(result).toEqual(defaultData)
   })
 
   it('uses custom fetcher if registered', async () => {
     registerCustomImageFetcher(async (params) => {
-      expect(params).toEqual(parameters)
+      expect(params).toEqual(imageRecord)
       return customData
     })
-    const result = await fetchEncodedImage(parameters)
+    const result = await fetchEncodedImage(imageRecord)
     expect(result).toEqual(customData)
   })
 })

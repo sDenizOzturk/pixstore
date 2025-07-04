@@ -49,7 +49,7 @@ export const getPlayerImage = async (
   try {
     const clientTokenRaw = req.query.token ?? req.headers['x-pixstore-token']
     const clientToken =
-      clientTokenRaw !== undefined ? Number(clientTokenRaw) : undefined
+      clientTokenRaw !== undefined ? Number(clientTokenRaw) : 0
 
     const statelessProofRaw = req.query.proof ?? req.headers['x-pixstore-proof']
     const statelessProof =

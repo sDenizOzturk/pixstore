@@ -33,11 +33,7 @@ describe('fetchEncodedImage (integration)', () => {
   })
   it('fetches and decodes the image as expected', async () => {
     const statelessProof = getCurrentStatelessProof(record!.id)
-    const encoded = await fetchEncodedImage({
-      imageId: record!.id,
-      imageToken: record!.token,
-      statelessProof,
-    })
+    const encoded = await fetchEncodedImage(record!)
     const decoded = decodeWirePayload(encoded)
 
     expect([WirePayloadState.Success, WirePayloadState.Updated]).toContain(
@@ -83,9 +79,14 @@ describe('fetchEncodedImage (integration)', () => {
     const fakeId = 'fetcher:notfound'
     const proof = getCurrentStatelessProof(fakeId)
     const encoded = await fetchEncodedImage({
-      imageId: fakeId,
-      imageToken: undefined,
+      id: fakeId,
+      token: 0,
       statelessProof: proof,
+      meta: {
+        key: 'test-key',
+        iv: 'test-iv',
+        tag: 'test-tag',
+      },
     })
     const decoded = decodeWirePayload(encoded)
     expect([

@@ -15,7 +15,7 @@ import { WirePayloadState } from '../types/wire-payload.js'
  */
 export const customEndpointHelper = async (
   imageId: string,
-  clientToken: number | undefined,
+  clientToken: number,
   statelessProof: string,
 ): Promise<Uint8Array | null> => {
   return handleErrorAsync(async () => {

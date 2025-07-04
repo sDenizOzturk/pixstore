@@ -4,7 +4,7 @@
 //   import { initPixstoreBackend } from 'pixstore/backend'
 //
 import { initPixstoreFrontend } from '../../../../dist/frontend'
-import type { ImageFetcher } from '../../../../dist/types'
+import type { ImageFetcher, ImageRecord } from '../../../../dist/types'
 import { useAuth } from './store/auth'
 import { API_BASE } from './constants'
 
@@ -20,18 +20,17 @@ const FRONTEND_CLEANUP_BATCH = 2 // Number of images to clean up in a single bat
  * The custom fetcher allows sending the playerId and JWT to the backend for secure image access.
  * This is REQUIRED to support custom image endpoint and role-based access.
  */
-const customImageFetcher: ImageFetcher = async ({
-  imageId,
-  imageToken,
-  statelessProof,
-  context,
-}) => {
-  const { playerId } = context
+const customImageFetcher: ImageFetcher = async (
+  imageRecord: ImageRecord,
+  { playerId },
+) => {
+  console.log('test!!')
+  const { id: imageId, token: imageToken, statelessProof } = imageRecord
+
   const jwt = useAuth.getState().jwt
 
   const headers: Record<string, string> = {
     Authorization: `Bearer ${jwt}`,
-    // Pixstore endpointleri için zorunlu
     'x-pixstore-proof': statelessProof,
   }
   if (imageToken !== undefined) {
