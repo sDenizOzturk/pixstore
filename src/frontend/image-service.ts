@@ -35,6 +35,12 @@ export const getImage = async (
       // Decrypt the image using the extracted encrypted data and meta
       const imagePayload = await decryptImage(encrypted, meta)
 
+      // Update lastUsed timestamp (wihtout awaiting)
+      writeImageRecord({
+        ...indexedDBRecord!,
+        lastUsed: Date.now(),
+      })
+
       // Return the up-to-date Blob for rendering
       return decryptedPayloadToBlob(imagePayload)
     }
@@ -79,8 +85,8 @@ export const getImage = async (
       lastUsed: Date.now(),
     }
 
-    // Save the updated image into the local cache
-    await writeImageRecord(indexedDBRecord)
+    // Save the updated image into the local cache (wihtout awaiting)
+    writeImageRecord(indexedDBRecord)
 
     // Use the correct meta depending on response state (Success keeps old meta, Updated uses new meta)
     const latestMeta =
