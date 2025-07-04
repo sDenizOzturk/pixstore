@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/sDenizOzturk/pixstore/compare/v3.0.0...v3.1.0) (2025-07-04)
+
+
+### Features
+
+* add lastPixstoreError for easier debugging and error reporting ([f7a48a3](https://github.com/sDenizOzturk/pixstore/commit/f7a48a329612a2cfec18ddd7c33fdad191ad824d)), closes [#63](https://github.com/sDenizOzturk/pixstore/issues/63)
+
 # [3.0.0](https://github.com/sDenizOzturk/pixstore/compare/v2.1.1...v3.0.0) (2025-07-04)
 
 
