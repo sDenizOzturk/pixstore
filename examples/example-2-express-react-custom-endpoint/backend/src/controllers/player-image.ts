@@ -1,7 +1,11 @@
 import { Request, Response } from 'express'
 import { getPlayerById, getGeneralManagerById } from '../store/in-memory-db'
-// Import Pixstore from the official package.
-import { customEndpointHelper } from 'pixstore/backend'
+// IMPORTANT: In this example, Pixstore is imported directly from a local build path for demonstration purposes.
+// In real projects, you should install Pixstore via npm and import as follows:
+//
+//   import { initPixstoreBackend } from 'pixstore/backend'
+//
+import { customEndpointHelper } from '../../../../../dist/backend'
 import { SecureRequest } from '../middleware/auth'
 
 export const getPlayerImage = async (
@@ -42,8 +46,20 @@ export const getPlayerImage = async (
     res.status(400).json({ error: 'Invalid imageId for player' })
     return
   }
-
   try {
+    const clientTokenRaw = req.query.token ?? req.headers['x-pixstore-token']
+    const clientToken =
+      clientTokenRaw !== undefined ? Number(clientTokenRaw) : undefined
+
+    const statelessProofRaw = req.query.proof ?? req.headers['x-pixstore-proof']
+    const statelessProof =
+      typeof statelessProofRaw === 'string' ? statelessProofRaw : undefined
+
+    if (!statelessProof) {
+      res.status(400).json({ error: 'Missing proof' })
+      return
+    }
+
     // --- CRITICAL ---
     // This is the key Pixstore integration point for secure image delivery.
     // customEndpointHelper must be used here to ensure the backend can enforce access rules,
@@ -51,7 +67,11 @@ export const getPlayerImage = async (
     // WARNING: Do NOT attempt to serve raw files or database blobs directly!
     // Pixstore relies on this function for its authentication, auditing, and format compatibility.
     // If you skip this, the library WILL NOT work securely or as intended.
-    const payload = await customEndpointHelper(imageId.toString())
+    const payload = await customEndpointHelper(
+      imageId.toString(),
+      clientToken,
+      statelessProof,
+    )
     res.send(payload)
   } catch {
     res.status(404).json({ error: 'Image not found' })

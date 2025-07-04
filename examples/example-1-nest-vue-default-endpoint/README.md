@@ -66,12 +66,19 @@ Go to [http://localhost:5173/](http://localhost:5173/) in your browser.
 
 ---
 
+> **Stateless Proof Expiry:**  
+> This example uses `STATELESS_KEY_WINDOWS_LENGTH = -1` for uninterrupted image access.
+> You can **test stateless proof expiry** by setting it to any positive value.
+> After expiry, images cannot be fetched again without reloading the page or refetching all ImageRecords.
+
+---
+
 ## **Note**
 
 - In production, you’d use much higher cache limits!
 - You can adjust `FRONTEND_IMAGE_CACHE_LIMIT` and `FRONTEND_CLEANUP_BATCH` in `frontend/src/main.ts` to experiment.
 - Pixstore is imported from a local build for demo purposes. In your own project, just use:
-z"
+  z"
   ```js
   import { getImage } from 'pixstore/frontend'
   ```

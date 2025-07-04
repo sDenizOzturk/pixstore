@@ -52,6 +52,7 @@ export const useRMPlayersStore = defineStore('RMPlayers', {
                     iv
                     tag
                   }
+                  statelessProof
                 }
               }
             }

@@ -12,43 +12,53 @@ import {
   writeImageRecord,
 } from './database.js'
 import { createUniqueId } from './unique-id.js'
-import type { ImageRecord } from '../types/image-record.js'
+import type { DBImageRecord, ImageRecord } from '../types/image-record.js'
 import { encryptImage } from './image-encryption.js'
-import { BackendWirePayload } from '../types/wire-payload.js'
+import { BackendWirePayload, WirePayloadState } from '../types/wire-payload.js'
 import { handleErrorAsync, handleErrorSync } from '../shared/handle-error.js'
 import { PixstoreError } from '../shared/pixstore-error.js'
+import { getCurrentStatelessProof } from './stateless-proof.js'
 
 /**
- * Retrieves the encrypted image payload (wire format) for the given image ID.
+ * Retrieves the encrypted image payload (wire format) for the given image ID and client token.
  *
  * Reads the encrypted image buffer from disk and fetches its metadata and token from the database.
- * Throws an error if the image record is not found.
+ * If the image record is not found, returns a payload with state = NotFound.
+ * If the client token matches the stored token, returns a minimal payload (state = Success) with only the encrypted image.
+ * If the tokens do not match, returns a full payload (state = Updated) with encrypted image, encryption metadata, and the latest token.
  *
- * Returns a BackendWirePayload containing:
- * - encrypted: the encrypted image data as a Buffer,
- * - meta: encryption metadata (key, iv, tag),
- * - token: the current version token for cache validation.
+ * Returns a BackendWirePayload union type:
+ *   - { state: Success, encrypted }
+ *   - { state: Updated, encrypted, meta, token }
+ *   - { state: NotFound }
  */
 export const getWirePayload = async (
   id: string,
+  clientToken: number | undefined,
 ): Promise<BackendWirePayload> => {
   const record = readImageRecord(id)
-  if (!record) throw new PixstoreError(`Image record not found: ${id}`)
-
+  if (!record) return { state: WirePayloadState.NotFound }
   const encrypted = await readImageFile(id)
+
+  if (record.token === clientToken)
+    return { state: WirePayloadState.Success, encrypted }
+
   const { token, meta } = record
 
-  return { encrypted, meta, token }
+  return { state: WirePayloadState.Updated, encrypted, meta, token }
 }
 
 /**
- * Returns the image record (id + token) from the database
- * Returns null if not found
+ * Returns the image record (id, token, meta, statelessProof) from the database.
+ * Adds a statelessProof to the DB record for use in fetch/endpoint calls.
+ * Returns null if the record is not found.
  */
 export const getImageRecord = (id: string): ImageRecord | null => {
   return handleErrorSync(() => {
-    // Reads imageRecord from database (includes id, token, and meta fields)
-    return readImageRecord(id)
+    // Read the database image record (contains id, token, and meta fields)
+    const dbImageRecord = readImageRecord(id)
+    // Convert DB record to frontend-compatible ImageRecord (adds statelessProof)
+    return convertImageRecord(dbImageRecord)
   })
 }
 
@@ -61,15 +71,27 @@ const writeImage = async (
   buffer: Buffer,
   dir?: string,
 ): Promise<ImageRecord> => {
-  // Encrypt the buffer using AES-GCM and get encryption metadata
+  // Encrypt the buffer using AES-GCM and get encryption metadata (key, iv, tag)
   const { encrypted, meta } = encryptImage(buffer)
 
   // Save the encrypted image buffer to disk
   await saveImageFile(id, encrypted)
 
   try {
-    // Write image metadata (token, key, iv, tag) to the database
-    return writeImageRecord(id, meta)
+    // Write image metadata (token, key, iv, tag) to the database and get the DB record
+    const dbImageRecord = writeImageRecord(id, meta)
+
+    // Convert the DB image record into a frontend-compatible ImageRecord (adds statelessProof)
+    const imageRecord = convertImageRecord(dbImageRecord)
+
+    // If conversion fails (should not happen), delete the image file and throw error
+    if (!imageRecord) {
+      deleteImageFile(id)
+      throw new PixstoreError('Failed to convert image record: result is null')
+    }
+
+    // Return the completed ImageRecord (for frontend use)
+    return imageRecord
   } catch (err) {
     // If writing metadata fails, delete the saved image to avoid inconsistency
     deleteImageFile(id)
@@ -178,4 +200,17 @@ export const imageExists = async (id: string): Promise<boolean | null> => {
     // Returns true if image file or metadata record exists
     return (await imageFileExists(id)) || imageRecordExists(id)
   })
+}
+
+const convertImageRecord = (
+  DBImageRecord: DBImageRecord | null,
+): ImageRecord | null => {
+  if (DBImageRecord === null) return DBImageRecord
+  const imageId = DBImageRecord.id
+  const statelessProof = getCurrentStatelessProof(imageId)
+
+  return {
+    ...DBImageRecord,
+    statelessProof,
+  }
 }

@@ -11,6 +11,8 @@ import { decryptImage } from './image-decryption.js'
 import { decodeWirePayload } from '../shared/wire-encoder.js'
 import { IndexedDBImageRecord } from '../types/indexeddb-image-record.js'
 import { handleErrorAsync } from '../shared/handle-error.js'
+import { WirePayloadState } from '../types/wire-payload.js'
+import { PixstoreError } from '../shared/pixstore-error.js'
 
 /**
  * Retrieves image data using token-based cache validation.
@@ -22,7 +24,7 @@ export const getImage = async (
 ): Promise<Blob | null> => {
   return handleErrorAsync(async () => {
     // Attempt to read the cached image from IndexedDB by ID
-    const { id, token, meta } = record
+    const { id, token, meta, statelessProof } = record
     const cached = await readImageRecord(id)
 
     // If a cached image exists and the token matches, return it immediately
@@ -37,28 +39,60 @@ export const getImage = async (
       return decryptedPayloadToBlob(imagePayload)
     }
 
+    // If the cached token is outdated (record was updated elsewhere), use the cached token for conditional request.
+    const clientToken =
+      cached && cached.token !== token ? cached.token : undefined
+
     // Otherwise, fetch the latest encoded image from the backend
-    const encoded = await fetchEncodedImage(record.id, context)
+    const encoded = await fetchEncodedImage({
+      imageId: id,
+      imageToken: clientToken,
+      statelessProof,
+      context,
+    })
 
     // Decode the wire payload to extract encrypted data, meta, and token
     const decodedWirePayload = decodeWirePayload(encoded)
+
+    // Ensure response state is Success or Updated; throw on error or not found.
+    if (
+      decodedWirePayload.state !== WirePayloadState.Success &&
+      decodedWirePayload.state !== WirePayloadState.Updated
+    )
+      throw new PixstoreError(
+        `Image fetch failed: state=${
+          WirePayloadState[decodedWirePayload.state] || decodedWirePayload.state
+        } (not Success/Updated)`,
+      )
+
+    // Use the correct token depending on response state (Success uses old token, Updated uses fresh token)
+    const latestToken =
+      decodedWirePayload.state === WirePayloadState.Success
+        ? token
+        : decodedWirePayload.token
 
     // Prepare the IndexedDB record with fresh encrypted data and token
     const indexedDBRecord: IndexedDBImageRecord = {
       id,
       encrypted: decodedWirePayload.encrypted,
-      token: decodedWirePayload.token,
+      token: latestToken,
       lastUsed: Date.now(),
     }
 
     // Save the updated image into the local cache
     await writeImageRecord(indexedDBRecord)
 
+    // Use the correct meta depending on response state (Success keeps old meta, Updated uses new meta)
+    const latestMeta =
+      decodedWirePayload.state === WirePayloadState.Success
+        ? meta
+        : decodedWirePayload.meta
+
     // Decrypt the image using the encrypted data and meta from the wire payload.
     // The `record.meta` is not used, using stale meta could break decryption if the image was recently updated.
     const imagePayload = await decryptImage(
       decodedWirePayload.encrypted,
-      decodedWirePayload.meta,
+      latestMeta,
     )
 
     // Return the up-to-date Blob for rendering

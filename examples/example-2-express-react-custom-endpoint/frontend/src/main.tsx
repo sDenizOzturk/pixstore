@@ -1,14 +1,14 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
-import { initPixstore } from "./init-pixstore.ts";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+import { initPixstore } from './init-pixstore.ts'
 
 // Initialize Pixstore frontend with custom image fetcher integration (see ./init-pixstore.ts)
-initPixstore();
+initPixstore()
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-  </StrictMode>
-);
+  </StrictMode>,
+)

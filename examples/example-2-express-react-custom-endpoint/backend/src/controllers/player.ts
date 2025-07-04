@@ -1,5 +1,9 @@
-// Import Pixstore from the official package.
-import { getImageRecord } from 'pixstore/backend'
+// IMPORTANT: In this example, Pixstore is imported directly from a local build path for demonstration purposes.
+// In real projects, you should install Pixstore via npm and import as follows:
+//
+//   import { initPixstoreBackend } from 'pixstore/backend'
+//
+import { getImageRecord } from '../../../../../dist/backend'
 
 import { getPlayerById } from '../store/in-memory-db'
 import { Request, Response } from 'express'

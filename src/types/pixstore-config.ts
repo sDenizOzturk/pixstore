@@ -1,10 +1,11 @@
 import type { ImageFormat } from './image-format.js'
-import type { ErrorHandlingMode } from './error-handling-mode.ts'
+import type { ErrorHandlingMode } from './error-handling-mode.js'
 
 export interface PixstoreBackendConfig {
   imageFormats: readonly ImageFormat[]
   imageRootDir: string
   databasePath: string
+  statelessKeyWindowLength: number
   defaultEndpointEnabled: boolean
   defaultEndpointListenHost: string
   defaultEndpointListenPort: number

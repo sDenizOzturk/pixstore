@@ -1,6 +1,6 @@
 import BetterSqlite3 from 'better-sqlite3'
 
-import type { ImageRecord } from '../types/image-record.js'
+import type { DBImageRecord } from '../types/image-record.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 import { ImageDecryptionMeta } from '../types/image-decryption-meta.js'
 
@@ -35,7 +35,7 @@ export const initializeDatabase = () => {
 export const writeImageRecord = (
   id: string,
   meta: ImageDecryptionMeta,
-): ImageRecord => {
+): DBImageRecord => {
   const token = Date.now()
   const metaJSON = JSON.stringify(meta)
   const statement = database!.prepare(
@@ -52,7 +52,7 @@ export const writeImageRecord = (
  * Retrieves the image record with the given ID.
  * Returns null if the record does not exist.
  */
-export const readImageRecord = (id: string): ImageRecord | null => {
+export const readImageRecord = (id: string): DBImageRecord | null => {
   const row = database!
     .prepare(`SELECT id, token, meta FROM image_records WHERE id = ?`)
     .get(id) as { id: string; token: number; meta: string } | undefined

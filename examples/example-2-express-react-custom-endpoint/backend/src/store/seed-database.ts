@@ -1,5 +1,9 @@
-// Import Pixstore backend initializer from the official package.
-import { saveImage } from 'pixstore/backend'
+// IMPORTANT: In this example, Pixstore is imported directly from a local build path for demonstration purposes.
+// In real projects, you should install Pixstore via npm and import as follows:
+//
+//   import { initPixstoreBackend } from 'pixstore/backend'
+//
+import { saveImage } from '../../../../../dist/backend'
 
 import {
   addTeam,

@@ -1,5 +1,9 @@
-// Import Pixstore from the official package.
-import { ImageRecord } from 'pixstore/types'
+// IMPORTANT: In this example, Pixstore is imported directly from a local build path for demonstration purposes.
+// In real projects, you should install Pixstore via npm and import as follows:
+//
+//   import { initPixstoreBackend } from 'pixstore/backend'
+//
+import { ImageRecord } from '../../../../../dist/types'
 
 export interface BasketballPlayerRecord {
   id: number

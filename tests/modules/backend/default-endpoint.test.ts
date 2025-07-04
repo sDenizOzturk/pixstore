@@ -14,6 +14,9 @@ import {
 
 import { pixstoreConfig } from '../../../src/shared/pixstore-config.js'
 import { initializeDatabase } from '../../../src/backend/database.js'
+import { WirePayloadState } from '../../../src/types/wire-payload.js'
+import { getCurrentStatelessProof } from '../../../src/backend/stateless-proof.js'
+
 const DEFAULT_ENDPOINT_HOST = pixstoreConfig.defaultEndpointConnectHost
 const DEFAULT_ENDPOINT_ROUTE = pixstoreConfig.defaultEndpointRoute
 const DEFAULT_ENDPOINT_PORT = pixstoreConfig.defaultEndpointConnectPort
@@ -36,69 +39,102 @@ describe('Pixstore default endpoint – single file update flow', () => {
   const buffer1 = fs.readFileSync(path.join(assetDir, originalFile))
   const buffer2 = fs.readFileSync(path.join(assetDir, updatedFile))
 
-  it('should save, fetch, update, fetch and delete correctly', async () => {
-    // Save original image
+  it('should save, fetch, update, fetch and delete correctly (wire protocol)', async () => {
+    // 1) Save original image
     const record1 = await saveImage(buffer1, 'students')
     imageId = record1!.id
     originalToken = record1!.token
 
-    // Fetch original via endpoint
+    // 2) Fetch original via endpoint
     let res = await fetch(
       `${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}/${encodeURIComponent(imageId)}`,
+      {
+        headers: {
+          'x-pixstore-proof': getCurrentStatelessProof(imageId),
+        },
+      },
     )
     expect(res.status).toBe(200)
-    let raw = new Uint8Array(await res.arrayBuffer())
-    let {
-      encrypted: fetched1,
-      token: token1,
-      meta: meta1,
-    } = decodeWirePayload(raw)
-    expect(fetched1.length).toBeGreaterThan(0)
-    expect(token1).toBe(originalToken)
-    expect(Number(res.headers.get('x-token'))).toBe(originalToken)
-    expect(meta1).toBeDefined()
+    let wirePayload = new Uint8Array(await res.arrayBuffer())
+    let decoded = decodeWirePayload(wirePayload)
 
-    // Update with new image
+    // State should be Success or Updated (per protocol)
+    expect([WirePayloadState.Success, WirePayloadState.Updated]).toContain(
+      decoded.state,
+    )
+    // Check fields
+    if (decoded.state === WirePayloadState.Success) {
+      expect(decoded.encrypted).toBeDefined()
+    } else if (decoded.state === WirePayloadState.Updated) {
+      expect(decoded.encrypted).toBeDefined()
+      expect(decoded.token).toBe(originalToken)
+      expect(decoded.meta).toBeDefined()
+    }
+
+    // 3) Update with new image
     const record2 = await updateImage(imageId, buffer2)
     expect(record2!.token).not.toBe(originalToken)
 
-    // Fetch updated via endpoint
+    // 4) Fetch updated via endpoint
     res = await fetch(
       `${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}/${encodeURIComponent(imageId)}`,
+      {
+        headers: {
+          'x-pixstore-proof': getCurrentStatelessProof(imageId),
+        },
+      },
     )
     expect(res.status).toBe(200)
-    raw = new Uint8Array(await res.arrayBuffer())
-    const {
-      encrypted: fetched2,
-      token: token2,
-      meta: meta2,
-    } = decodeWirePayload(raw)
-    expect(fetched2.length).toBeGreaterThan(0)
-    expect(token2).toBe(record2!.token)
-    expect(Number(res.headers.get('x-token'))).toBe(record2!.token)
-    expect(meta2).toBeDefined()
+    wirePayload = new Uint8Array(await res.arrayBuffer())
+    decoded = decodeWirePayload(wirePayload)
+    expect([WirePayloadState.Success, WirePayloadState.Updated]).toContain(
+      decoded.state,
+    )
+    if (decoded.state === WirePayloadState.Success) {
+      expect(decoded.encrypted).toBeDefined()
+    } else if (decoded.state === WirePayloadState.Updated) {
+      expect(decoded.encrypted).toBeDefined()
+      expect(decoded.token).toBe(record2!.token)
+      expect(decoded.meta).toBeDefined()
+    }
 
-    // Delete and ensure 404
+    // 5) Delete and ensure NotFound state
     expect(await deleteImage(imageId)).toBe(true)
     res = await fetch(
       `${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}/${encodeURIComponent(imageId)}`,
+      {
+        headers: {
+          'x-pixstore-proof': getCurrentStatelessProof(imageId),
+        },
+      },
     )
-    expect(res.status).toBe(404)
+    expect(res.status).toBe(200)
+    wirePayload = new Uint8Array(await res.arrayBuffer())
+    decoded = decodeWirePayload(wirePayload)
+    expect(decoded.state).toBe(WirePayloadState.NotFound)
   })
 
-  it('should return 404 for non-existent id', async () => {
+  it('should return NotFound state for non-existent id', async () => {
+    const fakeId = 'doesnotexist'
+    const proof = getCurrentStatelessProof(fakeId)
     const res = await fetch(
-      `${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}/${encodeURIComponent('doesnotexist')}`,
+      `${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}/${encodeURIComponent(fakeId)}`,
+      {
+        headers: {
+          'x-pixstore-proof': proof,
+        },
+      },
     )
-    expect(res.status).toBe(404)
+    expect(res.status).toBe(200)
+    const wirePayload = new Uint8Array(await res.arrayBuffer())
+    const decoded = decodeWirePayload(wirePayload)
+    expect(decoded.state).toBe(WirePayloadState.NotFound)
   })
 
   it('should return 400 for missing image id', async () => {
-    // /pixstore-image
     let res = await fetch(`${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}`)
     expect(res.status).toBe(400)
 
-    // /pixstore-image/
     res = await fetch(`${BASE_URL}${DEFAULT_ENDPOINT_ROUTE}/`)
     expect(res.status).toBe(400)
   })

@@ -134,4 +134,6 @@ export const getPlayerImage = async (
 - In production, you’d want more robust authentication and error handling.
 - Adjust cache limits in the Pixstore frontend config to test cleanup behavior.
 
+---
+
 **Explore strict, secure, and modern image storage with Pixstore!**

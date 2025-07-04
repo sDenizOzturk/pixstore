@@ -33,6 +33,15 @@ const DEFAULT_ENDPOINT_PORT = 4000;
 // For local development, this should match your frontend's dev server (e.g. Vite).
 const ACCESS_CONTROL_ALLOW_ORIGIN = 'http://localhost:5173';
 
+// Stateless proof window length in milliseconds.
+// - Set to a positive integer (e.g. 60000) to require proof rotation (for enhanced security).
+// - Set to -1 to disable proof expiry and allow non-expiring proofs (not recommended for production).
+//
+// IMPORTANT: In this example, **all ImageRecords are fetched at once** (on page load).
+// If you use a value other than -1, the stateless proof will expire after the configured time window.
+// After expiry, images cannot be fetched without refreshing the page (to obtain fresh proofs).
+const STATELESS_KEY_WINDOWS_LENGTH = -1;
+
 /**
  * Initializes Pixstore backend with a clean database and image directory.
  * - Removes old data by calling clearOldPixstore()
@@ -46,5 +55,6 @@ export const initPixstore = () => {
     databasePath: DATABASE_PATH,
     defaultEndpointListenPort: DEFAULT_ENDPOINT_PORT,
     accessControlAllowOrigin: ACCESS_CONTROL_ALLOW_ORIGIN,
+    statelessKeyWindowLength: STATELESS_KEY_WINDOWS_LENGTH,
   });
 };

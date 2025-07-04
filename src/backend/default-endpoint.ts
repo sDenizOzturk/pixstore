@@ -8,10 +8,9 @@
  */
 
 import http from 'http'
-import { getWirePayload } from './image-service.js'
-import { encodeWirePayload } from '../shared/wire-encoder.js'
 import { pixstoreConfig } from '../shared/pixstore-config.js'
 import { IS_TEST } from '../shared/constants.js'
+import { endpointHelper } from './custom-endpoint.js'
 
 let server: http.Server
 
@@ -28,7 +27,11 @@ const requestHandler = (
 
   res.setHeader('Access-Control-Allow-Origin', ACCESS_CONTROL_ALLOW_ORIGIN)
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, x-pixstore-proof, x-pixstore-token',
+  )
+
   // handle preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(204)
@@ -53,22 +56,32 @@ const requestHandler = (
   }
   if (match) {
     const id = decodeURIComponent(match[1])
-    ;(async () => {
-      try {
-        const wirePayload = await getWirePayload(id)
-        const rawData = encodeWirePayload(wirePayload)
+    const statelessProofHeader = req.headers['x-pixstore-proof']
+    const statelessProof = Array.isArray(statelessProofHeader)
+      ? statelessProofHeader[0]
+      : statelessProofHeader
+    const clientTokenHeader = req.headers['x-pixstore-token']
+    const clientTokenString = Array.isArray(clientTokenHeader)
+      ? clientTokenHeader[0]
+      : clientTokenHeader
+    const clientToken = clientTokenString
+      ? Number(clientTokenString)
+      : undefined
 
-        res.writeHead(200, {
-          'Content-Type': 'application/octet-stream',
-          'Content-Length': String(rawData.length),
-          'X-Token': String(wirePayload.token),
-        })
-        res.end(rawData)
-      } catch (err) {
-        res
-          .writeHead(404, { 'Content-Type': 'text/plain' })
-          .end('Image not found')
-      }
+    /**
+     * Always respond with HTTP 200 OK for all valid image requests.
+     * Any error or status (such as NotFound, InvalidProof, or MissingToken)
+     * is indicated by the first byte (state) of the binary response payload.
+     * This protocol-agnostic approach keeps error handling simple and
+     * consistent for all clients and custom integrations.
+     */
+    ;(async () => {
+      const wirePayload = await endpointHelper(id, clientToken, statelessProof)
+      res.writeHead(200, {
+        'Content-Type': 'application/octet-stream',
+        'Content-Length': String(wirePayload.length),
+      })
+      res.end(wirePayload)
     })()
     return
   }

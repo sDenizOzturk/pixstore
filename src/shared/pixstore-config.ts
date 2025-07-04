@@ -58,6 +58,16 @@ const validateConfig = (config: Partial<PixstoreConfig>): void => {
 
   validatePort('defaultEndpointListenPort', config.defaultEndpointListenPort)
   validatePort('defaultEndpointConnectPort', config.defaultEndpointConnectPort)
+
+  // statelessKeyWindowLength must be -1 (no expiry) or a positive integer (ms)
+  if (config.statelessKeyWindowLength !== undefined) {
+    const val = config.statelessKeyWindowLength
+    if (val !== -1 && (!Number.isFinite(val) || val <= 0)) {
+      throw new Error(
+        'statelessKeyWindowLength must be a positive integer (milliseconds) or -1 for non-expiring proof',
+      )
+    }
+  }
 }
 
 const DEFAULT_ENDPOINT_TEST_PORT = 10000 + Math.floor(Math.random() * 50000)
@@ -72,6 +82,8 @@ export const defaultConfig: PixstoreConfig = {
   imageExtension: '.pixstore-image',
   imageRootDir: IS_TEST ? 'pixstore-test-images' : 'pixstore-images',
   databasePath: IS_TEST ? './.pixstore-test.sqlite' : './.pixstore.sqlite',
+  statelessKeyWindowLength: IS_TEST ? 200 : 20000,
+
   defaultEndpointEnabled: true,
   defaultEndpointRoute: '/pixstore-image',
   defaultEndpointListenHost: IS_TEST ? '127.0.0.1' : '0.0.0.0',
