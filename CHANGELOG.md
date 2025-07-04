@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/sDenizOzturk/pixstore/compare/v3.1.0...v3.1.1) (2025-07-04)
+
+
+### Bug Fixes
+
+* export getLastPixstoreError for public error tracking ([d1b974c](https://github.com/sDenizOzturk/pixstore/commit/d1b974c87b34646515a6dba7a4a59ab9281204a8))
+
 # [3.1.0](https://github.com/sDenizOzturk/pixstore/compare/v3.0.0...v3.1.0) (2025-07-04)
 
 
