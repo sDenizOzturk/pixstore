@@ -1,4 +1,4 @@
-import PlayerCard from "./PlayerCard";
+import PlayerCard from './PlayerCard'
 
 const DisplayPlayers = () => {
   return (
@@ -6,10 +6,10 @@ const DisplayPlayers = () => {
       <h3>Player List</h3>
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
           gap: 16,
-          justifyItems: "center",
+          justifyItems: 'center',
         }}
       >
         {
@@ -21,7 +21,7 @@ const DisplayPlayers = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DisplayPlayers;
+export default DisplayPlayers

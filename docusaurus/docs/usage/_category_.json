@@ -1,0 +1,8 @@
+{
+  "label": "Usage",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Step-by-step guides and practical examples to get started with Pixstore. Learn initialization, image storage, custom endpoints, and error handling—all with real-world scenarios."
+  }
+}

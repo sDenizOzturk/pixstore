@@ -37,8 +37,8 @@ export const deleteImageFile = async (id: string): Promise<void> => {
   const filepath = toFilePath(id)
   try {
     await fs.rm(filepath)
-  } catch (err: any) {
-    if (err.code !== 'ENOENT') {
+  } catch (err: unknown) {
+    if ((err as { code?: string }).code !== 'ENOENT') {
       throw err
     }
     // If file doesn't exist, ignore

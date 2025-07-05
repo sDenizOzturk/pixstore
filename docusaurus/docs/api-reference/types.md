@@ -10,10 +10,10 @@ This page documents the shared type definitions used across Pixstore frontend an
 
 Some types on this page are internal and not exported.
 
-All exported types can be imported from the `pixstore/types` entrypoint:
+All **exported types** can be imported from the `pixstore/types` entrypoint:
 
 ```ts
-import type { ImageRecord } from 'pixstore/types'
+import type { ImageRecord, ImageFetcher } from 'pixstore/types'
 ```
 
 ---
@@ -22,31 +22,60 @@ import type { ImageRecord } from 'pixstore/types'
 
 ## `ImageRecord`
 
-Represents a reference to an image stored in Pixstore, including the ID, access token, and decryption metadata.
+Represents a reference to an image stored in Pixstore, including the ID, access token, decryption metadata, and a stateless proof required for secure access.
 
-Used to fetch and decrypt images on the frontend.
+**Used to fetch and decrypt images on the frontend and for all access/authorization calls.**
 
 ### Definition
 
 ```ts
 export interface ImageRecord {
-  id: string
-  token: number
-  meta: ImageDecryptionMeta
+  id: string // Unique ID used to locate and identify the image
+  token: number // Used for cache validation and version control
+  meta: ImageDecryptionMeta // Metadata required to decrypt the image (key, IV, tag, format)
+  statelessProof: string // Stateless, time-based proof-of-access hash for endpoint authorization
 }
 ```
 
 ### Fields
 
-| Name    | Type                                          | Description                                     |
-| ------- | --------------------------------------------- | ----------------------------------------------- |
-| `id`    | `string`                                      | Unique identifier of the image                  |
-| `token` | `number`                                      | Used for cache validation and versioning        |
-| `meta`  | [`ImageDecryptionMeta`](#imagedecryptionmeta) | Decryption metadata: key, IV, tag, format, etc. |
+| Name             | Type                                          | Description                                                       |
+| ---------------- | --------------------------------------------- | ----------------------------------------------------------------- |
+| `id`             | `string`                                      | Unique identifier of the image                                    |
+| `token`          | `number`                                      | Used for cache validation and versioning                          |
+| `meta`           | [`ImageDecryptionMeta`](#imagedecryptionmeta) | Decryption metadata: key, IV, tag, format, etc.                   |
+| `statelessProof` | `string`                                      | Stateless time-based proof-of-access for secure endpoint requests |
 
 ---
 
 📄 Source: [`src/types/image-record.ts`](https://github.com/sDenizOzturk/pixstore/blob/main/src/types/image-record.ts)
+
+---
+
+## `ImageFetcher`
+
+Type definition for Pixstore’s image fetching logic, including all parameters required for secure access.
+This function receives all access data as an object and returns a `Promise<Uint8Array>` containing the wire-format image payload.
+
+### Definition
+
+```ts
+export type ImageFetcher = (
+  imageRecord: ImageRecord, // Includes id, token, decryption meta, and stateless proof
+  context?: unknown, // Optional context (user, session, etc.)
+) => Promise<Uint8Array>
+```
+
+### Fields (Function Parameters)
+
+| Name          | Type          | Description                                                |
+| ------------- | ------------- | ---------------------------------------------------------- |
+| `imageRecord` | `ImageRecord` | Full metadata and token/proof information about the image. |
+| `context`     | `any`         | Optional user/session data passed from `getImage()`.       |
+
+---
+
+📄 Source: [`src/types/image-fetcher.ts`](https://github.com/sDenizOzturk/pixstore/blob/main/src/types/image-fetcher.ts)
 
 ---
 
@@ -95,6 +124,7 @@ export interface PixstoreBackendConfig {
   imageFormats: readonly ImageFormat[]
   imageRootDir: string
   databasePath: string
+  statelessKeyWindowLength: number
   defaultEndpointEnabled: boolean
   defaultEndpointListenHost: string
   defaultEndpointListenPort: number
@@ -106,17 +136,18 @@ export interface PixstoreBackendConfig {
 
 ### Fields
 
-| Property                    | Type                                      | Default (non-test)        | Description                                                     |
-| --------------------------- | ----------------------------------------- | ------------------------- | --------------------------------------------------------------- |
-| `imageFormats`              | `ImageFormat[]`                           | `['png', 'jpeg', 'webp']` | Allowed image formats                                           |
-| `imageRootDir`              | `string`                                  | `'pixstore-images'`       | Folder where images are saved                                   |
-| `databasePath`              | `string`                                  | `'./.pixstore.sqlite'`    | Path to SQLite metadata DB                                      |
-| `defaultEndpointEnabled`    | `boolean`                                 | `true`                    | Whether to expose the default GET image endpoint                |
-| `defaultEndpointRoute`      | `string`                                  | `'/pixstore-image'`       | Route path for the default image endpoint                       |
-| `defaultEndpointListenHost` | `string`                                  | `'0.0.0.0'`               | Host/IP where the image endpoint HTTP server listens            |
-| `defaultEndpointListenPort` | `number`                                  | `3001`                    | Port where the image endpoint HTTP server listens               |
-| `accessControlAllowOrigin`  | `string`                                  | `'*'`                     | CORS `Access-Control-Allow-Origin` header for the default route |
-| `errorHandlingMode`         | [`ErrorHandlingMode`](#errorhandlingmode) | `'hybrid'`                | Error handling strategy for Pixstore API calls.                 |
+| Property                    | Type                                      | Default (non-test)        | Description                                                       |
+| --------------------------- | ----------------------------------------- | ------------------------- | ----------------------------------------------------------------- |
+| `imageFormats`              | `ImageFormat[]`                           | `['png', 'jpeg', 'webp']` | Allowed image formats                                             |
+| `imageRootDir`              | `string`                                  | `'pixstore-images'`       | Folder where images are saved                                     |
+| `databasePath`              | `string`                                  | `'./.pixstore.sqlite'`    | Path to SQLite metadata DB                                        |
+| `statelessKeyWindowLength`  | `number`                                  | `20000`                   | Time window (ms) for stateless proof generation (`-1` for static) |
+| `defaultEndpointEnabled`    | `boolean`                                 | `true`                    | Whether to expose the default GET image endpoint                  |
+| `defaultEndpointRoute`      | `string`                                  | `'/pixstore-image'`       | Route path for the default image endpoint                         |
+| `defaultEndpointListenHost` | `string`                                  | `'0.0.0.0'`               | Host/IP where the image endpoint HTTP server listens              |
+| `defaultEndpointListenPort` | `number`                                  | `3001`                    | Port where the image endpoint HTTP server listens                 |
+| `accessControlAllowOrigin`  | `string`                                  | `'*'`                     | CORS `Access-Control-Allow-Origin` header for the default route   |
+| `errorHandlingMode`         | [`ErrorHandlingMode`](#errorhandlingmode) | `'hybrid'`                | Error handling strategy for Pixstore API calls.                   |
 
 ---
 
@@ -207,6 +238,14 @@ export type ErrorHandlingMode =
 
 ---
 
+> **Note:**
+> If you use `errorHandlingMode: 'hybrid'` (the default), you can **optionally** use [`getLastPixstoreError()`](/docs/api-reference/shared-module#getlastpixstoreerror) for advanced error debugging and reporting.
+> If you use `errorHandlingMode: 'custom'`, you **must** provide a custom error handler using [`setCustomErrorHandler()`](/docs/api-reference/shared-module#setcustomerrorhandler); otherwise, Pixstore will throw an error.
+
+---
+
 📄 Source: [`src/types/error-handling-mode.ts`](https://github.com/sDenizOzturk/pixstore/blob/main/src/types/error-handling-mode.ts)
 
-📄 Source: [`src/shared/handle-error.js`](https://github.com/sDenizOzturk/pixstore/blob/main/src/shared/handle-error.js)
+📄 Source: [`src/shared/handle-error.ts`](https://github.com/sDenizOzturk/pixstore/blob/main/src/shared/handle-error.ts)
+
+---

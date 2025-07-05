@@ -59,15 +59,17 @@ const imageRecord = getImageRecord(imageId)
 
 if (!imageRecord) {
   // Image not found
+  // For error details, use:
+  console.error(getLastPixstoreError())
 }
 
-// Send this to the frontend.
-// The Pixstore frontend needs imageRecord to fetch and decrypt the actual image.
+// Send imageRecord to the frontend
 const player: BasketballPlayer = {
   ...playerRecord,
   imageRecord,
 }
 
+// Send imageRecord to the frontend for direct Pixstore usage
 res.json(player)
 ```
 
@@ -79,13 +81,16 @@ res.json(player)
 
 ```ts
 /**
- * Returns the image record (id + token) from the database
- * Returns null if not found
+ * Returns the image record (id, token, meta, statelessProof) from the database.
+ * Adds a statelessProof to the DB record for use in fetch/endpoint calls.
+ * Returns null if the record is not found.
  */
 export const getImageRecord = (id: string): ImageRecord | null => {
   return handleErrorSync(() => {
-    // Reads imageRecord from database (includes id, token, and meta fields)
-    return readImageRecord(id)
+    // Read the database image record (contains id, token, and meta fields)
+    const dbImageRecord = readImageRecord(id)
+    // Convert DB record to frontend-compatible ImageRecord (adds statelessProof)
+    return convertImageRecord(dbImageRecord)
   })
 }
 ```
@@ -128,6 +133,8 @@ const imageRecord = await saveImage(imageBuffer, 'players')
 
 if (!imageRecord) {
   // Image could not be saved
+  // For error details, use:
+  console.error(getLastPixstoreError())
 }
 
 // Send this to the frontend.
@@ -160,7 +167,7 @@ export const saveImage = async (
     const id = createUniqueId(dir)
 
     // Write the encrypted image and metadata
-    return await writeImage(id, buffer, dir)
+    return await writeImage(id, buffer)
   })
 }
 
@@ -168,20 +175,28 @@ export const saveImage = async (
  * Writes an image buffer to disk and updates or creates its database record.
  * If writing to the database fails, the file is deleted to maintain consistency.
  */
-const writeImage = async (
-  id: string,
-  buffer: Buffer,
-  dir?: string,
-): Promise<ImageRecord> => {
-  // Encrypt the buffer using AES-GCM and get encryption metadata
+const writeImage = async (id: string, buffer: Buffer): Promise<ImageRecord> => {
+  // Encrypt the buffer using AES-GCM and get encryption metadata (key, iv, tag)
   const { encrypted, meta } = encryptImage(buffer)
 
   // Save the encrypted image buffer to disk
   await saveImageFile(id, encrypted)
 
   try {
-    // Write image metadata (token, key, iv, tag) to the database
-    return writeImageRecord(id, meta)
+    // Write image metadata (token, key, iv, tag) to the database and get the DB record
+    const dbImageRecord = writeImageRecord(id, meta)
+
+    // Convert the DB image record into a frontend-compatible ImageRecord (adds statelessProof)
+    const imageRecord = convertImageRecord(dbImageRecord)
+
+    // If conversion fails (should not happen), delete the image file and throw error
+    if (!imageRecord) {
+      deleteImageFile(id)
+      throw new PixstoreError('Failed to convert image record: result is null')
+    }
+
+    // Return the completed ImageRecord (for frontend use)
+    return imageRecord
   } catch (err) {
     // If writing metadata fails, delete the saved image to avoid inconsistency
     deleteImageFile(id)
@@ -227,6 +242,8 @@ const imageRecord = await saveImageFromFile('./assets/logo.png', 'system')
 
 if (!imageRecord) {
   // Image could not be saved
+  // For error details, use:
+  console.error(getLastPixstoreError())
 }
 ```
 
@@ -291,6 +308,8 @@ export const updateImage = (
 const updatedImageRecord = await updateImage(playerId, newBuffer)
 if (!updatedImageRecord) {
   // Image not found
+  // For error details, use:
+  console.error(getLastPixstoreError())
 }
 ```
 
@@ -311,7 +330,7 @@ export const updateImage = async (
   return handleErrorAsync(async () => {
     // Check if image exists in the database
     if (!imageRecordExists(id)) {
-      throw new Error(`Image not found: ${id}`)
+      throw new PixstoreError(`Image not found: ${id}`)
     }
 
     // Overwrite image and update its metadata
@@ -323,20 +342,28 @@ export const updateImage = async (
  * Writes an image buffer to disk and updates or creates its database record.
  * If writing to the database fails, the file is deleted to maintain consistency.
  */
-const writeImage = async (
-  id: string,
-  buffer: Buffer,
-  dir?: string,
-): Promise<ImageRecord> => {
-  // Encrypt the buffer using AES-GCM and get encryption metadata
+const writeImage = async (id: string, buffer: Buffer): Promise<ImageRecord> => {
+  // Encrypt the buffer using AES-GCM and get encryption metadata (key, iv, tag)
   const { encrypted, meta } = encryptImage(buffer)
 
   // Save the encrypted image buffer to disk
   await saveImageFile(id, encrypted)
 
   try {
-    // Write image metadata (token, key, iv, tag) to the database
-    return writeImageRecord(id, meta)
+    // Write image metadata (token, key, iv, tag) to the database and get the DB record
+    const dbImageRecord = writeImageRecord(id, meta)
+
+    // Convert the DB image record into a frontend-compatible ImageRecord (adds statelessProof)
+    const imageRecord = convertImageRecord(dbImageRecord)
+
+    // If conversion fails (should not happen), delete the image file and throw error
+    if (!imageRecord) {
+      deleteImageFile(id)
+      throw new PixstoreError('Failed to convert image record: result is null')
+    }
+
+    // Return the completed ImageRecord (for frontend use)
+    return imageRecord
   } catch (err) {
     // If writing metadata fails, delete the saved image to avoid inconsistency
     deleteImageFile(id)
@@ -385,6 +412,8 @@ const updatedImageRecord = await updateImageFromFile(
 )
 if (!updatedImageRecord) {
   // Image not found
+  // For error details, use:
+  console.error(getLastPixstoreError())
 }
 ```
 
@@ -444,9 +473,12 @@ export const deleteImage = (
 ### Example
 
 ```ts
-const success = await deleteImage(imageId)
+const result = await deleteImage(imageId)
 
-if (success) {
+if (result === null) {
+  // There was an error during deletion (use getLastPixstoreError() for details)
+  console.error(getLastPixstoreError())
+} else if (result) {
   console.log('Image deleted.')
 } else {
   console.log('Image not found.')
@@ -516,7 +548,12 @@ export const imageExists = (
 ### Example
 
 ```ts
-if (await imageExists(imageId)) {
+const exists = await imageExists(imageId)
+
+if (exists === null) {
+  // There was an error during existence check (see last error for details)
+  console.error(getLastPixstoreError())
+} else if (exists) {
   console.log('Image is available')
 } else {
   console.log('Image not found')

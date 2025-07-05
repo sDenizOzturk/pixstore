@@ -46,7 +46,7 @@ export enum WirePayloadState {
   MissingProof = 4, // Stateless proof missing
   InvalidProof = 5, // Stateless proof invalid or expired
   InternalError = 6, // Internal server error (reserved for future use)
-  // InvalidToken = 7, // Client token invalid or unparseable
+  // InvalidToken = 7, // Client token invalid or unparseable  (reserved for future use)
   // Unauthorized = 8, // Not authorized (reserved for future use)
   // RateLimited = 9, // (may be added in future)
   // UnsupportedFormat = 10,

@@ -1,4 +1,4 @@
 export interface BasketballTeam {
-  id: number;
-  teamName: string;
+  id: number
+  teamName: string
 }
