@@ -18,6 +18,8 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+      - run: npm run lint
+      - run: npm run format:check
       - run: npm run test:build
       - run: npm test
       - run: npm run prepare-publish

@@ -20,11 +20,11 @@ import { PixstoreError } from '../shared/pixstore-error.js'
  */
 export const getImage = async (
   record: ImageRecord,
-  context?: any,
+  context?: unknown,
 ): Promise<Blob | null> => {
   return handleErrorAsync(async () => {
     // Attempt to read the cached image from IndexedDB by ID
-    const { id, token, meta, statelessProof } = record
+    const { id, token, meta } = record
     const cached = await readImageRecord(id)
 
     // If a cached image exists and the token matches, return it immediately

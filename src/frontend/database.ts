@@ -19,7 +19,7 @@ export const openDatabase = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(FRONTEND_DB_NAME, FRONTEND_DB_VERSION)
 
-    request.onupgradeneeded = (event) => {
+    request.onupgradeneeded = (_event) => {
       const database = request.result
       // Ensure the main image store exists
       if (!database.objectStoreNames.contains(IMAGE_STORE_NAME)) {

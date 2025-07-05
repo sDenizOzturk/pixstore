@@ -66,11 +66,7 @@ export const getImageRecord = (id: string): ImageRecord | null => {
  * Writes an image buffer to disk and updates or creates its database record.
  * If writing to the database fails, the file is deleted to maintain consistency.
  */
-const writeImage = async (
-  id: string,
-  buffer: Buffer,
-  dir?: string,
-): Promise<ImageRecord> => {
+const writeImage = async (id: string, buffer: Buffer): Promise<ImageRecord> => {
   // Encrypt the buffer using AES-GCM and get encryption metadata (key, iv, tag)
   const { encrypted, meta } = encryptImage(buffer)
 
@@ -112,7 +108,7 @@ export const saveImage = async (
     const id = createUniqueId(dir)
 
     // Write the encrypted image and metadata
-    return await writeImage(id, buffer, dir)
+    return await writeImage(id, buffer)
   })
 }
 
