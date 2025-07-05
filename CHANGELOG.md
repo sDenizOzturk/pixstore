@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/sDenizOzturk/pixstore/compare/v3.2.0...v3.2.1) (2025-07-05)
+
+
+### Bug Fixes
+
+* fix broken links and update version to 3.2.1 ([5d78f35](https://github.com/sDenizOzturk/pixstore/commit/5d78f355db3e455f2ae079319cc2cfeefbcf6853))
+
 # [3.2.0](https://github.com/sDenizOzturk/pixstore/compare/v3.1.1...v3.2.0) (2025-07-04)
 
 ### Bug Fixes
