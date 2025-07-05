@@ -173,5 +173,5 @@ Full metadata is only returned **if the image was updated recently**, and the fr
 ## See also
 
 - [API Reference – customEndpointHelper()](/docs/api-reference/backend/custom-endpoint)
-- [API Reference – ImageFetcher](/docs/api-reference/frontend/initialization#imagefetcher)
+- [API Reference – ImageFetcher](/docs/api-reference/types#imagefetcher)
 - [Usage – Stateless proof mechanism](/docs/usage/integration#stateless-proof-mechanism)

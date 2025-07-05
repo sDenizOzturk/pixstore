@@ -73,7 +73,3 @@ initPixstoreFrontend({
 - Each request includes a [`statelessProof`](/docs/usage/integration#stateless-proof-mechanism) automatically. The backend validates this proof before serving any image data.
 - CORS must be set correctly if your frontend and backend are on different domains.
 - The default fetcher does not handle user authentication or access control. For protected images, use a custom endpoint and fetcher.
-
----
-
-For more details, see the [API Reference](/docs/api-reference/backend/init-pixstore-backend) and advanced configuration guides.

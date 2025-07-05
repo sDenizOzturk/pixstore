@@ -1,6 +1,6 @@
 {
   "name": "pixstore",
-  "version": "2.0.0",
+  "version": "3.2.1",
   "description": "Minimalist Node.js & browser image storage/cache library. Fast, reliable, and pluggable.",
   "author": "Deniz Öztürk <serhatdenizozturk@hotmail.com>",
   "license": "MIT",

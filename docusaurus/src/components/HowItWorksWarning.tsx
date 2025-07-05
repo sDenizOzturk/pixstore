@@ -19,13 +19,21 @@ const HowItWorksWarning: React.FC = () => {
       <strong>⚠️ This section shows internal implementation details.</strong>
       <br />
       It is intended for contributors or users who want to understand the inner
-      workings of Pixstore.
-      <br />
-      Typical users do not need to modify or interact with this code directly.
+      workings of Pixstore. Typical users do not need to modify or interact with
+      this code directly.
       <br />
       <em>
         Also, this code was last verified with
         <b> Pixstore v{PIXSTORE_VERSION}</b> and may change in future versions.
+        For the latest implementation, always check the official repository at{' '}
+        <a
+          href="https://github.com/sDenizOzturk/pixstore"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          github.com/sDenizOzturk/pixstore
+        </a>
+        .
       </em>
     </div>
   )
