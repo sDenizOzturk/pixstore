@@ -1,4 +1,4 @@
 export interface GeneralManager {
-  id: number;
-  teamId: number;
+  id: number
+  teamId: number
 }

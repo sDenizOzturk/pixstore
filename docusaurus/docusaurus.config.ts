@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic'
 
 const config: Config = {
   title: 'Pixstore',
-  tagline: 'Vanilla TypeScript Full Stack Image Caching Library',
+  tagline: 'TypeScript Full Stack Image Storage & Caching Library',
   favicon: 'img/favicon.ico',
 
   future: {

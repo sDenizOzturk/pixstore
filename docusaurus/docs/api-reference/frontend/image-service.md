@@ -28,10 +28,17 @@ Each function is described in detail below.
 
 ## `getImage`
 
-Retrieves and decrypts an image using token-based cache validation.
+Retrieves and decrypts an image using token-based cache validation and stateless proof authorization.
 
-If the image is already cached in IndexedDB **and** the token matches, it is decrypted and returned directly.
-Otherwise, the image is fetched from the backend in encrypted wire format, decoded, cached, and then decrypted before returning as a `Blob`.
+- If the image is cached in IndexedDB **and** its token matches the provided `record.token`, the cached encrypted data is decrypted and returned immediately as a `Blob`.
+- If the cached token differs from the provided `record.token` (indicating a possible update elsewhere), a conditional fetch is made to the backend with the cached token:
+
+  - The backend returns either a minimal payload if the image is unchanged (just after the imageRecord sent) or a full updated payload if changed.
+
+  - The local cache is updated accordingly with the latest encrypted data and token.
+
+- The image is always decrypted using the latest encrypted data and metadata (which may come from the cache or backend).
+- This mechanism minimizes data transfer while ensuring the image cache is kept up to date.
 
 ---
 
@@ -48,10 +55,10 @@ export const getImage = (
 
 ### Parameters
 
-| Name      | Type          | Description                                                                |
-| --------- | ------------- | -------------------------------------------------------------------------- |
-| `record`  | `ImageRecord` | Metadata object received from backend (`id`, `token`, and `meta`)          |
-| `context` | `any?`        | Optional data passed to a custom image fetcher (if configured on frontend) |
+| Name      | Type          | Description                                                                                  |
+| --------- | ------------- | -------------------------------------------------------------------------------------------- |
+| `record`  | `ImageRecord` | Metadata object received from backend, including `id`, `token`, `meta`, and `statelessProof` |
+| `context` | `any?`        | Optional data passed to a custom image fetcher (if configured on frontend)                   |
 
 ---
 
@@ -63,6 +70,8 @@ if (blob) {
   const url = URL.createObjectURL(blob)
   // ...use in <img> or wherever
 } else {
+  // For error details, use:
+  console.error(getLastPixstoreError())
   // show fallback, placeholder, etc.
 }
 ```
@@ -80,7 +89,7 @@ if (blob) {
  */
 export const getImage = async (
   record: ImageRecord,
-  context?: any,
+  context?: unknown,
 ): Promise<Blob | null> => {
   return handleErrorAsync(async () => {
     // Attempt to read the cached image from IndexedDB by ID
@@ -95,32 +104,61 @@ export const getImage = async (
       // Decrypt the image using the extracted encrypted data and meta
       const imagePayload = await decryptImage(encrypted, meta)
 
+      // Update lastUsed timestamp (wihtout awaiting)
+      writeImageRecord({
+        ...indexedDBRecord!,
+        lastUsed: Date.now(),
+      })
+
       // Return the up-to-date Blob for rendering
       return decryptedPayloadToBlob(imagePayload)
     }
 
     // Otherwise, fetch the latest encoded image from the backend
-    const encoded = await fetchEncodedImage(record.id, context)
+    const encoded = await fetchEncodedImage(record, context)
 
     // Decode the wire payload to extract encrypted data, meta, and token
     const decodedWirePayload = decodeWirePayload(encoded)
+
+    // Ensure response state is Success or Updated; throw on error or not found.
+    if (
+      decodedWirePayload.state !== WirePayloadState.Success &&
+      decodedWirePayload.state !== WirePayloadState.Updated
+    )
+      throw new PixstoreError(
+        `Image fetch failed: state=${
+          WirePayloadState[decodedWirePayload.state] || decodedWirePayload.state
+        } (not Success/Updated)`,
+      )
+
+    // Use the correct token depending on response state (Success uses old token, Updated uses fresh token)
+    const latestToken =
+      decodedWirePayload.state === WirePayloadState.Success
+        ? token
+        : decodedWirePayload.token
 
     // Prepare the IndexedDB record with fresh encrypted data and token
     const indexedDBRecord: IndexedDBImageRecord = {
       id,
       encrypted: decodedWirePayload.encrypted,
-      token: decodedWirePayload.token,
+      token: latestToken,
       lastUsed: Date.now(),
     }
 
-    // Save the updated image into the local cache
-    await writeImageRecord(indexedDBRecord)
+    // Save the updated image into the local cache (wihtout awaiting)
+    writeImageRecord(indexedDBRecord)
+
+    // Use the correct meta depending on response state (Success keeps old meta, Updated uses new meta)
+    const latestMeta =
+      decodedWirePayload.state === WirePayloadState.Success
+        ? meta
+        : decodedWirePayload.meta
 
     // Decrypt the image using the encrypted data and meta from the wire payload.
     // The `record.meta` is not used, using stale meta could break decryption if the image was recently updated.
     const imagePayload = await decryptImage(
       decodedWirePayload.encrypted,
-      decodedWirePayload.meta,
+      latestMeta,
     )
 
     // Return the up-to-date Blob for rendering
@@ -159,8 +197,14 @@ export const deleteCachedImage = (
 ### Example
 
 ```ts
-await deleteCachedImage(imageId)
-// Optional: update UI or local state
+const result = await deleteCachedImage(imageId)
+
+if (result === null) {
+  // For error details, use:
+  console.error(getLastPixstoreError())
+} else {
+  console.log('Image deleted or not found.')
+}
 ```
 
 ---
@@ -214,11 +258,13 @@ export const cachedImageExists = (
 ```ts
 const exists = await cachedImageExists(imageId)
 
-if (exists) {
+if (exists === null) {
+  // For error details, use:
+  console.error(getLastPixstoreError())
+} else if (exists) {
   console.log('Image is available locally.')
 } else {
   console.log('Image needs to be fetched.')
-}
 ```
 
 ---

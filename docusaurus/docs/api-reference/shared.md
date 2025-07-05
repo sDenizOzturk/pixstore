@@ -1,5 +1,5 @@
 ---
-id: shared
+id: shared-module
 title: Shared Modules
 sidebar_position: 3
 ---
@@ -11,7 +11,7 @@ This page documents the shared modules used across Pixstore frontend and backend
 All exports listed here are available from the main `pixstore/shared` entrypoint:
 
 ```ts
-import { setCustomErrorHandler } from 'pixstore/shared'
+import { setCustomErrorHandler, getLastPixstoreError } from 'pixstore/shared'
 ```
 
 ---
@@ -83,6 +83,87 @@ export const setCustomErrorHandler = (
   // Store the user-provided error handler for centralized error processing
   customErrorHandler = newErrorHandler
 }
+
+/// <Inside the handleCatch>
+else if (ERROR_HANDLING_MODE === 'custom') {
+    if (customErrorHandler) {
+      customErrorHandler(error)
+      return null
+    }
+    // No custom handler set: this is a critical config error
+    throw new Error('Custom error handler is not set')
+  }
+/// </ Inside the handleCatch>
+```
+
+---
+
+## `getLastPixstoreError`
+
+Returns the **most recent** `PixstoreError` handled by the API.
+If no error has occurred, returns `null`.
+Use this for debugging, advanced error reporting, or to provide more detail when a Pixstore function returns `null` or `false`.
+
+---
+
+### Description
+
+```ts
+export const getLastPixstoreError = (): PixstoreError | null
+```
+
+---
+
+> **Note:**
+> The `getLastPixstoreError()` function is only updated when `errorHandlingMode` is set to `'hybrid'` (the default) and when the error is an instance of `PixstoreError`.
+> For all other error handling modes, or for non-Pixstore errors, this function will not be updated.
+
+---
+
+### Example
+
+```ts
+import { getImageRecord } from 'pixstore/backend'
+import { getLastPixstoreError } from 'pixstore/shared'
+
+const record = getImageRecord('image-123')
+if (!record) {
+  // Access the last error for detailed diagnostics
+  const lastError = getLastPixstoreError()
+  console.error('Pixstore error:', lastError)
+}
+```
+
+---
+
+### How it works?
+
+<HowItWorksWarning />
+
+```ts
+/**
+ * Returns the most recent PixstoreError handled by the API.
+ * Resets only when a new error is handled.
+ * For debugging, logging, and advanced error reporting.
+ */
+export const getLastPixstoreError = (): PixstoreError | null => {
+  return _lastPixstoreError
+}
+
+/// <Inside the handleCatch>
+if (ERROR_HANDLING_MODE === 'hybrid') {
+  if (error instanceof PixstoreError) {
+    // Set last PixstoreError
+    _lastPixstoreError = error
+    // Log PixstoreError as warning and return null
+    console.warn(error)
+    return null
+  } else {
+    // For all non-Pixstore errors, always throw
+    throw error
+  }
+}
+/// </ Inside the handleCatch>
 ```
 
 ---

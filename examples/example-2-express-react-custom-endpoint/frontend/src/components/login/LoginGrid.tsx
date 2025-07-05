@@ -1,23 +1,23 @@
-import { useAuth } from "../../store/auth";
+import { useAuth } from '../../store/auth'
 
 interface LoginProps {
-  userType: "basketballPlayer" | "generalManager" | "federationStaff";
-  count: number;
-  label: string;
+  userType: 'basketballPlayer' | 'generalManager' | 'federationStaff'
+  count: number
+  label: string
 }
 
 const LoginGrid = ({ userType, count, label }: LoginProps) => {
-  const login = useAuth((s) => s.login);
+  const login = useAuth((s) => s.login)
 
   return (
     <div>
       <h3>{label}</h3>
       <div
         style={{
-          display: "grid",
+          display: 'grid',
           gridTemplateColumns: `repeat(${count > 5 ? 5 : count}, 1fr)`,
           gap: 16,
-          justifyItems: "center",
+          justifyItems: 'center',
         }}
       >
         {Array.from({ length: count }, (_, i) => i + 1).map((id) => (
@@ -27,7 +27,7 @@ const LoginGrid = ({ userType, count, label }: LoginProps) => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginGrid;
+export default LoginGrid

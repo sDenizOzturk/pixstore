@@ -1,1 +1,11 @@
-"use strict";(self.webpackChunkdocusaurus=self.webpackChunkdocusaurus||[]).push([[962],{8723:e=>{e.exports=JSON.parse('{"categoryGeneratedIndex":{"title":"Frontend Module","description":"API reference for the Pixstore frontend module. Covers image retrieval, caching, and configuration.","slug":"/category/frontend-module","permalink":"/pixstore/docs/category/frontend-module","sidebar":"tutorialSidebar","navigation":{"previous":{"title":"Custom Endpoint Helper","permalink":"/pixstore/docs/reference/backend/custom-endpoint"},"next":{"title":"Initialization","permalink":"/pixstore/docs/reference/frontend/initialization"}}}}')}}]);
+'use strict'
+;(self.webpackChunkdocusaurus = self.webpackChunkdocusaurus || []).push([
+  [962],
+  {
+    8723: (e) => {
+      e.exports = JSON.parse(
+        '{"categoryGeneratedIndex":{"title":"Frontend Module","description":"API reference for the Pixstore frontend module. Covers image retrieval, caching, and configuration.","slug":"/category/frontend-module","permalink":"/pixstore/docs/category/frontend-module","sidebar":"tutorialSidebar","navigation":{"previous":{"title":"Custom Endpoint Helper","permalink":"/pixstore/docs/reference/backend/custom-endpoint"},"next":{"title":"Initialization","permalink":"/pixstore/docs/reference/frontend/initialization"}}}}',
+      )
+    },
+  },
+])

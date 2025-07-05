@@ -1,4 +1,6 @@
 import React from 'react'
+export const PIXSTORE_VERSION =
+  require('../../package.json')['pixstore-version'] || ' '
 
 const HowItWorksWarning: React.FC = () => {
   return (
@@ -20,6 +22,11 @@ const HowItWorksWarning: React.FC = () => {
       workings of Pixstore.
       <br />
       Typical users do not need to modify or interact with this code directly.
+      <br />
+      <em>
+        Also, this code was last verified with
+        <b> Pixstore v{PIXSTORE_VERSION}</b> and may change in future versions.
+      </em>
     </div>
   )
 }
