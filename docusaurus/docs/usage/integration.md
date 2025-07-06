@@ -97,7 +97,7 @@ but images should **only** be retrieved through valid application paths using `g
 
 The `statelessProof` ensures:
 
-- Only your **authenticated backend** can generate image access metadata.
+- Only your **authenticated backend** generates image access metadata.
 - Only a **fresh, valid request** from the frontend can successfully load a decrypted image.
 - Without a valid proof, the backend responds with a wire payload in `MissingProof` or `InvalidProof` state, and no image data is served.
 
