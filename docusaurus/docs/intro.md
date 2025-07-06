@@ -12,7 +12,7 @@ sidebar_position: 1
 
 **Pixstore** is a modern, high-performance, and fully secure image storage and caching library for both Node.js backends and browser frontends. It is written in **vanilla TypeScript** with zero external frameworks or heavy dependencies.
 
-Pixstore enables **end-to-end encrypted**, reliable, and scalable image serving for any web app — from simple JavaScript projects to full-stack production systems.
+Pixstore enables **end-to-end encrypted**, reliable, and scalable image serving for any web app, from simple JavaScript projects to full-stack production systems.
 
 ## Key Features
 
@@ -38,7 +38,7 @@ Pixstore enables **end-to-end encrypted**, reliable, and scalable image serving 
 - **Minimal friction:** Start serving and caching secure images in minutes.
 - **Actively maintained:** Frequent updates and new features based on real-world needs.
 
-Pixstore is ideal for any project needing **secure, scalable, and high-performance image handling**—from indie webapps to enterprise SaaS.
+Pixstore is ideal for any project needing **secure, scalable, and high-performance image handling**, from indie webapps to enterprise SaaS.
 
 ---
 

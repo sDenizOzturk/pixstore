@@ -71,7 +71,8 @@ import { initPixstoreFrontend } from 'pixstore/frontend'
 import type { ImageFetcher } from 'pixstore/types'
 import { useAuth } from './auth-store'
 
-const customFetcher: ImageFetcher = async (record, { playerId }) => {
+const customFetcher: ImageFetcher = async (record, context) => {
+  const { playerId } = context as { playerId: string }
   const jwt = useAuth.getState().jwt
   const headers: Record<string, string> = {
     Authorization: `Bearer ${jwt}`,
@@ -158,7 +159,7 @@ Pixstore uses this layout internally to encode and decode wire payloads. You **m
 Pixstore is optimized to send the **smallest possible payload** when the image is already cached and valid.
 
 - If the `token` in your `imageRecord` matches the backend token, Pixstore returns a **minimal payload** containing only the encrypted image.
-- If the token is outdated, Pixstore returns a **full payload** with updated encryption metadata (`meta`) and a new token.
+- If the token is outdated, Pixstore returns a **full payload** with updated encryption metadata (`meta`) and the new token.
 
 This mechanism is fully automated, but only works correctly if the `clientToken` is passed to the backend.
 

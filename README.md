@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="docusaurus/static/img/logo_w_text.png" width="400" />
+  <img src="assets/logo_w_text.png" width="400" />
 </p>
 
 <p align="center"><em>TypeScript Full Stack Image Storage & Caching Library</em></p>
 
 **Pixstore** is a modern, high-performance, and fully secure image storage and caching library for both Node.js backends and browser frontends. It is written in **vanilla TypeScript** with zero external frameworks or heavy dependencies.
 
-Pixstore enables **end-to-end encrypted**, reliable, and scalable image serving for any web app — from simple JavaScript projects to full-stack production systems.
+Pixstore enables **end-to-end encrypted**, reliable, and scalable image serving for any web app, from simple JavaScript projects to full-stack production systems.
 
 ## 🔑 Key Features
 
@@ -32,7 +32,7 @@ Pixstore enables **end-to-end encrypted**, reliable, and scalable image serving 
 - **Minimal friction:** Start serving and caching secure images in minutes.
 - **Actively maintained:** Frequent updates and new features based on real-world needs.
 
-Pixstore is ideal for any project needing **secure, scalable, and high-performance image handling**—from indie webapps to enterprise SaaS.
+Pixstore is ideal for any project needing **secure, scalable, and high-performance image handling**, from indie webapps to enterprise SaaS.
 
 ---
 
@@ -65,6 +65,15 @@ yarn add pixstore
 
 Learn how to install, configure and use Pixstore:  
 👉 [View full documentation](https://sdenizozturk.github.io/pixstore)
+
+---
+
+## 📊 Presentation
+
+Prefer a visual overview instead of reading the full docs?
+Check out the Pixstore slide deck. It explains how Pixstore works in a clean and easy-to-follow format.
+
+👉 [View the Pixstore Presentation (PDF)](./assets/pixstore-presentation.pdf)
 
 ---
 

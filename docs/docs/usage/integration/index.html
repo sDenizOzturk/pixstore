@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.8.1">
 <title data-rh="true">Backend ↔ Frontend Integration | Pixstore</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://sDenizOzturk.github.io/pixstore/docs/usage/integration"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Backend ↔ Frontend Integration | Pixstore"><meta data-rh="true" name="description" content="Pixstore securely connects backend and frontend for encrypted image storage and safe, up-to-date image access."><meta data-rh="true" property="og:description" content="Pixstore securely connects backend and frontend for encrypted image storage and safe, up-to-date image access."><link data-rh="true" rel="icon" href="/pixstore/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://sDenizOzturk.github.io/pixstore/docs/usage/integration"><link data-rh="true" rel="alternate" href="https://sDenizOzturk.github.io/pixstore/docs/usage/integration" hreflang="en"><link data-rh="true" rel="alternate" href="https://sDenizOzturk.github.io/pixstore/docs/usage/integration" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Usage","item":"https://sDenizOzturk.github.io/pixstore/docs/category/usage"},{"@type":"ListItem","position":2,"name":"Backend ↔ Frontend Integration","item":"https://sDenizOzturk.github.io/pixstore/docs/usage/integration"}]}</script><link rel="stylesheet" href="/pixstore/assets/css/styles.0f514b2e.css">
-<script src="/pixstore/assets/js/runtime~main.f31b639c.js" defer="defer"></script>
+<script src="/pixstore/assets/js/runtime~main.1bb6454a.js" defer="defer"></script>
 <script src="/pixstore/assets/js/main.d9ddccac.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -78,7 +78,7 @@ You do not have to manage storage, security, or cache validation yourself.</p>
 but images should <strong>only</strong> be retrieved through valid application paths using <code>getImage()</code>.</p>
 <p>The <code>statelessProof</code> ensures:</p>
 <ul>
-<li>Only your <strong>authenticated backend</strong> can generate image access metadata.</li>
+<li>Only your <strong>authenticated backend</strong> generates image access metadata.</li>
 <li>Only a <strong>fresh, valid request</strong> from the frontend can successfully load a decrypted image.</li>
 <li>Without a valid proof, the backend responds with a wire payload in <code>MissingProof</code> or <code>InvalidProof</code> state, and no image data is served.</li>
 </ul>

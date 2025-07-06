@@ -22,9 +22,9 @@ const FRONTEND_CLEANUP_BATCH = 2 // Number of images to clean up in a single bat
  */
 const customImageFetcher: ImageFetcher = async (
   imageRecord: ImageRecord,
-  { playerId },
+  context: unknown,
 ) => {
-  console.log('test!!')
+  const { playerId } = context as { playerId: string }
   const { id: imageId, token: imageToken, statelessProof } = imageRecord
 
   const jwt = useAuth.getState().jwt

@@ -5,7 +5,7 @@ sidebar_position: 8
 ---
 
 Pixstore allows you to configure how errors are handled during all API operations (both frontend and backend).  
-This is controlled by the [`errorHandlingMode`](//docs/api-reference/types#errorhandlingmode) option passed to
+This is controlled by the [`errorHandlingMode`](/docs/api-reference/types#errorhandlingmode) option passed to
 [`initPixstoreFrontend`](/docs/api-reference/frontend/initialization) or
 [`initPixstoreBackend`](/docs/api-reference/backend/initialization).
 

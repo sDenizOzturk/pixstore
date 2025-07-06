@@ -24,7 +24,7 @@ A minimal GraphQL + Vue 3 app using Pixstore's **default image endpoint**.
 
 ---
 
-## 🔐 Example 2: React + Express + Custom Secure Endpoint
+## 🔐 Example 2: React + Express + Custom JWT Endpoint
 
 A secure, role-based app using **custom image endpoint + fetcher**.
 
